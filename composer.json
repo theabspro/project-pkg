@@ -1,6 +1,6 @@
 {
-    "name": "abs/customer-pkg",
-    "description": "For Customer CRUD",
+    "name": "abs/project-pkg",
+    "description": "For Project CRUD",
     "type": "library",
     "require":
     {},
@@ -17,7 +17,7 @@
         "laravel":
         {
             "providers": [
-                "Abs\\CustomerPkg\\CustomerPkgServiceProvider"
+                "Abs\\ProjectPkg\\ProjectPkgServiceProvider"
             ]
         }
     },
@@ -25,7 +25,7 @@
     {
         "psr-4":
         {
-            "Abs\\CustomerPkg\\": "src/"
+            "Abs\\ProjectPkg\\": "src/"
         }
     }
 }

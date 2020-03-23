@@ -1,9 +1,9 @@
 <?php
 
-Route::group(['namespace' => 'Abs\CustomerPkg', 'middleware' => ['web', 'auth'], 'prefix' => 'customer-pkg'], function () {
-	Route::get('/customers/get-list', 'CustomerController@getCustomerList')->name('getCustomerList');
-	Route::get('/customer/get-form-data/{id?}', 'CustomerController@getCustomerFormData')->name('getCustomerFormData');
-	Route::post('/customer/save', 'CustomerController@saveCustomer')->name('saveCustomer');
-	Route::get('/customer/delete/{id}', 'CustomerController@deleteCustomer')->name('deleteCustomer');
+Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 'prefix' => 'project-pkg'], function () {
+	Route::get('/projects/get-list', 'ProjectController@getProjectList')->name('getProjectList');
+	Route::get('/project/get-form-data/{id?}', 'ProjectController@getProjectFormData')->name('getProjectFormData');
+	Route::post('/project/save', 'ProjectController@saveProject')->name('saveProject');
+	Route::get('/project/delete/{id}', 'ProjectController@deleteProject')->name('deleteProject');
 
 });

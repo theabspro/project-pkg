@@ -1,7 +1,7 @@
 <?php
 
-namespace Abs\CustomerPkg;
-use Abs\CustomerPkg\Customer;
+namespace Abs\ProjectPkg;
+use Abs\ProjectPkg\Project;
 use App\Address;
 use App\Country;
 use App\Http\Controllers\Controller;
@@ -12,58 +12,58 @@ use Illuminate\Http\Request;
 use Validator;
 use Yajra\Datatables\Datatables;
 
-class CustomerController extends Controller {
+class ProjectController extends Controller {
 
 	public function __construct() {
 	}
 
-	public function getCustomerList(Request $request) {
-		$customer_list = Customer::withTrashed()
+	public function getProjectList(Request $request) {
+		$project_list = Project::withTrashed()
 			->select(
-				'customers.id',
-				'customers.code',
-				'customers.name',
-				DB::raw('IF(customers.mobile_no IS NULL,"--",customers.mobile_no) as mobile_no'),
-				DB::raw('IF(customers.email IS NULL,"--",customers.email) as email'),
-				DB::raw('IF(customers.deleted_at IS NULL,"Active","Inactive") as status')
+				'projects.id',
+				'projects.code',
+				'projects.name',
+				DB::raw('IF(projects.mobile_no IS NULL,"--",projects.mobile_no) as mobile_no'),
+				DB::raw('IF(projects.email IS NULL,"--",projects.email) as email'),
+				DB::raw('IF(projects.deleted_at IS NULL,"Active","Inactive") as status')
 			)
-			->where('customers.company_id', Auth::user()->company_id)
+			->where('projects.company_id', Auth::user()->company_id)
 			->where(function ($query) use ($request) {
-				if (!empty($request->customer_code)) {
-					$query->where('customers.code', 'LIKE', '%' . $request->customer_code . '%');
+				if (!empty($request->project_code)) {
+					$query->where('projects.code', 'LIKE', '%' . $request->project_code . '%');
 				}
 			})
 			->where(function ($query) use ($request) {
-				if (!empty($request->customer_name)) {
-					$query->where('customers.name', 'LIKE', '%' . $request->customer_name . '%');
+				if (!empty($request->project_name)) {
+					$query->where('projects.name', 'LIKE', '%' . $request->project_name . '%');
 				}
 			})
 			->where(function ($query) use ($request) {
 				if (!empty($request->mobile_no)) {
-					$query->where('customers.mobile_no', 'LIKE', '%' . $request->mobile_no . '%');
+					$query->where('projects.mobile_no', 'LIKE', '%' . $request->mobile_no . '%');
 				}
 			})
 			->where(function ($query) use ($request) {
 				if (!empty($request->email)) {
-					$query->where('customers.email', 'LIKE', '%' . $request->email . '%');
+					$query->where('projects.email', 'LIKE', '%' . $request->email . '%');
 				}
 			})
-			->orderby('customers.id', 'desc');
+			->orderby('projects.id', 'desc');
 
-		return Datatables::of($customer_list)
-			->addColumn('code', function ($customer_list) {
-				$status = $customer_list->status == 'Active' ? 'green' : 'red';
-				return '<span class="status-indicator ' . $status . '"></span>' . $customer_list->code;
+		return Datatables::of($project_list)
+			->addColumn('code', function ($project_list) {
+				$status = $project_list->status == 'Active' ? 'green' : 'red';
+				return '<span class="status-indicator ' . $status . '"></span>' . $project_list->code;
 			})
-			->addColumn('action', function ($customer_list) {
+			->addColumn('action', function ($project_list) {
 				$edit_img = asset('public/theme/img/table/cndn/edit.svg');
 				$delete_img = asset('public/theme/img/table/cndn/delete.svg');
 				return '
-					<a href="#!/customer-pkg/customer/edit/' . $customer_list->id . '">
+					<a href="#!/project-pkg/project/edit/' . $project_list->id . '">
 						<img src="' . $edit_img . '" alt="View" class="img-responsive">
 					</a>
-					<a href="javascript:;" data-toggle="modal" data-target="#delete_customer"
-					onclick="angular.element(this).scope().deleteCustomer(' . $customer_list->id . ')" dusk = "delete-btn" title="Delete">
+					<a href="javascript:;" data-toggle="modal" data-target="#delete_project"
+					onclick="angular.element(this).scope().deleteProject(' . $project_list->id . ')" dusk = "delete-btn" title="Delete">
 					<img src="' . $delete_img . '" alt="delete" class="img-responsive">
 					</a>
 					';
@@ -71,13 +71,13 @@ class CustomerController extends Controller {
 			->make(true);
 	}
 
-	public function getCustomerFormData($id = NULL) {
+	public function getProjectFormData($id = NULL) {
 		if (!$id) {
-			$customer = new Customer;
+			$project = new Project;
 			$address = new Address;
 			$action = 'Add';
 		} else {
-			$customer = Customer::withTrashed()->find($id);
+			$project = Project::withTrashed()->find($id);
 			$address = Address::where('address_of_id', 24)->where('entity_id', $id)->first();
 			if (!$address) {
 				$address = new Address;
@@ -85,22 +85,22 @@ class CustomerController extends Controller {
 			$action = 'Edit';
 		}
 		$this->data['country_list'] = $country_list = Collect(Country::select('id', 'name')->get())->prepend(['id' => '', 'name' => 'Select Country']);
-		$this->data['customer'] = $customer;
+		$this->data['project'] = $project;
 		$this->data['address'] = $address;
 		$this->data['action'] = $action;
 
 		return response()->json($this->data);
 	}
 
-	public function saveCustomer(Request $request) {
+	public function saveProject(Request $request) {
 		// dd($request->all());
 		try {
 			$error_messages = [
-				'code.required' => 'Customer Code is Required',
+				'code.required' => 'Project Code is Required',
 				'code.max' => 'Maximum 255 Characters',
 				'code.min' => 'Minimum 3 Characters',
-				'code.unique' => 'Customer Code is already taken',
-				'name.required' => 'Customer Name is Required',
+				'code.unique' => 'Project Code is already taken',
+				'name.required' => 'Project Name is Required',
 				'name.max' => 'Maximum 255 Characters',
 				'name.min' => 'Minimum 3 Characters',
 				'gst_number.required' => 'GST Number is Required',
@@ -120,7 +120,7 @@ class CustomerController extends Controller {
 					'required:true',
 					'max:255',
 					'min:3',
-					'unique:customers,code,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
+					'unique:projects,code,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
 				],
 				'name' => 'required|max:255|min:3',
 				'gst_number' => 'required|max:191',
@@ -137,29 +137,29 @@ class CustomerController extends Controller {
 
 			DB::beginTransaction();
 			if (!$request->id) {
-				$customer = new Customer;
-				$customer->created_by_id = Auth::user()->id;
-				$customer->created_at = Carbon::now();
-				$customer->updated_at = NULL;
+				$project = new Project;
+				$project->created_by_id = Auth::user()->id;
+				$project->created_at = Carbon::now();
+				$project->updated_at = NULL;
 				$address = new Address;
 			} else {
-				$customer = Customer::withTrashed()->find($request->id);
-				$customer->updated_by_id = Auth::user()->id;
-				$customer->updated_at = Carbon::now();
+				$project = Project::withTrashed()->find($request->id);
+				$project->updated_by_id = Auth::user()->id;
+				$project->updated_at = Carbon::now();
 				$address = Address::where('address_of_id', 24)->where('entity_id', $request->id)->first();
 			}
-			$customer->fill($request->all());
-			$customer->company_id = Auth::user()->company_id;
+			$project->fill($request->all());
+			$project->company_id = Auth::user()->company_id;
 			if ($request->status == 'Inactive') {
-				$customer->deleted_at = Carbon::now();
-				$customer->deleted_by_id = Auth::user()->id;
+				$project->deleted_at = Carbon::now();
+				$project->deleted_by_id = Auth::user()->id;
 			} else {
-				$customer->deleted_by_id = NULL;
-				$customer->deleted_at = NULL;
+				$project->deleted_by_id = NULL;
+				$project->deleted_at = NULL;
 			}
-			$customer->gst_number = $request->gst_number;
-			$customer->axapta_location_id = $request->axapta_location_id;
-			$customer->save();
+			$project->gst_number = $request->gst_number;
+			$project->axapta_location_id = $request->axapta_location_id;
+			$project->save();
 
 			if (!$address) {
 				$address = new Address;
@@ -167,24 +167,24 @@ class CustomerController extends Controller {
 			$address->fill($request->all());
 			$address->company_id = Auth::user()->company_id;
 			$address->address_of_id = 24;
-			$address->entity_id = $customer->id;
+			$address->entity_id = $project->id;
 			$address->address_type_id = 40;
 			$address->name = 'Primary Address';
 			$address->save();
 
 			DB::commit();
 			if (!($request->id)) {
-				return response()->json(['success' => true, 'message' => ['Customer Details Added Successfully']]);
+				return response()->json(['success' => true, 'message' => ['Project Details Added Successfully']]);
 			} else {
-				return response()->json(['success' => true, 'message' => ['Customer Details Updated Successfully']]);
+				return response()->json(['success' => true, 'message' => ['Project Details Updated Successfully']]);
 			}
 		} catch (Exceprion $e) {
 			DB::rollBack();
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
-	public function deleteCustomer($id) {
-		$delete_status = Customer::withTrashed()->where('id', $id)->forceDelete();
+	public function deleteProject($id) {
+		$delete_status = Project::withTrashed()->where('id', $id)->forceDelete();
 		if ($delete_status) {
 			$address_delete = Address::where('address_of_id', 24)->where('entity_id', $id)->forceDelete();
 			return response()->json(['success' => true]);

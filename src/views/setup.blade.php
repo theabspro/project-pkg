@@ -1,13 +1,30 @@
-@if(config('custom.PKG_DEV'))
-    <?php $customer_pkg_prefix = '/packages/abs/customer-pkg/src';?>
+@if(config('product-pkg.DEV'))
+    <?php $project_pkg_prefix = '/packages/abs/project-pkg/src';?>
 @else
-    <?php $customer_pkg_prefix = '';?>
+    <?php $project_pkg_prefix = '';?>
 @endif
 
 <script type="text/javascript">
-    var customer_list_template_url = "{{URL::asset($customer_pkg_prefix.'/public/angular/customer-pkg/pages/customer/list.html')}}";
-    var customer_get_form_data_url = "{{url('customer-pkg/customer/get-form-data/')}}";
-    var customer_form_template_url = "{{URL::asset($customer_pkg_prefix.'/public/angular/customer-pkg/pages/customer/form.html')}}";
-    var customer_delete_data_url = "{{url('customer-pkg/customer/delete/')}}";
+	app.config(['$routeProvider', function($routeProvider) {
+
+	    $routeProvider.
+	    //PROJECTS
+	    when('/project-pkg/project/list', {
+	        template: '<project-list></project-list>',
+	        title: 'Projects',
+	    }).
+	    when('/project-pkg/project/add', {
+	        template: '<project-form></project-form>',
+	        title: 'Add Project',
+	    }).
+	    when('/project-pkg/project/edit/:id', {
+	        template: '<project-form></project-form>',
+	        title: 'Edit Project',
+	    });
+	}]);
+
+    var project_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/list.html')}}";
+    var project_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/form.html')}}";
+
 </script>
-<script type="text/javascript" src="{{URL::asset($customer_pkg_prefix.'/public/angular/customer-pkg/pages/customer/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/angular/project-pkg/pages/project/controller.js?v=2')}}"></script>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\CustomerPkg;
+namespace Abs\ProjectPkg;
 
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
@@ -8,10 +8,10 @@ use App\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Customer extends Model {
+class Project extends Model {
 	use SeederTrait;
 	use SoftDeletes;
-	protected $table = 'customers';
+	protected $table = 'projects';
 	public $timestamps = true;
 	protected $fillable = [
 		'code',

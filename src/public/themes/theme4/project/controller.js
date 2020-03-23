@@ -1,30 +1,12 @@
-app.config(['$routeProvider', function($routeProvider) {
-
-    $routeProvider.
-    //CUSTOMER
-    when('/customer-pkg/customer/list', {
-        template: '<customer-list></customer-list>',
-        title: 'Customers',
-    }).
-    when('/customer-pkg/customer/add', {
-        template: '<customer-form></customer-form>',
-        title: 'Add Customer',
-    }).
-    when('/customer-pkg/customer/edit/:id', {
-        template: '<customer-form></customer-form>',
-        title: 'Edit Customer',
-    });
-}]);
-
-app.component('customerList', {
-    templateUrl: customer_list_template_url,
+app.component('projectList', {
+    templateUrl: project_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location) {
         $scope.loading = true;
         var self = this;
         self.hasPermission = HelperService.hasPermission;
         var table_scroll;
         table_scroll = $('.page-main-content').height() - 37;
-        var dataTable = $('#customers_list').DataTable({
+        var dataTable = $('#projects_list').DataTable({
             "dom": cndn_dom_structure,
             "language": {
                 // "search": "",
@@ -43,7 +25,7 @@ app.component('customerList', {
             stateLoadCallback: function(settings) {
                 var state_save_val = JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
                 if (state_save_val) {
-                    $('#search_customer').val(state_save_val.search.search);
+                    $('#search_project').val(state_save_val.search.search);
                 }
                 return JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
             },
@@ -54,12 +36,12 @@ app.component('customerList', {
             scrollY: table_scroll + "px",
             scrollCollapse: true,
             ajax: {
-                url: laravel_routes['getCustomerList'],
+                url: laravel_routes['getProjectList'],
                 type: "GET",
                 dataType: "json",
                 data: function(d) {
-                    d.customer_code = $('#customer_code').val();
-                    d.customer_name = $('#customer_name').val();
+                    d.project_code = $('#project_code').val();
+                    d.project_name = $('#project_name').val();
                     d.mobile_no = $('#mobile_no').val();
                     d.email = $('#email').val();
                 },
@@ -67,10 +49,10 @@ app.component('customerList', {
 
             columns: [
                 { data: 'action', class: 'action', name: 'action', searchable: false },
-                { data: 'code', name: 'customers.code' },
-                { data: 'name', name: 'customers.name' },
-                { data: 'mobile_no', name: 'customers.mobile_no' },
-                { data: 'email', name: 'customers.email' },
+                { data: 'code', name: 'projects.code' },
+                { data: 'name', name: 'projects.name' },
+                { data: 'mobile_no', name: 'projects.mobile_no' },
+                { data: 'email', name: 'projects.email' },
             ],
             "infoCallback": function(settings, start, end, max, total, pre) {
                 $('#table_info').html(total)
@@ -83,44 +65,44 @@ app.component('customerList', {
         $('.dataTables_length select').select2();
 
         $scope.clear_search = function() {
-            $('#search_customer').val('');
-            $('#customers_list').DataTable().search('').draw();
+            $('#search_project').val('');
+            $('#projects_list').DataTable().search('').draw();
         }
 
-        var dataTables = $('#customers_list').dataTable();
-        $("#search_customer").keyup(function() {
+        var dataTables = $('#projects_list').dataTable();
+        $("#search_project").keyup(function() {
             dataTables.fnFilter(this.value);
         });
 
         //DELETE
-        $scope.deleteCustomer = function($id) {
-            $('#customer_id').val($id);
+        $scope.deleteProject = function($id) {
+            $('#project_id').val($id);
         }
         $scope.deleteConfirm = function() {
-            $id = $('#customer_id').val();
+            $id = $('#project_id').val();
             $http.get(
-                customer_delete_data_url + '/' + $id,
+                project_delete_data_url + '/' + $id,
             ).then(function(response) {
                 if (response.data.success) {
                     $noty = new Noty({
                         type: 'success',
                         layout: 'topRight',
-                        text: 'Customer Deleted Successfully',
+                        text: 'Project Deleted Successfully',
                     }).show();
                     setTimeout(function() {
                         $noty.close();
                     }, 3000);
-                    $('#customers_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('/customer-pkg/customer/list');
+                    $('#projects_list').DataTable().ajax.reload(function(json) {});
+                    $location.path('/project-pkg/project/list');
                 }
             });
         }
 
         //FOR FILTER
-        $('#customer_code').on('keyup', function() {
+        $('#project_code').on('keyup', function() {
             dataTables.fnFilter();
         });
-        $('#customer_name').on('keyup', function() {
+        $('#project_name').on('keyup', function() {
             dataTables.fnFilter();
         });
         $('#mobile_no').on('keyup', function() {
@@ -130,8 +112,8 @@ app.component('customerList', {
             dataTables.fnFilter();
         });
         $scope.reset_filter = function() {
-            $("#customer_name").val('');
-            $("#customer_code").val('');
+            $("#project_name").val('');
+            $("#project_code").val('');
             $("#mobile_no").val('');
             $("#email").val('');
             dataTables.fnFilter();
@@ -142,10 +124,10 @@ app.component('customerList', {
 });
 //------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
-app.component('customerForm', {
-    templateUrl: customer_form_template_url,
+app.component('projectForm', {
+    templateUrl: project_form_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope) {
-        get_form_data_url = typeof($routeParams.id) == 'undefined' ? customer_get_form_data_url : customer_get_form_data_url + '/' + $routeParams.id;
+        get_form_data_url = typeof($routeParams.id) == 'undefined' ? project_get_form_data_url : project_get_form_data_url + '/' + $routeParams.id;
         var self = this;
         self.hasPermission = HelperService.hasPermission;
         self.angular_routes = angular_routes;
@@ -153,7 +135,7 @@ app.component('customerForm', {
             get_form_data_url
         ).then(function(response) {
             // console.log(response);
-            self.customer = response.data.customer;
+            self.project = response.data.project;
             self.address = response.data.address;
             self.country_list = response.data.country_list;
             self.action = response.data.action;
@@ -161,7 +143,7 @@ app.component('customerForm', {
             if (self.action == 'Edit') {
                 $scope.onSelectedCountry(self.address.country_id);
                 $scope.onSelectedState(self.address.state_id);
-                if (self.customer.deleted_at) {
+                if (self.project.deleted_at) {
                     self.switch_value = 'Inactive';
                 } else {
                     self.switch_value = 'Active';
@@ -190,9 +172,9 @@ app.component('customerForm', {
 
         //SELECT STATE BASED COUNTRY
         $scope.onSelectedCountry = function(id) {
-            customer_get_state_by_country = vendor_get_state_by_country;
+            project_get_state_by_country = vendor_get_state_by_country;
             $http.post(
-                customer_get_state_by_country, { 'country_id': id }
+                project_get_state_by_country, { 'country_id': id }
             ).then(function(response) {
                 // console.log(response);
                 self.state_list = response.data.state_list;
@@ -201,9 +183,9 @@ app.component('customerForm', {
 
         //SELECT CITY BASED STATE
         $scope.onSelectedState = function(id) {
-            customer_get_city_by_state = vendor_get_city_by_state
+            project_get_city_by_state = vendor_get_city_by_state
             $http.post(
-                customer_get_city_by_state, { 'state_id': id }
+                project_get_city_by_state, { 'state_id': id }
             ).then(function(response) {
                 // console.log(response);
                 self.city_list = response.data.city_list;
@@ -296,7 +278,7 @@ app.component('customerForm', {
                 let formData = new FormData($(form_id)[0]);
                 $('#submit').button('loading');
                 $.ajax({
-                        url: laravel_routes['saveCustomer'],
+                        url: laravel_routes['saveProject'],
                         method: "POST",
                         data: formData,
                         processData: false,
@@ -312,7 +294,7 @@ app.component('customerForm', {
                             setTimeout(function() {
                                 $noty.close();
                             }, 3000);
-                            $location.path('/customer-pkg/customer/list');
+                            $location.path('/project-pkg/project/list');
                             $scope.$apply();
                         } else {
                             if (!res.success == true) {
@@ -331,7 +313,7 @@ app.component('customerForm', {
                                 }, 3000);
                             } else {
                                 $('#submit').button('reset');
-                                $location.path('/customer-pkg/customer/list');
+                                $location.path('/project-pkg/project/list');
                                 $scope.$apply();
                             }
                         }

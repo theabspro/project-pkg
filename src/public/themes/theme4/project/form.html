@@ -5,11 +5,11 @@
         <div class="page-header-inner">
             <div class="page-header-content-left">
                 <div class="page-header-content button-block">
-                    <a href="#!/customer-pkg/customer/list" type="button" class="btn-back btn-img"><img class="img-responsive" src="./public/theme/img/content/previous.svg" alt="Back" /></a>
+                    <a href="#!/project-pkg/project/list" type="button" class="btn-back btn-img"><img class="img-responsive" src="./public/theme/img/content/previous.svg" alt="Back" /></a>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content title-block">
-                    <h1 class="title"><b>{{$ctrl.action}} Customer</b></h1>
-                    <p class="subtitle"><a href="#!/customer-pkg/customer/list">Customer List</a> / {{$ctrl.action}}</p>
+                    <h1 class="title"><b>{{$ctrl.action}} Project</b></h1>
+                    <p class="subtitle"><a href="#!/project-pkg/project/list">Project List</a> / {{$ctrl.action}}</p>
                 </div><!-- Page Header Content -->
             </div><!-- Page Header Content Left -->
         </div><!-- Page Header Inner -->
@@ -17,7 +17,7 @@
     <!-- Page Main Content -->
     <div class="page-main-content form-content type2">
         <form id="form" autocomplete="off">
-            <input type="hidden" name="id" value="{{$ctrl.customer.id}}">
+            <input type="hidden" name="id" value="{{$ctrl.project.id}}">
             <div class="page-tab-form pb-70">
                 <div class="tab-form-wrap">
                     <div class="tab-form-header">
@@ -39,50 +39,50 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>Customer Code <sup class="mandatory">*</sup></label>
-                                                <input type="text" class="form-control required" ng-model="$ctrl.customer.code" name="code" placeholder="Enter Customer Code" />
+                                                <label>Project Code <sup class="mandatory">*</sup></label>
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project.code" name="code" placeholder="Enter Project Code" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>Customer Name <sup class="mandatory">*</sup></label>
-                                                <input type="text" class="form-control required" ng-model="$ctrl.customer.name" name="name" placeholder="Enter Customer Name" />
+                                                <label>Project Name <sup class="mandatory">*</sup></label>
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project.name" name="name" placeholder="Enter Project Name" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>GST Number <sup class="mandatory">*</sup></label>
-                                                <input type="text" class="form-control required" ng-model="$ctrl.customer.gst_number" name="gst_number" placeholder="Enter GST Number" />
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project.gst_number" name="gst_number" placeholder="Enter GST Number" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>Mobile Number</label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.customer.mobile_no" name="mobile_no" placeholder="Enter Mobile Number" />
+                                                <input type="text" class="form-control" ng-model="$ctrl.project.mobile_no" name="mobile_no" placeholder="Enter Mobile Number" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>Email</label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.customer.email" name="email" placeholder="Enter Email" />
+                                                <input type="text" class="form-control" ng-model="$ctrl.project.email" name="email" placeholder="Enter Email" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>Customer Group</label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.customer.cust_group" name="cust_group" placeholder="Enter Customer Group" />
+                                                <label>Project Group</label>
+                                                <input type="text" class="form-control" ng-model="$ctrl.project.cust_group" name="cust_group" placeholder="Enter Project Group" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>Dimension</label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.customer.dimension" name="dimension" placeholder="Enter Dimension" />
+                                                <input type="text" class="form-control" ng-model="$ctrl.project.dimension" name="dimension" placeholder="Enter Dimension" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>AXAPTA Location ID</label>
-                                                <input type="text" class="form-control" name="axapta_location_id" ng-model="$ctrl.customer.axapta_location_id" placeholder="Enter AXAPTA Location ID">
+                                                <input type="text" class="form-control" name="axapta_location_id" ng-model="$ctrl.project.axapta_location_id" placeholder="Enter AXAPTA Location ID">
                                             </div><!-- Field -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
@@ -126,9 +126,9 @@
                                                 <label>Country <sup class="mandatory">*</sup></label>
                                                 <md-select ng-model="$ctrl.address.country_id" ng-change="onSelectedCountry($ctrl.address.country_id);$ctrl.address.state_id='';$ctrl.address.city_id=''" placeholder="Select Country" data-md-container-class="selectdemoSelectHeader">
                                                     <md-select-header class="demo-select-header ng-hide">
-                                                        <input ng-model="searchCustomerGroup" type="search" placeholder="Search Customer Group" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                        <input ng-model="searchProjectGroup" type="search" placeholder="Search Project Group" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
-                                                    <md-optgroup label="Customer Group List">
+                                                    <md-optgroup label="Project Group List">
                                                         <md-option ng-value="country.id" ng-repeat="country in $ctrl.country_list | filter:searchTravel">{{country.name}}</md-option>
                                                     </md-optgroup>
                                                 </md-select>
@@ -140,7 +140,7 @@
                                                 <label>State <sup class="mandatory">*</sup></label>
                                                 <md-select ng-model="$ctrl.address.state_id" ng-change="onSelectedState($ctrl.address.state_id);$ctrl.address.city_id=''" placeholder="Select State" data-md-container-class="selectdemoSelectHeader">
                                                     <md-select-header class="demo-select-header ng-hide">
-                                                        <input ng-model="searchCustomerGroup" type="search" placeholder="Search Customer Group" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                        <input ng-model="searchProjectGroup" type="search" placeholder="Search Project Group" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
                                                     <md-optgroup label="">
                                                         <md-option ng-value="state.id" ng-repeat="state in $ctrl.state_list | filter:searchTravel">{{state.name}}</md-option>
@@ -154,7 +154,7 @@
                                                 <label>City <sup class="mandatory">*</sup></label>
                                                 <md-select ng-model="$ctrl.address.city_id" placeholder="Select City" data-md-container-class="selectdemoSelectHeader">
                                                     <md-select-header class="demo-select-header ng-hide">
-                                                        <input ng-model="searchCustomerGroup" type="search" placeholder="Search Customer Group" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                        <input ng-model="searchProjectGroup" type="search" placeholder="Search Project Group" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
                                                     <md-optgroup label="">
                                                         <md-option ng-value="city.id" ng-repeat="city in $ctrl.city_list | filter:searchTravel">{{city.name}}</md-option>
@@ -172,7 +172,7 @@
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label class="table-form-list-label">Full Address<span class="mandatory">*</span></label>
-                                                <textarea name="address" ng-model="$ctrl.customer.address" class="form-control required" rows="3" placeholder="Enter Address"></textarea>
+                                                <textarea name="address" ng-model="$ctrl.project.address" class="form-control required" rows="3" placeholder="Enter Address"></textarea>
                                             </div>
                                         </div>
                                         <div class="tab-pane-footer">
