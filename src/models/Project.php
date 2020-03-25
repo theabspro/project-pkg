@@ -14,14 +14,11 @@ class Project extends Model {
 	protected $table = 'projects';
 	public $timestamps = true;
 	protected $fillable = [
+		'company_id',
 		'code',
 		'name',
-		'cust_group',
-		'dimension',
-		'mobile_no',
-		'email',
-		'company_id',
-		'address',
+		'short_name',
+		'description',
 	];
 
 	public static function createFromObject($record_data) {

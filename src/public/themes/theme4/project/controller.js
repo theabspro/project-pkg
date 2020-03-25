@@ -4,10 +4,45 @@ app.component('projectList', {
         $scope.loading = true;
         var self = this;
         self.hasPermission = HelperService.hasPermission;
-        var table_scroll;
+        var cols = [
+            {'data':"id","name":"projects.id","searchable":true},
+            {'data':"code","name":"projects.code","searchable":true},
+            {'data':"name","name":"projects.name","searchable":true},
+            {'data':"short_name","name":"projects.short_name","searchable":true},
+            {'data':"company_name","name":"companies.name","searchable":true},
+            {'data':"status","searchable":false},
+            {'data':"action","searchable":false,"class":"action"},
+        ];
+
+         var project_table = $('#project_data_table').DataTable({
+            "language": {
+            "search":"",
+            "lengthMenu":     "_MENU_",
+            "paginate": { 
+                "next":       '<i class="icon ion-ios-arrow-forward"></i>',
+                "previous":   '<i class="icon ion-ios-arrow-back"></i>'
+            },
+        }, 
+        'pageLength': 10,
+        processing:true,
+        serverSide: true,
+        ordering: false,
+        method:"GET",  
+        ajax: {
+            url: laravel_routes['getProjectList'],
+            data: function (d){
+            },
+        },
+       columns: cols,
+    });    
+    $('.page-title ').html('<h4 class="title">Projects</h4>');
+    $('.sub_actions').html('<div class="dropdown"><button class="btn btn-primary btn-md" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><ul><li><a class="dropdown-item" id="project_summary" href="#!">Send Summary Report</a></li></ul></div></div>');
+
+
+       /* var table_scroll;
         table_scroll = $('.page-main-content').height() - 37;
         var dataTable = $('#projects_list').DataTable({
-            "dom": cndn_dom_structure,
+            "dom": dom_structure,
             "language": {
                 // "search": "",
                 // "searchPlaceholder": "Search",
@@ -61,7 +96,7 @@ app.component('projectList', {
             rowCallback: function(row, data) {
                 $(row).addClass('highlight-row');
             }
-        });
+        });*/
         $('.dataTables_length select').select2();
 
         $scope.clear_search = function() {
@@ -136,13 +171,14 @@ app.component('projectForm', {
         ).then(function(response) {
             // console.log(response);
             self.project = response.data.project;
-            self.address = response.data.address;
-            self.country_list = response.data.country_list;
+            //self.address = response.data.address;
+            self.company_list = response.data.company_list;
+            console.log(self.company_list);
             self.action = response.data.action;
             $rootScope.loading = false;
             if (self.action == 'Edit') {
-                $scope.onSelectedCountry(self.address.country_id);
-                $scope.onSelectedState(self.address.state_id);
+                //$scope.onSelectedCountry(self.address.country_id);
+                //$scope.onSelectedState(self.address.state_id);
                 if (self.project.deleted_at) {
                     self.switch_value = 'Inactive';
                 } else {
@@ -150,11 +186,14 @@ app.component('projectForm', {
                 }
             } else {
                 self.switch_value = 'Active';
-                self.state_list = [{ 'id': '', 'name': 'Select State' }];
-                self.city_list = [{ 'id': '', 'name': 'Select City' }];
+                //self.state_list = [{ 'id': '', 'name': 'Select State' }];
+                //self.city_list = [{ 'id': '', 'name': 'Select City' }];
             }
         });
 
+        angular.element(document).ready(function() {
+          $('md-select[autofocus]:visible:first').focus();
+        });
         /* Tab Funtion */
         $('.btn-nxt').on("click", function() {
             $('.cndn-tabs li.active').next().children('a').trigger("click");
@@ -171,7 +210,7 @@ app.component('projectForm', {
         $scope.prev = function() {}
 
         //SELECT STATE BASED COUNTRY
-        $scope.onSelectedCountry = function(id) {
+       /* $scope.onSelectedCountry = function(id) {
             project_get_state_by_country = vendor_get_state_by_country;
             $http.post(
                 project_get_state_by_country, { 'country_id': id }
@@ -190,81 +229,49 @@ app.component('projectForm', {
                 // console.log(response);
                 self.city_list = response.data.city_list;
             });
-        }
+        }*/
 
         var form_id = '#form';
         var v = jQuery(form_id).validate({
             ignore: '',
             rules: {
+                 'company_id': {
+                    required: true,
+                },
                 'code': {
                     required: true,
                     minlength: 3,
-                    maxlength: 255,
+                    maxlength: 191,
                 },
                 'name': {
                     required: true,
                     minlength: 3,
-                    maxlength: 255,
+                    maxlength: 191,
                 },
-                'cust_group': {
-                    maxlength: 100,
-                },
-                'gst_number': {
-                    required: true,
-                    maxlength: 100,
-                },
-                'dimension': {
-                    maxlength: 50,
-                },
-                'address': {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 250,
-                },
-                'address_line1': {
+                'short_name': {
                     minlength: 3,
-                    maxlength: 255,
+                    maxlength:191,
                 },
-                'address_line2': {
-                    minlength: 3,
-                    maxlength: 255,
+                'description': {
+                   maxlength: 255,
                 },
-                // 'pincode': {
-                //     required: true,
-                //     minlength: 6,
-                //     maxlength: 6,
-                // },
+                
             },
             messages: {
                 'code': {
-                    maxlength: 'Maximum of 255 charaters',
+                    maxlength: 'Maximum of 191 charaters',
                 },
                 'name': {
+                    maxlength: 'Maximum of 191 charaters',
+                },
+                'short_name': {
+                    maxlength: 'Maximum of 191 charaters',
+                },
+                 'description': {
                     maxlength: 'Maximum of 255 charaters',
                 },
-                'cust_group': {
-                    maxlength: 'Maximum of 100 charaters',
-                },
-                'dimension': {
-                    maxlength: 'Maximum of 50 charaters',
-                },
-                'gst_number': {
-                    maxlength: 'Maximum of 25 charaters',
-                },
-                'email': {
-                    maxlength: 'Maximum of 100 charaters',
-                },
-                'address_line1': {
-                    maxlength: 'Maximum of 255 charaters',
-                },
-                'address_line2': {
-                    maxlength: 'Maximum of 255 charaters',
-                },
-                // 'pincode': {
-                //     maxlength: 'Maximum of 6 charaters',
-                // },
             },
-            invalidHandler: function(event, validator) {
+            /*invalidHandler: function(event, validator) {
                 $noty = new Noty({
                     type: 'error',
                     layout: 'topRight',
@@ -273,7 +280,7 @@ app.component('projectForm', {
                 setTimeout(function() {
                     $noty.close();
                 }, 3000)
-            },
+            },*/
             submitHandler: function(form) {
                 let formData = new FormData($(form_id)[0]);
                 $('#submit').button('loading');
@@ -286,14 +293,7 @@ app.component('projectForm', {
                     })
                     .done(function(res) {
                         if (res.success == true) {
-                            $noty = new Noty({
-                                type: 'success',
-                                layout: 'topRight',
-                                text: res.message,
-                            }).show();
-                            setTimeout(function() {
-                                $noty.close();
-                            }, 3000);
+                             custom_noty('success',  res.message);
                             $location.path('/project-pkg/project/list');
                             $scope.$apply();
                         } else {
@@ -303,14 +303,7 @@ app.component('projectForm', {
                                 for (var i in res.errors) {
                                     errors += '<li>' + res.errors[i] + '</li>';
                                 }
-                                $noty = new Noty({
-                                    type: 'error',
-                                    layout: 'topRight',
-                                    text: errors
-                                }).show();
-                                setTimeout(function() {
-                                    $noty.close();
-                                }, 3000);
+                                 custom_noty('error', errors);
                             } else {
                                 $('#submit').button('reset');
                                 $location.path('/project-pkg/project/list');
@@ -320,14 +313,7 @@ app.component('projectForm', {
                     })
                     .fail(function(xhr) {
                         $('#submit').button('reset');
-                        $noty = new Noty({
-                            type: 'error',
-                            layout: 'topRight',
-                            text: 'Something went wrong at server',
-                        }).show();
-                        setTimeout(function() {
-                            $noty.close();
-                        }, 3000);
+                         custom_noty('error', 'Something went wrong at server');
                     });
             }
         });
