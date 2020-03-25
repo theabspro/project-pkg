@@ -121,9 +121,7 @@ app.component('projectList', {
                 if (response.data.success) {
                      custom_noty('success',  'Project Deleted Successfully');
                     $('#project_data_table').DataTable().ajax.reload();
-                    alert();
-                   // $location.path('/project-pkg/project/list');
-                    //$scope.$apply();
+                    $location.path('/project-pkg/project/list');
                 }
             });
         }
