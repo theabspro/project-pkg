@@ -122,6 +122,7 @@ app.component('projectList', {
                      custom_noty('success',  'Project Deleted Successfully');
                     $('#project_data_table').DataTable().ajax.reload();
                     $location.path('/project-pkg/project/list');
+                    alert();
                 }
             });
         }
