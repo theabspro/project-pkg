@@ -119,16 +119,11 @@ app.component('projectList', {
                 project_delete_data_url + '/' + $id,
             ).then(function(response) {
                 if (response.data.success) {
-                    $noty = new Noty({
-                        type: 'success',
-                        layout: 'topRight',
-                        text: 'Project Deleted Successfully',
-                    }).show();
-                    setTimeout(function() {
-                        $noty.close();
-                    }, 3000);
-                    $('#projects_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('/project-pkg/project/list');
+                     custom_noty('success',  'Project Deleted Successfully');
+                    $('#project_data_table').DataTable().ajax.reload();
+                    alert();
+                   // $location.path('/project-pkg/project/list');
+                    //$scope.$apply();
                 }
             });
         }
