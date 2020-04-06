@@ -26,6 +26,28 @@
 	        title: 'View Project',
 	    }).
 
+	    //VERSION
+	    when('/project-pkg/project-version/card-list', {
+	        template: '<project-version-card-list></project-version-card-list>',
+	        title: 'Project Versions Card List',
+	    }).
+	    when('/project-pkg/project-version/list', {
+	        template: '<project-version-list></project-version-list>',
+	        title: 'Project Versions',
+	    }).
+	    when('/project-pkg/project-version/add', {
+	        template: '<project-version-form></project-version-form>',
+	        title: 'Add Project Version',
+	    }).
+	    when('/project-pkg/project-version/edit/:id', {
+	        template: '<project-version-form></project-version-form>',
+	        title: 'Edit Project Version',
+	    }).
+	    when('/project-pkg/project-version/view/:id', {
+	        template: '<project-version-view></project-version-view>',
+	        title: 'View Project Version',
+	    }).
+
 	    //TASKS
 	    when('/project-pkg/task/card-list', {
 	        template: '<task-card-list></task-card-list>',
@@ -53,6 +75,11 @@
     var project_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/form.html')}}";
     var project_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/view.html')}}";
 
+    var project_version_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/card-list.html')}}";
+    var project_version_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/list.html')}}";
+    var project_version_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/form.html')}}";
+    var project_version_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/view.html')}}";
+
 
     var task_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/card-list.html')}}";
     var task_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/list.html')}}";
@@ -64,4 +91,5 @@
     var image_scr3 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
 </script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>

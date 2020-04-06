@@ -1,0 +1,196 @@
+<!-- Content Wrap -->
+<div class="content-wrap cndn-wrap">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content button-block">
+                    <a href="#!/project-pkg/project-version/list" type="button" class="btn-back btn-img">
+                        <img class="img-responsive" ng-src="{{theme}}/img/content/previous.svg" alt="Back" />
+                    </a>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content title-block">
+                    <h1 class="title"><b>{{$ctrl.action}} Project Version</b></h1>
+                    <p class="subtitle">
+                        <a href="#!/project-pkg/project-version/list">
+                            Project Version List
+                        </a> /
+                        {{$ctrl.action}}
+                    </p>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Left -->
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+    <!-- Page Main Content -->
+    <div class="page-main-content form-content type2">
+        <form id="form" autocomplete="off">
+            <input type="hidden" name="id" value="{{$ctrl.project-version.id}}">
+            <div class="page-tab-form pb-70">
+                <div class="tab-form-wrap">
+                    <div class="tab-form-header">
+                        <div class="tab-header">
+                            <!-- Filters -->
+                            <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
+                                <ul class="nav nav-pills cndn-tabs">
+                                    <li class="active">
+                                        <a class="filter active" data-target="#general-information" data-toggle="tab" aria-expanded="true">
+                                            General Information
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div><!-- Filters -->
+                        </div><!-- Tab Header -->
+                    </div><!-- Tab Form Header -->
+                    <div class="tab-form-body">
+                        <div class="tab-content">
+                            <!-- TAB PANEL -->
+                            <div class="tab-pane fade in active" id="general-information" data-animation="fadeInUp" data-animation-delay="300">
+                                <div class="tab-pane-wrap">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Project
+                                                    <sup class="mandatory">*</sup></label>
+                                                <md-select ng-model="$ctrl.service_item.main_category_id" placeholder="Select Main Category" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedCategory($ctrl.service_item.main_category_id);$ctrl.service_item.sub_category_id=''" md-on-close="clearSearchTerm()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchMainCategory" type="search" placeholder="Search for a Main Category" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="Main Category List">
+                                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.main_category_list | filter:searchMainCategory">{{type.name}}</md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="main_category_id" value='{{$ctrl.service_item.main_category_id}}' class="required">
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>
+                                                    Version Number
+                                                    <sup class="mandatory">*</sup>
+                                                </label>
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project_version.code" name="code" placeholder="Enter Project Version Code" />
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>
+                                                    Description
+                                                    <sup class="mandatory">*</sup>
+                                                </label>
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project_version.name" name="name" placeholder="Enter Project Version Name" />
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>
+                                                    Discusstion Started Date
+                                                </label>
+                                                <div class="input-group date jvDatePicker" data-provide="datepicker">
+                                                    <input type="text" name="date" ng-model="$ctrl.jv.date" class="form-control" placeholder="Select Invoice Date" value="{{$ctrl.jv.date}}" />
+                                                    <div class="input-group-addon">
+                                                        <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                                    </div>
+                                                </div><!-- Input Group -->
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>
+                                                    Development Started Date
+                                                </label>
+                                                <div class="input-group date jvDatePicker" data-provide="datepicker">
+                                                    <input type="text" name="date" ng-model="$ctrl.jv.date" class="form-control" placeholder="Select Invoice Date" value="{{$ctrl.jv.date}}" />
+                                                    <div class="input-group-addon">
+                                                        <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                                    </div>
+                                                </div><!-- Input Group -->
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>
+                                                    Estimated End Date
+                                                </label>
+                                                <div class="input-group date jvDatePicker" data-provide="datepicker">
+                                                    <input type="text" name="date" ng-model="$ctrl.jv.date" class="form-control" placeholder="Select Invoice Date" value="{{$ctrl.jv.date}}" />
+                                                    <div class="input-group-addon">
+                                                        <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                                    </div>
+                                                </div><!-- Input Group -->
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>Status
+                                                    <sup class="mandatory">*</sup></label>
+                                                <md-select ng-model="$ctrl.service_item.main_category_id" placeholder="Select Main Category" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedCategory($ctrl.service_item.main_category_id);$ctrl.service_item.sub_category_id=''" md-on-close="clearSearchTerm()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchMainCategory" type="search" placeholder="Search for a Main Category" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="Main Category List">
+                                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.main_category_list | filter:searchMainCategory">{{type.name}}</md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="main_category_id" value='{{$ctrl.service_item.main_category_id}}' class="required">
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>
+                                                    Active Status
+                                                    <sup class="mandatory">*</sup>
+                                                </label>
+                                                <div class="tab-switch">
+                                                    <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                                        {{ $ctrl.switch_value }}
+                                                    </md-switch>
+                                                    <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
+                                                </div>
+                                            </div><!-- Form Group -->
+                                        </div><!-- Column -->
+                                        <div class="tab-pane-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button type="submit" id="submit" class="btn btn-primary">
+                                                        Submit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div><!-- Tab Footer -->
+                                    </div><!-- Row -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+                            <div class="tab-pane fade" id="versions" data-animation="fadeInUp" data-animation-delay="300">
+                                <div class="tab-pane-wrap">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>
+                                                    Number
+                                                    <sup class="mandatory">*</sup>
+                                                </label>
+                                                <input type="text" class="form-control" ng-model="$ctrl.address.address_line1" name="address_line1" placeholder="Enter Address Line 1" />
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="tab-pane-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <a class="btn btn-secondary btn-prev">
+                                                        Previous
+                                                    </a>
+                                                    <button type="submit" id="submit" class="btn btn-primary">
+                                                        Submit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div><!-- Tab Footer -->
+                                    </div><!-- Row -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+                        </div><!-- Tab Content -->
+                    </div><!-- Tab Form Body -->
+                </div><!-- Tab Form Wrap -->
+            </div><!-- Page Form -->
+        </form>
+    </div><!-- Page Main Content -->
+</div><!-- Content Wrap -->
