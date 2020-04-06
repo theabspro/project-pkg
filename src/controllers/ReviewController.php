@@ -2,7 +2,7 @@
 
 namespace Abs\ProjectPkg;
 use Abs\CompanyPkg\Company;
-use Abs\ProjectVerisonPkg\ProjectVerison;
+use Abs\ReviewPkg\Review;
 use App\Http\Controllers\Controller;
 use Auth;
 use Carbon\Carbon;
@@ -11,14 +11,14 @@ use Illuminate\Http\Request;
 use Validator;
 use Yajra\Datatables\Datatables;
 
-class ProjectVerisonController extends Controller {
+class ReviewController extends Controller {
 
 	public function __construct() {
 		$this->data['theme'] = config('custom.theme');
 	}
 
-	public function getProjectVerisonList(Request $request) {
-		$project_list = ProjectVerison::withTrashed()
+	public function getReviewList(Request $request) {
+		$project_list = Review::withTrashed()
 			->select(
 				'projects.id',
 				'projects.code',
@@ -54,7 +54,7 @@ class ProjectVerisonController extends Controller {
 						<img src="' . $edit_img . '" alt="View" class="img-responsive">
 					</a>
 					<a href="javascript:;" data-toggle="modal" data-target="#delete_project"
-					onclick="angular.element(this).scope().deleteProjectVerison(' . $project_list->id . ')" dusk = "delete-btn" title="Delete">
+					onclick="angular.element(this).scope().deleteReview(' . $project_list->id . ')" dusk = "delete-btn" title="Delete">
 					<img src="' . $delete_img . '" alt="delete" class="img-responsive">
 					</a>
 					';
@@ -62,12 +62,12 @@ class ProjectVerisonController extends Controller {
 			->make(true);
 	}
 
-	public function getProjectVerisonFormData(Request $r) {
+	public function getReviewFormData(Request $r) {
 		if (!$r->id) {
-			$project = new ProjectVerison;
+			$project = new Review;
 			$action = 'Add';
 		} else {
-			$project = ProjectVerison::withTrashed()->find($r->id);
+			$project = Review::withTrashed()->find($r->id);
 			$action = 'Edit';
 		}
 		$this->data['company_list'] = $company_list = Collect(Company::select('id', 'name')->get())->prepend(['id' => '', 'name' => 'Select Company']);
@@ -77,21 +77,21 @@ class ProjectVerisonController extends Controller {
 		return response()->json($this->data);
 	}
 
-	public function saveProjectVerison(Request $request) {
+	public function saveReview(Request $request) {
 		// dd($request->all());
 		try {
 			$error_messages = [
-				'code.required' => 'ProjectVerison Code is Required',
+				'code.required' => 'Review Code is Required',
 				'code.max' => 'Code Maximum 191 Characters',
 				'code.min' => 'Code Minimum 3 Characters',
-				'code.unique' => 'ProjectVerison Code is already taken',
-				'name.required' => 'ProjectVerison Name is Required',
+				'code.unique' => 'Review Code is already taken',
+				'name.required' => 'Review Name is Required',
 				'name.max' => 'Name Maximum 191 Characters',
 				'name.min' => ' Name Minimum 3 Characters',
-				'name.unique' => 'ProjectVerison Name is already taken',
+				'name.unique' => 'Review Name is already taken',
 				'short_name.max' => 'Short Name Maximum 191 Characters',
 				'short_name.min' => 'Short Name Minimum 3 Characters',
-				'short_name.unique' => 'ProjectVerison Short Name is already taken',
+				'short_name.unique' => 'Review Short Name is already taken',
 				'description.max' => 'Description Maximum 191 Characters',
 			];
 			$validator = Validator::make($request->all(), [
@@ -120,12 +120,12 @@ class ProjectVerisonController extends Controller {
 
 			DB::beginTransaction();
 			if (!$request->id) {
-				$project = new ProjectVerison;
+				$project = new Review;
 				$project->created_by_id = Auth::user()->id;
 				$project->created_at = Carbon::now();
 				$project->updated_at = NULL;
 			} else {
-				$project = ProjectVerison::withTrashed()->find($request->id);
+				$project = Review::withTrashed()->find($request->id);
 				$project->updated_by_id = Auth::user()->id;
 				$project->updated_at = Carbon::now();
 			}
@@ -141,17 +141,17 @@ class ProjectVerisonController extends Controller {
 			$project->save();
 			DB::commit();
 			if (!($request->id)) {
-				return response()->json(['success' => true, 'message' => ['ProjectVerison Details Added Successfully']]);
+				return response()->json(['success' => true, 'message' => ['Review Details Added Successfully']]);
 			} else {
-				return response()->json(['success' => true, 'message' => ['ProjectVerison Details Updated Successfully']]);
+				return response()->json(['success' => true, 'message' => ['Review Details Updated Successfully']]);
 			}
 		} catch (Exceprion $e) {
 			DB::rollBack();
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
-	public function deleteProjectVerison($id) {
-		$delete_status = ProjectVerison::withTrashed()->where('id', $id)->forceDelete();
+	public function deleteReview($id) {
+		$delete_status = Review::withTrashed()->where('id', $id)->forceDelete();
 		if ($delete_status) {
 			return response()->json(['success' => true]);
 		}

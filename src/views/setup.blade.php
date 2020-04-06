@@ -48,6 +48,28 @@
 	        title: 'View Project Version',
 	    }).
 
+	    //MODULES
+	    when('/project-pkg/module/card-list', {
+	        template: '<module-card-list></module-card-list>',
+	        title: 'Modules Card List',
+	    }).
+	    when('/project-pkg/module/list', {
+	        template: '<module-list></module-list>',
+	        title: 'Modules',
+	    }).
+	    when('/project-pkg/module/add', {
+	        template: '<module-form></module-form>',
+	        title: 'Add Module',
+	    }).
+	    when('/project-pkg/module/edit/:id', {
+	        template: '<module-form></module-form>',
+	        title: 'Edit Module',
+	    }).
+	    when('/project-pkg/module/view/:id', {
+	        template: '<module-view></module-view>',
+	        title: 'View Module',
+	    }).
+
 	    //TASKS
 	    when('/project-pkg/task/card-list', {
 	        template: '<task-card-list></task-card-list>',
@@ -80,6 +102,11 @@
     var project_version_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/form.html')}}";
     var project_version_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/view.html')}}";
 
+    var module_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/card-list.html')}}";
+    var module_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/list.html')}}";
+    var module_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/form.html')}}";
+    var module_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/view.html')}}";
+
 
     var task_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/card-list.html')}}";
     var task_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/list.html')}}";
@@ -92,4 +119,5 @@
 </script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>
