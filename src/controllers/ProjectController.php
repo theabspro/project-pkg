@@ -39,6 +39,12 @@ class ProjectController extends Controller {
 					$query->where('projects.name', 'LIKE', '%' . $request->project_name . '%');
 				}
 			})
+			->where(function ($query) use ($request) {
+				if (!empty($request->short_name)) {
+					$query->where('projects.short_name', 'LIKE', '%' . $request->short_name . '%');
+				}
+			})
+
 			->orderby('projects.id', 'desc');
 
 		return Datatables::of($project_list)
@@ -78,19 +84,19 @@ class ProjectController extends Controller {
 	}
 
 	public function saveProject(Request $request) {
-		// dd($request->all());
+		//dd($request->all());
 		try {
 			$error_messages = [
 				'code.required' => 'Project Code is Required',
-				'code.max' => 'Code Maximum 191 Characters',
-				'code.min' => 'Code Minimum 3 Characters',
+				'code.max' => 'Project Code Maximum 191 Characters',
+				'code.min' => ' Project Code Minimum 3 Characters',
 				'code.unique' => 'Project Code is already taken',
 				'name.required' => 'Project Name is Required',
-				'name.max' => 'Name Maximum 191 Characters',
-				'name.min' => ' Name Minimum 3 Characters',
+				'name.max' => 'Project Name Maximum 191 Characters',
+				'name.min' => 'Project Name Minimum 3 Characters',
 				'name.unique' => 'Project Name is already taken',
-				'short_name.max' => 'Short Name Maximum 191 Characters',
-				'short_name.min' => 'Short Name Minimum 3 Characters',
+				'short_name.max' => 'Project Short Name Maximum 191 Characters',
+				'short_name.min' => 'Project Short Name Minimum 3 Characters',
 				'short_name.unique' => 'Project Short Name is already taken',
 				'description.max' => 'Description Maximum 191 Characters',
 			];
@@ -108,6 +114,7 @@ class ProjectController extends Controller {
 					'unique:projects,name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
 				],
 				'short_name' => [
+					'nullable',
 					'max:191',
 					'min:3',
 					'unique:projects,short_name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
@@ -150,10 +157,18 @@ class ProjectController extends Controller {
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
-	public function deleteProject($id) {
-		$delete_status = Project::withTrashed()->where('id', $id)->forceDelete();
-		if ($delete_status) {
-			return response()->json(['success' => true]);
+	public function deleteProject(Request $request) {
+		DB::beginTransaction();
+		try {
+			$delete_project = Project::withTrashed()->where('id', $request->id)->forceDelete();
+			DB::commit();
+			if ($delete_project) {
+				return response()->json(['success' => true]);
+			}
+
+		} catch (Exception $e) {
+			DB::rollBack();
+			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
 }

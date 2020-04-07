@@ -45,7 +45,10 @@ app.component('projectList', {
                 type: "GET",
                 dataType: "json",
                 data: function(d) {
-                    d.name = $('#project_name').val();
+                    d.project_name = $('#project_name').val();
+                    d.project_code = $('#project_code').val();
+                    d.short_name = $('#short_name').val();
+                    // alert(d.short_name);
                     d.status = $('#status').val();
                 },
             },
@@ -76,9 +79,10 @@ app.component('projectList', {
             $('#projects_list').DataTable().search('').draw();
         }
 
-        var dataTables = $('#projects_list').dataTable();
+        // var dataTables = $('#projects_list').DataTable();
         $("#search_project").keyup(function() {
-            dataTables.fnFilter(this.value);
+            //alert(this.value);
+            dataTable.draw(this.value);
         });
 
         //DELETE
@@ -86,17 +90,18 @@ app.component('projectList', {
             $('#project_id').val($id);
         }
         $scope.deleteConfirm = function() {
-            $id = $('#project_id').val();
+            id = $('#project_id').val();
             $http.get(
                 laravel_routes['deleteProject'], {
                     params: {
-                        id: $id,
+                        id: id,
                     }
                 }
             ).then(function(response) {
                 if (response.data.success) {
                     custom_noty('success', 'Project Deleted Successfully');
-                    $('#projects_list').DataTable().ajax.reload(function(json) {});
+                    dataTable.ajax.reload(function(json) {});
+                    //$('#projects_list').DataTable().ajax.reload(function(json) {});
                     $location.path('/project-pkg/project/list');
                 }
             });
@@ -120,20 +125,35 @@ app.component('projectList', {
                 $mdSelect.hide();
             }
         });
-
-        $('#project_name').on('keyup', function() {
-            dataTables.fnFilter();
+        $('#project_code').keyup(function() {
+            console.log('code');
+            dataTable.draw();
         });
+
+        /*$('#project_code').on('keyup', function() {
+            console.log('code');
+            dataTables.fnFilter();
+        });*/
+        $('#project_name').on('keyup', function() {
+            console.log('name');
+            //dataTable.fnFilter();
+            dataTable.draw();
+        });
+        $('#short_name').on('keyup', function() {
+            dataTable.draw();
+        });
+
         $scope.onSelectedStatus = function(val) {
             $("#status").val(val);
-            dataTables.fnFilter();
+            dataTable.draw();
         }
         $scope.reset_filter = function() {
             $("#project_name").val('');
+            $("#project_code").val('');
+            $("#short_name").val('');
             $("#status").val('');
-            dataTables.fnFilter();
+            dataTable.draw();
         }
-
         $rootScope.loading = false;
     }
 });
@@ -188,7 +208,7 @@ app.component('projectForm', {
                     maxlength: 64,
                 },
                 'short_name': {
-                    required: true,
+                    //required: true,
                     minlength: 3,
                     maxlength: 64,
                 },
