@@ -28,7 +28,7 @@ app.component('projectVersionCardList', {
 
         $scope.addTask = function(project_version) {
             $('#project-version-form-modal').modal('show');
-            console.log(project - version);
+            console.log(project_version);
         }
 
         //DELETE
@@ -76,7 +76,7 @@ app.component('projectVersionList', {
             console.log(response.data);
             self.extras = response.data.extras;
             $rootScope.loading = false;
-             //console.log(self.extras);
+            //console.log(self.extras);
         });
         var table_scroll;
         var dataTable;
@@ -227,32 +227,32 @@ app.component('projectVersionList', {
             }, 900);
         }
         $('body').on('click', '.applyBtn', function() { //alert('sd');
-             setTimeout(function() {
-                 dataTable.draw();
-             }, 900);
-         });
-         $('body').on('click', '.cancelBtn', function() { //alert('sd');
-             setTimeout(function() {
-                 dataTable.draw();
-             }, 900);
-         });
+            setTimeout(function() {
+                dataTable.draw();
+            }, 900);
+        });
+        $('body').on('click', '.cancelBtn', function() { //alert('sd');
+            setTimeout(function() {
+                dataTable.draw();
+            }, 900);
+        });
 
-         $('.align-left.daterange').daterangepicker({
-             autoUpdateInput: false,
-             "opens": "left",
-             locale: {
-                 cancelLabel: 'Clear',
-                 format: "DD-MM-YYYY"
-             }
-         });
+        $('.align-left.daterange').daterangepicker({
+            autoUpdateInput: false,
+            "opens": "left",
+            locale: {
+                cancelLabel: 'Clear',
+                format: "DD-MM-YYYY"
+            }
+        });
 
-         $('.daterange').on('apply.daterangepicker', function(ev, picker) {
-             $(this).val(picker.startDate.format('DD-MM-YYYY') + ' to ' + picker.endDate.format('DD-MM-YYYY'));
-         });
+        $('.daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD-MM-YYYY') + ' to ' + picker.endDate.format('DD-MM-YYYY'));
+        });
 
-         $('.daterange').on('cancel.daterangepicker', function(ev, picker) {
-             $(this).val('');
-         });
+        $('.daterange').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
         $scope.reset_filter = function() {
             $("#number").val('');
             $("#project_id").val('');
@@ -286,7 +286,8 @@ app.component('projectVersionForm', {
                     id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
                 }
             }
-        ).then(function(response) { console.log(response.data);
+        ).then(function(response) {
+            console.log(response.data);
             self.project_version = response.data.project_version;
             self.extras = response.data.extras;
             self.action = response.data.action;

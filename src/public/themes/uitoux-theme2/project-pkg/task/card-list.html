@@ -120,17 +120,17 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <ul class="list-group">
-                                    <li class="list-group-item list-group-item-success" ng-click="addTask({'employee':employee})">
-                                        <span class="label label-default">VIMS-V2.1</span>
-                                        <span class="label label-primary">EH : 3.5 Hrs</span>
-                                        <span class="label label-success">AH : 3.5 Hrs</span>
-                                        <span class="label label-danger">Bug</span>
-                                        <span class="label label-info">Employee Master</span>
+                                <ul class="list-group" dnd-list="employee.tasks">
+                                    <li ng-repeat="(key, task) in employee.tasks" class="list-group-item list-group-item-success" ng-click="addTask({'employee':employee})" dnd-draggable="task" dnd-effect-allowed="move" dnd-moved="employee.tasks.splice($index, 1)">
+                                        <span class="label label-default">{{task.version}}</span>
+                                        <span class="label label-primary">EH : {{task.eh}} Hrs</span>
+                                        <span class="label label-success">AH : {{task.ah}} Hrs</span>
+                                        <span class="label label-danger">{{task.type}}</span>
+                                        <span class="label label-info">{{task.module_name}}</span>
                                         <br />
-                                        TSK003 : Page crashed during save
+                                        {{task.number}} : {{task.subject}}
                                     </li>
-                                    <li class="list-group-item list-group-item-info">
+                                    <!--                                     <li class="list-group-item list-group-item-info">
                                         <span class="label label-default">JVA-V1.0</span>
                                         <span class="label label-primary">EH : 4.5 Hrs</span>
                                         <span class="label label-success">AH : 6.0 Hrs</span>
@@ -147,7 +147,7 @@
                                         <span class="label label-info">Project Management</span>
                                         <br />
                                         TSK002 : call with API development team
-                                    </li>
+                                    </li> -->
                                 </ul>
                                 <div class="panel-footer">
                                     Tasks : 8 / EH : 8 / AH : 8.5

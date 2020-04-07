@@ -22,7 +22,6 @@ app.component('taskCardList', {
             if (!response.data.success) {
                 return;
             }
-
             self.employees = response.data.employees;
         });
 

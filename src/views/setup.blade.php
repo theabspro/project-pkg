@@ -48,28 +48,6 @@
 	        title: 'View Project Version',
 	    }).
 
-	    //MODULES
-	    when('/project-pkg/module/card-list', {
-	        template: '<module-card-list></module-card-list>',
-	        title: 'Modules Card List',
-	    }).
-	    when('/project-pkg/module/list', {
-	        template: '<module-list></module-list>',
-	        title: 'Modules',
-	    }).
-	    when('/project-pkg/module/add', {
-	        template: '<module-form></module-form>',
-	        title: 'Add Module',
-	    }).
-	    when('/project-pkg/module/edit/:id', {
-	        template: '<module-form></module-form>',
-	        title: 'Edit Module',
-	    }).
-	    when('/project-pkg/module/view/:id', {
-	        template: '<module-view></module-view>',
-	        title: 'View Module',
-	    }).
-
 	    //TASKS
 	    when('/project-pkg/task/card-list', {
 	        template: '<task-card-list></task-card-list>',

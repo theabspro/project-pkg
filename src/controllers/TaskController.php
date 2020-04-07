@@ -21,15 +21,35 @@ class TaskController extends Controller {
 	public function getTasks(Request $request) {
 		$employees = Employee::with([
 			'user',
-			'tasks',
+			// 'tasks',
 		])->company()->get();
-		// foreach ($employees as $employee) {
-		// 	$tasks = Employee::
-		// 		join('users as u', 'u.entity_id', )
-		// 		->leftJoin('tasks as t', 't.assigned_to_id', 'u.id')
-		// 		->where('u.user_type_id', 1)
-		// 		->get();
-		// }
+		foreach ($employees as $employee) {
+			$tasks = [];
+			$tasks[0] = new Task();
+			$tasks[0]->version = 'VIMS-V2.1';
+			$tasks[0]->eh = '3.5';
+			$tasks[0]->ah = '3.5';
+			$tasks[0]->type = 'Bug';
+			$tasks[0]->module_name = 'Employee Master';
+			$tasks[0]->number = 'TSK003';
+			$tasks[0]->subject = 'Page crashed during save';
+
+			$tasks[1] = new Task();
+			$tasks[1]->version = 'VIMS-V2.1';
+			$tasks[1]->eh = '3.5';
+			$tasks[1]->ah = '3.5';
+			$tasks[1]->type = 'Bug';
+			$tasks[1]->module_name = 'Employee Master';
+			$tasks[1]->number = 'TSK003';
+			$tasks[1]->subject = 'Page crashed during save';
+
+			$employee->tasks = $tasks;
+			// $tasks = Employee::
+			// 	join('users as u', 'u.entity_id', )
+			// 	->leftJoin('tasks as t', 't.assigned_to_id', 'u.id')
+			// 	->where('u.user_type_id', 1)
+			// 	->get();
+		}
 
 		return response()->json([
 			'success' => true,
