@@ -24,7 +24,7 @@
     <!-- Page Main Content -->
     <div class="page-main-content form-content type2">
         <form id="form" autocomplete="off">
-            <input type="hidden" name="id" value="{{$ctrl.project-version.id}}">
+            <input type="hidden" name="id" value="{{$ctrl.project_version.id}}">
             <div class="page-tab-form pb-70">
                 <div class="tab-form-wrap">
                     <div class="tab-form-header">
@@ -51,15 +51,15 @@
                                             <div class="input-text form-group">
                                                 <label>Project
                                                     <sup class="mandatory">*</sup></label>
-                                                <md-select ng-model="$ctrl.service_item.main_category_id" placeholder="Select Main Category" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedCategory($ctrl.service_item.main_category_id);$ctrl.service_item.sub_category_id=''" md-on-close="clearSearchTerm()">
+                                                <md-select ng-model="$ctrl.project_version.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchTerm()">
                                                     <md-select-header class="demo-select-header">
-                                                        <input ng-model="searchMainCategory" type="search" placeholder="Search for a Main Category" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                        <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
-                                                    <md-optgroup label="Main Category List">
-                                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.main_category_list | filter:searchMainCategory">{{type.name}}</md-option>
+                                                    <md-optgroup label="project">
+                                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.extras.projects | filter:searchProject">{{project.code}}</md-option>
                                                     </md-optgroup>
                                                 </md-select>
-                                                <input type="hidden" name="main_category_id" value='{{$ctrl.service_item.main_category_id}}' class="required">
+                                                <input type="hidden" name="project_id" value='{{$ctrl.project_version.project_id}}' class="required">
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
@@ -68,7 +68,7 @@
                                                     Version Number
                                                     <sup class="mandatory">*</sup>
                                                 </label>
-                                                <input type="text" class="form-control required" ng-model="$ctrl.project_version.code" name="code" placeholder="Enter Project Version Code" />
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project_version.number" name="number" placeholder="Enter Project Version Number" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
@@ -77,16 +77,16 @@
                                                     Description
                                                     <sup class="mandatory">*</sup>
                                                 </label>
-                                                <input type="text" class="form-control required" ng-model="$ctrl.project_version.name" name="name" placeholder="Enter Project Version Name" />
+                                                <input type="text" class="form-control required" ng-model="$ctrl.project_version.description" name="description" placeholder="Enter Project Description" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>
-                                                    Discusstion Started Date
+                                                    Discussion Started Date
                                                 </label>
-                                                <div class="input-group date jvDatePicker" data-provide="datepicker">
-                                                    <input type="text" name="date" ng-model="$ctrl.jv.date" class="form-control" placeholder="Select Invoice Date" value="{{$ctrl.jv.date}}" />
+                                                <div class="input-group date projectVersionPicker" data-provide="datepicker">
+                                                    <input type="text" name="discussion_started_date" ng-model="$ctrl.project_version.discussion_started_date" class="form-control" placeholder="Select Discussion Start Date" value="{{$ctrl.project_version.discussion_started_date}}" />
                                                     <div class="input-group-addon">
                                                         <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
                                                     </div>
@@ -98,8 +98,8 @@
                                                 <label>
                                                     Development Started Date
                                                 </label>
-                                                <div class="input-group date jvDatePicker" data-provide="datepicker">
-                                                    <input type="text" name="date" ng-model="$ctrl.jv.date" class="form-control" placeholder="Select Invoice Date" value="{{$ctrl.jv.date}}" />
+                                                <div class="input-group date projectVersionPicker" data-provide="datepicker">
+                                                    <input type="text" name="development_started_date" ng-model="$ctrl.project_version.development_started_date" class="form-control" placeholder="Select Development Start Date" value="{{$ctrl.project_version.development_started_date}}" />
                                                     <div class="input-group-addon">
                                                         <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
                                                     </div>
@@ -111,8 +111,8 @@
                                                 <label>
                                                     Estimated End Date
                                                 </label>
-                                                <div class="input-group date jvDatePicker" data-provide="datepicker">
-                                                    <input type="text" name="date" ng-model="$ctrl.jv.date" class="form-control" placeholder="Select Invoice Date" value="{{$ctrl.jv.date}}" />
+                                                <div class="input-group date projectVersionPicker" data-provide="datepicker">
+                                                    <input type="text" name="estimated_end_date" ng-model="$ctrl.project_version.estimated_end_date" class="form-control" placeholder="Select Estimated End Date" value="{{$ctrl.project_version.estimated_end_date}}" />
                                                     <div class="input-group-addon">
                                                         <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
                                                     </div>
@@ -123,15 +123,15 @@
                                             <div class="input-text form-group">
                                                 <label>Status
                                                     <sup class="mandatory">*</sup></label>
-                                                <md-select ng-model="$ctrl.service_item.main_category_id" placeholder="Select Main Category" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedCategory($ctrl.service_item.main_category_id);$ctrl.service_item.sub_category_id=''" md-on-close="clearSearchTerm()">
+                                                <md-select ng-model="$ctrl.project_version.status_id" placeholder="Select Status" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchTerm()">
                                                     <md-select-header class="demo-select-header">
-                                                        <input ng-model="searchMainCategory" type="search" placeholder="Search for a Main Category" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                        <input ng-model="searchProjectStatus" type="search" placeholder="Search for a Status" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
-                                                    <md-optgroup label="Main Category List">
-                                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.main_category_list | filter:searchMainCategory">{{type.name}}</md-option>
+                                                    <md-optgroup label="project_status">
+                                                        <md-option ng-value="project_status.id" ng-repeat="project_status in $ctrl.extras.project_statuses | filter:searchProjectStatus">{{project_status.name}}</md-option>
                                                     </md-optgroup>
                                                 </md-select>
-                                                <input type="hidden" name="main_category_id" value='{{$ctrl.service_item.main_category_id}}' class="required">
+                                                <input type="hidden" name="status_id" value='{{$ctrl.project_version.status_id}}' class="required">
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
@@ -151,33 +151,6 @@
                                         <div class="tab-pane-footer">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <button type="submit" id="submit" class="btn btn-primary">
-                                                        Submit
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div><!-- Tab Footer -->
-                                    </div><!-- Row -->
-                                </div><!-- Tab Pane Wrap -->
-                            </div><!-- Tabe Pane -->
-                            <div class="tab-pane fade" id="versions" data-animation="fadeInUp" data-animation-delay="300">
-                                <div class="tab-pane-wrap">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="input-text form-group">
-                                                <label>
-                                                    Number
-                                                    <sup class="mandatory">*</sup>
-                                                </label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.address.address_line1" name="address_line1" placeholder="Enter Address Line 1" />
-                                            </div><!-- Feild -->
-                                        </div><!-- Column -->
-                                        <div class="tab-pane-footer">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <a class="btn btn-secondary btn-prev">
-                                                        Previous
-                                                    </a>
                                                     <button type="submit" id="submit" class="btn btn-primary">
                                                         Submit
                                                     </button>

@@ -70,94 +70,118 @@ app.component('projectVersionList', {
         //     return false;
         // }
         self.add_permission = self.hasPermission('add-project-version');
-        var table_scroll;
-        table_scroll = $('.page-main-content.list-page-content').height() - 37;
-        var dataTable = $('#project-version_list').DataTable({
-            "dom": cndn_dom_structure,
-            "language": {
-                // "search": "",
-                // "searchPlaceholder": "Search",
-                "lengthMenu": "Rows _MENU_",
-                "paginate": {
-                    "next": '<i class="icon ion-ios-arrow-forward"></i>',
-                    "previous": '<i class="icon ion-ios-arrow-back"></i>'
-                },
-            },
-            pageLength: 10,
-            processing: true,
-            stateSaveCallback: function(settings, data) {
-                localStorage.setItem('CDataTables_' + settings.sInstance, JSON.stringify(data));
-            },
-            stateLoadCallback: function(settings) {
-                var state_save_val = JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
-                if (state_save_val) {
-                    $('#search_project-version').val(state_save_val.search.search);
-                }
-                return JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
-            },
-            serverSide: true,
-            paging: true,
-            stateSave: true,
-            scrollY: table_scroll + "px",
-            scrollCollapse: true,
-            ajax: {
-                url: laravel_routes['getProjectList'],
-                type: "GET",
-                dataType: "json",
-                data: function(d) {
-                    d.name = $('#project-version_name').val();
-                    d.status = $('#status').val();
-                },
-            },
-
-            columns: [
-                { data: 'action', class: 'action', name: 'action', searchable: false },
-                { data: 'code', name: 'project-versions.code' },
-                { data: 'name', name: 'project-versions.name' },
-                { data: 'short_name', name: 'project-versions.short_name' },
-                { data: 'description', name: 'project-versions.description' },
-            ],
-            "infoCallback": function(settings, start, end, max, total, pre) {
-                $('#table_info').html(total)
-                $('.foot_info').html('Showing ' + start + ' to ' + end + ' of ' + max + ' entries')
-            },
-            rowCallback: function(row, data) {
-                $(row).addClass('highlight-row');
-            }
+        $http.get(
+            laravel_routes['getProjectVersionFilter'],
+        ).then(function(response) {
+            console.log(response.data);
+            self.extras = response.data.extras;
+            $rootScope.loading = false;
+             //console.log(self.extras);
         });
-        $('.dataTables_length select').select2();
+        var table_scroll;
+        var dataTable;
+        setTimeout(function() {
+            table_scroll = $('.page-main-content.list-page-content').height() - 37;
+            dataTable = $('#project_version_list').DataTable({
+                "dom": cndn_dom_structure,
+                "language": {
+                    // "search": "",
+                    // "searchPlaceholder": "Search",
+                    "lengthMenu": "Rows _MENU_",
+                    "paginate": {
+                        "next": '<i class="icon ion-ios-arrow-forward"></i>',
+                        "previous": '<i class="icon ion-ios-arrow-back"></i>'
+                    },
+                },
+                pageLength: 10,
+                processing: true,
+                stateSaveCallback: function(settings, data) {
+                    localStorage.setItem('CDataTables_' + settings.sInstance, JSON.stringify(data));
+                },
+                stateLoadCallback: function(settings) {
+                    var state_save_val = JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
+                    if (state_save_val) {
+                        $('#search_project_version').val(state_save_val.search.search);
+                    }
+                    return JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
+                },
+                serverSide: true,
+                paging: true,
+                ordering: false,
+                stateSave: true,
+                scrollY: table_scroll + "px",
+                scrollCollapse: true,
+                ajax: {
+                    url: laravel_routes['getProjectVerisonList'],
+                    type: "GET",
+                    dataType: "json",
+                    data: function(d) {
+                        d.number = $("#number").val();
+                        d.project_id = $("#project_id").val();
+                        d.status_id = $("#status_id").val();
+                        d.status = $("#status").val();
+                        d.discussion_started_date = $("#discussion_started_date").val();
+                        d.development_started_date = $("#development_started_date").val();
+                        d.estimated_end_date = $("#estimated_end_date").val();
+                    },
+                },
 
+                columns: [
+                    { data: 'action', class: 'action', name: 'action', searchable: false },
+                    { data: 'project_code', name: 'projects.code', searchable: false },
+                    { data: 'number', name: 'project_versions.number', searchable: true },
+                    { data: 'project_status', name: 'configs.name', searchable: false },
+                    { data: 'description', name: 'project_versions.description', searchable: true },
+                    { data: 'discussion_started_date', name: 'project_versions.discussion_started_date', searchable: false },
+                    { data: 'development_started_date', name: 'project_versions.development_started_date', searchable: false },
+                    { data: 'estimated_end_date', name: 'project_versions.estimated_end_date', searchable: false },
+                ],
+                "initComplete": function(settings, json) {
+                    $('.dataTables_length select').select2();
+                },
+                "infoCallback": function(settings, start, end, max, total, pre) {
+                    $('#table_info').html(total)
+                    $('.foot_info').html('Showing ' + start + ' to ' + end + ' of ' + max + ' entries')
+                },
+                rowCallback: function(row, data) {
+                    $(row).addClass('highlight-row');
+                }
+            });
+        }, 1000);
         $('.refresh_table').on("click", function() {
-            $('#project-versions_list').DataTable().ajax.reload();
+            $('#project_version_list').DataTable().ajax.reload();
         });
 
         $scope.clear_search = function() {
-            $('#search_project-version').val('');
-            $('#project-versions_list').DataTable().search('').draw();
+            $('#search_project_version').val('');
+            $('#project_version_list').DataTable().search('').draw();
         }
 
-        var dataTables = $('#project-versions_list').dataTable();
-        $("#search_project-version").keyup(function() {
-            dataTables.fnFilter(this.value);
+        $("#search_project_version").keyup(function() {
+            dataTable
+                .search(this.value)
+                .draw();
         });
 
         //DELETE
-        $scope.deleteProject = function($id) {
-            $('#project-version_id').val($id);
+        $scope.deleteProjectVerison = function($id) {
+            $('#project_version_id').val($id);
         }
         $scope.deleteConfirm = function() {
-            $id = $('#project-version_id').val();
+            $id = $('#project_version_id').val();
             $http.get(
-                laravel_routes['deleteProject'], {
+                laravel_routes['deleteProjectVerison'], {
                     params: {
                         id: $id,
                     }
                 }
             ).then(function(response) {
                 if (response.data.success) {
-                    custom_noty('success', 'Project Deleted Successfully');
-                    $('#project-versions_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('/project-pkg/project-version/list');
+                    custom_noty('success', 'Project Version Deleted Successfully');
+                    $('#project_version_list').DataTable().ajax.reload();
+                    $scope.$apply();
+                } else {
+                    custom_noty('error', response.data.error);
                 }
             });
         }
@@ -181,17 +205,63 @@ app.component('projectVersionList', {
             }
         });
 
-        $('#project-version_name').on('keyup', function() {
-            dataTables.fnFilter();
+        $('#number').on('keyup', function() {
+            dataTable.draw();
         });
-        $scope.onSelectedStatus = function(val) {
-            $("#status").val(val);
-            dataTables.fnFilter();
+        $scope.onSelectedProject = function(selected_project_id) {
+            setTimeout(function() {
+                $("#project_id").val(selected_project_id);
+                dataTable.draw();
+            }, 900);
         }
+        $scope.onSelectedProjectStatus = function(selected_status_id) {
+            setTimeout(function() {
+                $("#status_id").val(selected_status_id);
+                dataTable.draw();
+            }, 900);
+        }
+        $scope.onSelectedStatus = function(selected_status) {
+            setTimeout(function() {
+                $("#status").val(selected_status);
+                dataTable.draw();
+            }, 900);
+        }
+        $('body').on('click', '.applyBtn', function() { //alert('sd');
+             setTimeout(function() {
+                 dataTable.draw();
+             }, 900);
+         });
+         $('body').on('click', '.cancelBtn', function() { //alert('sd');
+             setTimeout(function() {
+                 dataTable.draw();
+             }, 900);
+         });
+
+         $('.align-left.daterange').daterangepicker({
+             autoUpdateInput: false,
+             "opens": "left",
+             locale: {
+                 cancelLabel: 'Clear',
+                 format: "DD-MM-YYYY"
+             }
+         });
+
+         $('.daterange').on('apply.daterangepicker', function(ev, picker) {
+             $(this).val(picker.startDate.format('DD-MM-YYYY') + ' to ' + picker.endDate.format('DD-MM-YYYY'));
+         });
+
+         $('.daterange').on('cancel.daterangepicker', function(ev, picker) {
+             $(this).val('');
+         });
         $scope.reset_filter = function() {
-            $("#project-version_name").val('');
+            $("#number").val('');
+            $("#project_id").val('');
+            $("#status_id").val('');
             $("#status").val('');
-            dataTables.fnFilter();
+            $("#discussion_started_date").val('');
+            $("#development_started_date").val('');
+            $("#estimated_end_date").val('');
+            dataTable.draw();
         }
 
         $rootScope.loading = false;
@@ -211,13 +281,14 @@ app.component('projectVersionForm', {
         self.angular_routes = angular_routes;
         $scope.theme = theme;
         $http.get(
-            laravel_routes['getProjectFormData'], {
+            laravel_routes['getProjectVerisonFormData'], {
                 params: {
                     id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
                 }
             }
-        ).then(function(response) {
+        ).then(function(response) { console.log(response.data);
             self.project_version = response.data.project_version;
+            self.extras = response.data.extras;
             self.action = response.data.action;
             $rootScope.loading = false;
             if (self.action == 'Edit') {
@@ -231,37 +302,41 @@ app.component('projectVersionForm', {
             }
         });
 
-        $("input:text:visible:first").focus();
+        // $("input:text:visible:first").focus();
+        /* Project-Version DatePicker*/
+        $('.projectVersionPicker').bootstrapDP({
+            format: "dd-mm-yyyy",
+            autoclose: "true",
+            todayHighlight: true,
+            // startDate: min_offset,
+            // endDate: max_offset
+        });
 
         var form_id = '#form';
         var v = jQuery(form_id).validate({
             ignore: '',
             rules: {
-                'code': {
+                'number': {
                     required: true,
                     minlength: 3,
-                    maxlength: 64,
+                    maxlength: 191,
                 },
-                'name': {
+                'project_id': {
                     required: true,
-                    minlength: 3,
-                    maxlength: 64,
-                },
-                'short_name': {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 64,
                 },
                 'description': {
                     minlength: 3,
                     maxlength: 255,
+                },
+                'status_id': {
+                    required: true,
                 },
             },
             submitHandler: function(form) {
                 let formData = new FormData($(form_id)[0]);
                 $('#submit').button('loading');
                 $.ajax({
-                        url: laravel_routes['saveProject'],
+                        url: laravel_routes['saveProjectVerison'],
                         method: "POST",
                         data: formData,
                         processData: false,
@@ -270,7 +345,7 @@ app.component('projectVersionForm', {
                     .done(function(res) {
                         if (res.success == true) {
                             custom_noty('success', res.message);
-                            $location.path('/project-version-pkg/project-version/list');
+                            $location.path('/project-pkg/project-version/list');
                             $scope.$apply();
                         } else {
                             if (!res.success == true) {
@@ -282,7 +357,7 @@ app.component('projectVersionForm', {
                                 custom_noty('error', errors);
                             } else {
                                 $('#submit').button('reset');
-                                $location.path('/project-version-pkg/project-version/list');
+                                $location.path('/project-pkg/project-version/list');
                                 $scope.$apply();
                             }
                         }

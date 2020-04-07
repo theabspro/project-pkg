@@ -19,7 +19,7 @@
                 <div class="page-header-content search-block">
                     <div class="search_filter">
                         <label>
-                            <input type="search" id="search_project" class="form-control" placeholder="Search" />
+                            <input type="search" id="search_project_version" class="form-control" placeholder="Search" autofocus />
                             <button class="btn-clear" ng-click="clear_search()">Clear</button>
                         </label>
                     </div><!-- Search Filter -->
@@ -54,7 +54,7 @@
     </div><!-- Page Main Content -->
 </div><!-- Content Wrap -->
 <!-- Filter Modal -->
-<div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade filter" id="project-version-filter-modal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -65,29 +65,88 @@
                 <div class="modal-form">
                     <div class="row">
                         <div class="col-md-6">
+                            <div class="input-text form-group">
+                                <label>Project</label>
+                                <md-select ng-model="$ctrl.project_version.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchProject()" ng-change="onSelectedProject($ctrl.project_version.project_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup label="project">
+                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.extras.projects | filter:searchProject">{{project.code}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="project_id" id="project_id" value="">
+                            </div><!-- Feild -->
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label>Project Version Name</label>
-                                <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Version Name" autocomplete="off">
+                                <label>Version Number</label>
+                                <input type="text" class="form-control" id="number" name="number" placeholder="Enter Version Number" autocomplete="off">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="input-text form-group">
+                                <label>Project Status</label>
+                                <md-select ng-model="$ctrl.project_version.status_id" placeholder="Select Status" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchProjectStatus()" ng-change="onSelectedProjectStatus($ctrl.project_version.status_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchProjectStatus" type="search" placeholder="Search for a Status" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup label="project_status">
+                                        <md-option ng-value="project_status.id" ng-repeat="project_status in $ctrl.extras.project_statuses | filter:searchProjectStatus">{{project_status.name}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="status_id" id="status_id" value="">
+                            </div>
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <md-select ng-model="$ctrl.status.id" placeholder="Select Status" md-on-close="clearSearchStatus()" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedStatus($ctrl.status.id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchStatus" type="search" placeholder="Search for a Status.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup>
+                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.status | filter:searchStatus">{{i.name}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="status" id="status" value="">
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Project Version Code</label>
-                                <input type="text" class="form-control" id="project_code" name="project_code" placeholder="Enter Project Version Code" autocomplete="off">
-                            </div><!-- Field -->
+                                <label>Discussion Started Date</label>
+                                <div class="input-group date">
+                                    <input class="form-control daterange align-left" placeholder="Select a Date Range" name="discussion_started_date" id="discussion_started_date" value="" autocomplete="off">
+                                    <span class="input-group-addon">
+                                        <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                    </span>
+                                </div><!-- Input Group -->
+                            </div><!-- Feild -->
                         </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Mobile Number</label>
-                                <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="Enter Mobile Number" autocomplete="off">
-                            </div><!-- Field -->
+                                <label>Development Started Date</label>
+                                <div class="input-group date">
+                                    <input class="form-control daterange align-left" placeholder="Select a Date Range" name="development_started_date" id="development_started_date" value="" autocomplete="off">
+                                    <span class="input-group-addon">
+                                        <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                    </span>
+                                </div><!-- Input Group -->
+                            </div><!-- Feild -->
                         </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
-                            </div><!-- Field -->
+                                <label>Estimated End Date</label>
+                                <div class="input-group date">
+                                    <input class="form-control daterange align-left" placeholder="Select a Date Range" name="estimated_end_date" id="estimated_end_date" value="" autocomplete="off">
+                                    <span class="input-group-addon">
+                                        <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                    </span>
+                                </div><!-- Input Group -->
+                            </div><!-- Feild -->
                         </div><!-- Column -->
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
                         </div>
@@ -98,7 +157,7 @@
     </div><!-- Modal Dialog -->
 </div><!-- Modal -->
 <!-- Modal -->
-<div class="modal fade alert-modal failure" id="delete_project" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade alert-modal failure" id="delete_project_version" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -107,7 +166,7 @@
             <div class="modal-body">
                 <h5>Delete</h5>
                 <p>You can’t retrive the data again, Are you sure you want to delete? </p>
-                <input type="hidden" name="project_id" id="project_id" value="">
+                <input type="hidden" name="project_version_id" id="project_version_id" value="">
                 <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
                 <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
             </div>
