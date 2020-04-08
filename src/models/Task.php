@@ -4,6 +4,8 @@ namespace Abs\ProjectPkg;
 
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
+use Abs\ProjectPkg\ProjectVersion;
+use Abs\ModulePkg\Module;
 use App\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -38,6 +40,41 @@ class Task extends Model {
 	public function tl() {
 		return $this->belongsTo('App\User', 'tl_id');
 	}
+	public function setDateAttribute($value) {
+		return $this->attributes['date'] = !empty($value) ? date('Y-m-d', strtotime($value)) : date('Y-m-d');
+	}
+
+	public function getDateAttribute($value) {
+		return !empty($value) ? date('d-m-Y', strtotime($value)) : '';
+	}
+
+	public static function getProjectVersion($id) {
+		//dd($id);
+		$data = [];
+		$project_option = new ProjectVersion;
+		$project_option->name = 'Select ProjectVersion';
+		$project_option->id = NULL;
+		$data['project_version_list'] = $project_version_list = ProjectVersion::select('number as name', 'id')->where('project_id', $id)->orderby('name', 'asc')->get();
+		$data['project_version_list'] = $project_version_list->prepend($project_option);
+
+		$data['module_list'] = $module_option = new Module;
+		$data['module_list'] = $module_option->name = 'Select Module';
+		$data['module_list'] = $module_option->id = NULL;
+
+		return $data;
+	}
+
+	public static function getProjectModule($id) {
+		$data = [];
+		$module_option = new Module;
+		$module_option->name = 'Select Module';
+		$module_option->id = NULL;
+		$data['module_list'] = $module_list = Module::select('name', 'id')->where('project_version_id', $id)->orderby('name', 'asc')->get();
+		$data['module_list'] = $module_list->prepend($module_option);
+
+		return $data;
+	}
+
 
 	public static function createFromObject($record_data) {
 

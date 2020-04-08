@@ -19,4 +19,11 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/task/save', 'TaskController@saveTask')->name('saveTask');
 	Route::get('/task/delete/{id}', 'TaskController@deleteTask')->name('deleteTask');
 
+	//Get Project Version List
+	Route::post('task/get-project-version-list/', 'TaskController@getProjectVersionList')->name('getProjectVersionList');
+	
+	//Get Project Module List
+	Route::post('task/get-project-module-list/', 'TaskController@getProjectModuleList')->name('getProjectModuleList');
+
+
 });
