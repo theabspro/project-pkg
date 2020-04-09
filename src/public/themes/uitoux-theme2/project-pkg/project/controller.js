@@ -55,9 +55,9 @@ app.component('projectList', {
 
             columns: [
                 { data: 'action', class: 'action', name: 'action', searchable: false },
-                { data: 'code', name: 'projects.code' },
-                { data: 'name', name: 'projects.name' },
                 { data: 'short_name', name: 'projects.short_name' },
+                { data: 'name', name: 'projects.name' },
+                { data: 'code', name: 'projects.code' },
                 { data: 'description', name: 'projects.description' },
             ],
             "infoCallback": function(settings, start, end, max, total, pre) {

@@ -56,7 +56,8 @@ class ProjectVersionController extends Controller {
 		$project_versions = ProjectVersion::withTrashed()
 			->select(
 				'project_versions.*',
-				'projects.code as project_code',
+				DB::raw('projects.short_name as project_code'),
+				// DB::raw('CONCAT(projects.short_name," / ",projects.code) as project_code'),
 				'statuses.name as project_status',
 				DB::raw('IF(project_versions.deleted_at IS NULL,"Active","Inactive") as status')
 			)
