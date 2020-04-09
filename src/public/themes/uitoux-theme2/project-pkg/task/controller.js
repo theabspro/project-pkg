@@ -1,5 +1,240 @@
-app.component('taskCardList', {
-    templateUrl: task_card_list_template_url,
+app.component('moduleDeveloperWiseTasks', {
+    templateUrl: module_developer_wise_tasks_template_url,
+    controller: function($http, $location, HelperService, $scope, $route, $routeParams, $rootScope, $location, $mdSelect, $element) {
+        $scope.loading = true;
+        var self = this;
+        $('#search_task').focus();
+        self.hasPermission = HelperService.hasPermission;
+        if (!self.hasPermission('tasks')) {
+            window.location = "#!/page-permission-denied";
+            return false;
+        }
+        self.add_permission = self.hasPermission('add-task');
+        self.theme = theme;
+
+        self.show_module = false;
+        self.show_assigned_to = true;
+
+        $http.get(
+            laravel_routes['getModuleDeveloperWiseTasks'], {
+                params: {
+                    project_version_id: typeof($routeParams.project_version_id) == 'undefined' ? null : $routeParams.project_version_id,
+                }
+            }
+        ).then(function(response) {
+            if (!response.data.success) {
+                showErrorNoty(response);
+                return;
+            }
+            self.modules = response.data.modules;
+            self.extras = response.data.extras;
+            self.project_version = response.data.project_version;
+
+            console.log(self.extras);
+        });
+
+
+        $scope.addTask = function(task) {
+            $('#task-form-modal').modal('show');
+            self.task = task;
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1;
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            today = dd + '-' + mm + '-' + yyyy;
+            self.task.date = today;
+            if (self.project_version) {
+                self.task.project_version = self.project_version;
+                self.task.project = self.project_version.project;
+                self.show_project_version = true;
+                self.show_project = true;
+            } else {
+                self.show_project_version = true;
+                self.show_project = true;
+            }
+
+            if (self.task.assigned_to) {
+                // self.show_assigned_to = false;
+            }
+            console.log(task);
+        }
+
+        $http.get(
+            laravel_routes['getTaskFormData']
+        ).then(function(response) {
+            if (!response.data.success) {
+                alert(response.data.users_list);
+                return;
+            }
+            console.log(response.data.users_list);
+            self.task = response.data.task;
+            self.users_list = response.data.users_list;
+            self.project_list = response.data.project_list;
+            self.task_type_list = response.data.task_type_list;
+            self.task_status_list = response.data.task_status_list;
+        });
+
+        $scope.onSelectedProject = function(id) {
+            $http.post(
+                laravel_routes['getProjectVersionList'], {
+                    project_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                self.project_version_list = response.data.project_version_list;
+            });
+        }
+
+        $scope.onSelectedProjectVersion = function(id) {
+            $http.post(
+                laravel_routes['getProjectModuleList'], {
+                    version_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                self.module_list = response.data.module_list;
+            });
+        }
+        $("input:text:visible:first").focus();
+
+        var task_form = '#task_form';
+        var v = jQuery(task_form).validate({
+            ignore: '',
+            rules: {
+                'date': {
+                    // required: true,
+                },
+                'assigned_to_id': {
+                    // required: true,
+                },
+                'project_id': {
+                    required: true,
+                },
+                'project_version_id': {
+                    required: true,
+                },
+                'type_id': {
+                    required: true,
+                },
+                'subject': {
+                    required: true,
+                },
+                'status_id': {
+                    required: true,
+                },
+                'estimated_hours': {
+                    required: true,
+                    number: true,
+                },
+                'actual_hours': {
+                    // required: true,
+                    number: true,
+                },
+            },
+            submitHandler: function(form) {
+                let formData = new FormData($(task_form)[0]);
+                $('#submit').button('loading');
+                $.ajax({
+                        url: laravel_routes['saveTask'],
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                    })
+                    .done(function(res) {
+                        $('#submit').button('reset');
+                        if (!res.success) {
+                            showErrorNoty(res);
+                            return;
+                        }
+                        $('#task-form-modal').modal('hide');
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                        $route.reload();
+                        $scope.$apply();
+
+                        //ISSUE : SARAVANAN
+                        // if (res.success == true) {
+                        //     custom_noty('success', res.message);
+                        //     $route.reload();
+                        //     $scope.$apply();
+                        // } else {
+                        //     if (!res.success == true) {
+                        //         $('#submit').button('reset');
+                        //         var errors = '';
+                        //         for (var i in res.errors) {
+                        //             errors += '<li>' + res.errors[i] + '</li>';
+                        //         }
+                        //         custom_noty('error', errors);
+                        //     } else {
+                        //         $('#submit').button('reset');
+                        //         $('#task-form-modal').modal('hide');
+                        //         $route.reload();
+                        //         $scope.$apply();
+                        //     }
+                        // }
+                    })
+                    .fail(function(xhr) {
+                        $('#submit').button('reset');
+                        custom_noty('error', 'Something went wrong at server');
+                    });
+            }
+        });
+
+        //DELETE
+        $scope.deleteTask = function(task, $event) {
+            $event.stopPropagation();
+
+            $rootScope.loading = true;
+            $http.get(
+                laravel_routes['deleteTask'], {
+                    params: {
+                        id: task.id,
+                    }
+                }
+            ).then(function(response) {
+                $rootScope.loading = false;
+                if (response.data.success) {
+                    custom_noty('success', 'Task Deleted Successfully');
+                    $route.reload();
+                }
+            });
+            $('#task_id').val(task.id);
+        }
+
+        $scope.deleteConfirm = function() {
+            $id = $('#task_id').val();
+            $rootScope.loading = true;
+            $http.get(
+                laravel_routes['deleteTask'], {
+                    params: {
+                        id: $id,
+                    }
+                }
+            ).then(function(response) {
+                $rootScope.loading = false;
+                if (response.data.success) {
+                    custom_noty('success', 'Task Deleted Successfully');
+                    $route.reload();
+                }
+            });
+        }
+
+        $rootScope.loading = false;
+    }
+});
+//------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------
+
+app.component('userWiseTasks', {
+    templateUrl: user_wise_tasks_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element) {
         $scope.loading = true;
         var self = this;
@@ -13,16 +248,17 @@ app.component('taskCardList', {
         self.theme = theme;
 
         $http.get(
-            laravel_routes['getTasks'], {
+            laravel_routes['getUsetWiseTasks'], {
                 params: {
                     // id: $id,
                 }
             }
         ).then(function(response) {
             if (!response.data.success) {
+                showErrorNoty(response);
                 return;
             }
-            self.employees = response.data.employees;
+            self.users = response.data.users;
         });
 
         $http.get(

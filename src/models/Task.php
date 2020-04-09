@@ -3,9 +3,9 @@
 namespace Abs\ProjectPkg;
 
 use Abs\HelperPkg\Traits\SeederTrait;
-use App\Company;
-use Abs\ProjectPkg\ProjectVersion;
 use Abs\ModulePkg\Module;
+use Abs\ProjectPkg\ProjectVersion;
+use App\Company;
 use App\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,6 +32,18 @@ class Task extends Model {
 		'status_id',
 		'remarks',
 	];
+
+	public function module() {
+		return $this->belongsTo('Abs\ModulePkg\Module');
+	}
+
+	public function status() {
+		return $this->belongsTo('Abs\StatusPkg\Status');
+	}
+
+	public function type() {
+		return $this->belongsTo('Abs\ProjectPkg\TaskType', 'type_id');
+	}
 
 	public function assignedTo() {
 		return $this->belongsTo('App\User', 'assigned_to_id');
@@ -74,7 +86,6 @@ class Task extends Model {
 
 		return $data;
 	}
-
 
 	public static function createFromObject($record_data) {
 

@@ -49,9 +49,13 @@
 	    }).
 
 	    //TASKS
-	    when('/project-pkg/task/card-list', {
-	        template: '<task-card-list></task-card-list>',
-	        title: 'Task Card List',
+	    when('/project-pkg/task/module-developer-wise/:project_version_id?', {
+	        template: '<module-developer-wise-tasks></module-developer-wise-tasks>',
+	        title: 'Task / Module-Developer Wise',
+	    }).
+	    when('/project-pkg/task/user-wise', {
+	        template: '<user-wise-tasks></user-wise-tasks>',
+	        title: 'Task - User Wise',
 	    }).
 	    when('/project-pkg/task/list', {
 	        template: '<task-list></task-list>',
@@ -86,7 +90,8 @@
     var module_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/view.html')}}";
 
 
-    var task_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/card-list.html')}}";
+    var module_developer_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/module-developer-wise.html')}}";
+    var user_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/user-wise.html')}}";
     var task_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/list.html')}}";
     var task_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/form.html')}}";
     var task_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/view.html')}}";

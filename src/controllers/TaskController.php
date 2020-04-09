@@ -1,13 +1,15 @@
 <?php
 
 namespace Abs\ProjectPkg;
-use Abs\CompanyPkg\Company;
-use Abs\EmployeePkg\Employee;
-use Abs\ProjectPkg\Task;
-use Abs\ProjectPkg\Project;
 use Abs\BasicPkg\Config;
-use App\User;
+use Abs\CompanyPkg\Company;
+use Abs\ModulePkg\Module;
+use Abs\ProjectPkg\Project;
+use Abs\ProjectPkg\Task;
+use Abs\ProjectPkg\TaskType;
 use App\Http\Controllers\Controller;
+use App\Status;
+use App\User;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -21,12 +23,76 @@ class TaskController extends Controller {
 		$this->data['theme'] = config('custom.theme');
 	}
 
-	public function getTasks(Request $request) {
-		$employees = Employee::with([
-			'user',
-			// 'tasks',
+	public function getModuleDeveloperWiseTasks(Request $request) {
+		$modules = Module::
+			where(function ($query) use ($request) {
+			if ($request->project_version_id) {
+				$query->where('modules.project_version_id', $request->project_version_id);
+			}
+		})
+			->get();
+
+		if ($request->project_version_id) {
+			$project_version = ProjectVersion::with([
+				'project',
+			])->find($request->project_version_id);
+			if (!$project_version) {
+				return response()->json([
+					'success' => false,
+					'error' => 'Project Version not found',
+				]);
+			}
+			$project_version_list = Collect(ProjectVersion::select('id', 'number')->where('project_id', $project_version->id)->get())->prepend(['id' => '', 'number' => 'Select Project Version']);
+		} else {
+			$project_version = null;
+			$project_version_list = null;
+		}
+		foreach ($modules as $module) {
+			$module->developers = User::where('user_type_id', 1)->company()->get();
+			foreach ($module->developers as $developer) {
+				$developer->tasks = Task::where([
+					'module_id' => $module->id,
+					'assigned_to_id' => $developer->id,
+				])
+					->with([
+						'module',
+						'status',
+						'type',
+						'assignedTo',
+					])
+					->get()
+					->keyBy('id');
+			}
+			//Getting unassigned tasks of module
+			$module->unassigned_tasks = Task::where([
+				'module_id' => $module->id,
+			])
+				->whereNull('assigned_to_id')
+				->with([
+					'module',
+					'status',
+					'type',
+					'assignedTo',
+				])
+				->get()
+				->keyBy('id');
+
+		}
+
+		return response()->json([
+			'success' => true,
+			'modules' => $modules,
+			'project_version' => $project_version,
+			'extras' => [
+				'project_version_list' => $project_version_list,
+			],
+		]);
+	}
+
+	public function getUsetWiseTasks(Request $request) {
+		$users = User::with([
 		])->company()->get();
-		foreach ($employees as $employee) {
+		foreach ($users as $user) {
 			$tasks = [];
 			$tasks[0] = new Task();
 			$tasks[0]->version = 'VIMS-V2.1';
@@ -46,17 +112,12 @@ class TaskController extends Controller {
 			$tasks[1]->number = 'TSK003';
 			$tasks[1]->subject = 'Page crashed during save';
 
-			$employee->tasks = $tasks;
-			// $tasks = Employee::
-			// 	join('users as u', 'u.entity_id', )
-			// 	->leftJoin('tasks as t', 't.assigned_to_id', 'u.id')
-			// 	->where('u.user_type_id', 1)
-			// 	->get();
+			$user->tasks = $tasks;
 		}
 
 		return response()->json([
 			'success' => true,
-			'employees' => $employees,
+			'users' => $users,
 		]);
 	}
 
@@ -113,10 +174,10 @@ class TaskController extends Controller {
 			$task = Task::withTrashed()->find($r->id);
 			$action = 'Edit';
 		}
-		$this->data['users_list'] = $users_list = Collect(User::select('id', 'first_name as name')->get())->prepend(['id' => '', 'name' => 'Select Assigned To']);
-		$this->data['project_list'] = $project_list = Collect(Project::select('id', 'name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
-		//Need to change exact config type
-		$this->data['task_type_list'] = $task_type_list = Collect(Config::select('id', 'name')->where('config_type_id',50)->get())->prepend(['id' => '', 'name' => 'Select Type']);
+		$this->data['users_list'] = $users_list = Collect(User::select('id', 'first_name')->get())->prepend(['id' => '', 'first_name' => 'Select Assigned To']);
+		$this->data['project_list'] = $project_list = Collect(Project::select('id', 'short_name as name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
+		$this->data['task_type_list'] = Collect(TaskType::select('id', 'name')->company()->get())->prepend(['id' => '', 'name' => 'Select Type']);
+		$this->data['task_status_list'] = Collect(Status::select('id', 'name')->company()->where('type_id', 162)->get())->prepend(['id' => '', 'name' => 'Select Type']);
 		$this->data['task'] = $task;
 		$this->data['action'] = $action;
 		$this->data['success'] = true;
@@ -135,9 +196,8 @@ class TaskController extends Controller {
 		return response()->json($this->data);
 	}
 
-
 	public function saveTask(Request $request) {
-		 //dd($request->all());
+		//dd($request->all());
 		try {
 			$error_messages = [
 				'assigned_to_id.required' => 'Assigned To is Required',
@@ -148,26 +208,28 @@ class TaskController extends Controller {
 			];
 			$validator = Validator::make($request->all(), [
 				'assigned_to_id' => [
-					'required:true',
 					'numeric:true',
-					'exists:users,id'
+					'exists:users,id',
 				],
 				'project_id' => [
 					'required:true',
 					'numeric:true',
-					'exists:projects,id'
+					'exists:projects,id',
 				],
 				'project_version_id' => [
+					'required:true',
 					'nullable',
-					'exists:project_versions,id'
+					'exists:project_versions,id',
 				],
 				'module_id' => [
+					'required:true',
 					'nullable',
-					'exists:modules,id'
+					'exists:modules,id',
 				],
 				'type_id' => [
+					'required:true',
 					'nullable',
-					'exists:configs,id'
+					'exists:configs,id',
 				],
 				'subject' => [
 					'required:true',
@@ -197,7 +259,7 @@ class TaskController extends Controller {
 				$task->updated_by_id = Auth::user()->id;
 				$task->updated_at = Carbon::now();
 			}
-			$task->number=rand(1,100000);
+			$task->number = rand(1, 100000);
 			$task->fill($request->all());
 			$task->company_id = Auth::user()->company_id;
 			if ($request->status == 'Inactive') {
@@ -208,21 +270,27 @@ class TaskController extends Controller {
 				$task->deleted_at = NULL;
 			}
 			$task->save();
-			$task->number='TSK-'.$task->id;
+			$task->number = 'TSK-' . $task->id;
 			$task->save();
 			DB::commit();
 			if (!($request->id)) {
 				return response()->json([
-					'success' => true, 
-					'message' => ['Task Details Added Successfully',
-					'task'=>$task,
-				]]);
+					'success' => true,
+					'message' => 'Task Details Added Successfully',
+					'task' => $task,
+				]);
 			} else {
-				return response()->json(['success' => true, 'message' => ['Task Details Updated Successfully']]);
+				return response()->json([
+					'success' => true,
+					'message' => 'Task Details Updated Successfully',
+				]);
 			}
 		} catch (Exceprion $e) {
 			DB::rollBack();
-			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
+			return response()->json([
+				'success' => false,
+				'error' => $e->getMessage(),
+			]);
 		}
 	}
 	public function deleteTask($id) {

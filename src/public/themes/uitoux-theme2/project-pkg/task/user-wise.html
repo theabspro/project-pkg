@@ -3,7 +3,7 @@
         <div class="page-header-inner">
             <div class="page-header-content-left">
                 <div class="page-header-content title-block">
-                    <h1 class="title type-2">Employee Wise Tasks</h1>
+                    <h1 class="title type-2">User Wise Tasks</h1>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
                     <button class="btn btn-bordered" data-toggle="modal" data-target="#project-filter-modal"><i class="icon ion-md-funnel"></i>Filter</button>
@@ -94,14 +94,14 @@
     <div class="page-main-content">
         <div class="container">
             <div class="row">
-                <div class="col-md-3" ng-repeat="(key, employee) in $ctrl.employees">
+                <div class="col-md-3" ng-repeat="(key, user) in $ctrl.users">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                {{employee.user.first_name}}
-                                {{employee.user.last_name}}
-                                <a href="javascript:;" ng-click="addTask({'employee':employee})" class="btn btn-primary pull-right">
+                                {{user.first_name}}
+                                {{user.last_name}}
+                                <a href="javascript:;" ng-click="addTask({'assigned_to':user})" class="btn btn-primary pull-right">
                                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                 </a>
                             </h3>
@@ -112,7 +112,7 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         12 Mar (Wed)
-                                        <a href="javascript:;" ng-click="addTask({'employee':employee})" class="btn btn-primary pull-right">
+                                        <a href="javascript:;" ng-click="addTask({'assigned_to':user})" class="btn btn-primary pull-right">
                                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                         </a>
                                         <br />
@@ -120,8 +120,8 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <ul class="list-group" dnd-list="employee.tasks">
-                                    <li ng-repeat="(key, task) in employee.tasks" class="list-group-item list-group-item-success" ng-click="addTask({'employee':employee})" dnd-draggable="task" dnd-effect-allowed="move" dnd-moved="employee.tasks.splice($index, 1)">
+                                <ul class="list-group" dnd-list="user.tasks">
+                                    <li ng-repeat="(key, task) in user.tasks" class="list-group-item list-group-item-success" ng-click="addTask({'assigned_to':user})" dnd-draggable="task" dnd-effect-allowed="move" dnd-moved="user.tasks.splice($index, 1)">
                                         <span class="label label-default">{{task.version}}</span>
                                         <span class="label label-primary">EH : {{task.eh}} Hrs</span>
                                         <span class="label label-success">AH : {{task.ah}} Hrs</span>
@@ -130,24 +130,6 @@
                                         <br />
                                         {{task.number}} : {{task.subject}}
                                     </li>
-                                    <!--                                     <li class="list-group-item list-group-item-info">
-                                        <span class="label label-default">JVA-V1.0</span>
-                                        <span class="label label-primary">EH : 4.5 Hrs</span>
-                                        <span class="label label-success">AH : 6.0 Hrs</span>
-                                        <span class="label label-success">New</span>
-                                        <span class="label label-info">Project Management</span>
-                                        <br />
-                                        TSK001 : Field level discussion call with Sasi sir
-                                    </li>
-                                    <li class="list-group-item list-group-item-danger">
-                                        <span class="label label-default">GIGO-V1.0</span>
-                                        <span class="label label-primary">EH : 2 Hrs</span>
-                                        <span class="label label-success">AH : 1.5 Hrs</span>
-                                        <span class="label label-success">New</span>
-                                        <span class="label label-info">Project Management</span>
-                                        <br />
-                                        TSK002 : call with API development team
-                                    </li> -->
                                 </ul>
                                 <div class="panel-footer">
                                     Tasks : 8 / EH : 8 / AH : 8.5

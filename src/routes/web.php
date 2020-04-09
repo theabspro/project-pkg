@@ -15,7 +15,8 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('project-version/get', 'ProjectVersionController@getProjectVersions')->name('getProjectVersions');
 	//Project-Version//
 
-	Route::get('/task/get', 'TaskController@getTasks')->name('getTasks');
+	Route::get('/task/module-developer-wise', 'TaskController@getModuleDeveloperWiseTasks')->name('getModuleDeveloperWiseTasks');
+	Route::get('/task/user-date-wise', 'TaskController@getUserDateWiseTasks')->name('getUserDateWiseTasks');
 	Route::get('/task/get-form-data', 'TaskController@getTaskFormData')->name('getTaskFormData');
 	Route::post('/task/save', 'TaskController@saveTask')->name('saveTask');
 	Route::get('/task/delete/{id}', 'TaskController@deleteTask')->name('deleteTask');
