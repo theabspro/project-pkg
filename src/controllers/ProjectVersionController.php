@@ -1,10 +1,9 @@
 <?php
 
 namespace Abs\ProjectPkg;
-use Abs\CompanyPkg\Company;
-use Abs\ProjectPkg\ProjectVerison;
-use App\Http\Controllers\Controller;
 use Abs\BasicPkg\Config;
+use Abs\StatusPkg\Status;
+use App\Http\Controllers\Controller;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -58,11 +57,11 @@ class ProjectVersionController extends Controller {
 			->select(
 				'project_versions.*',
 				'projects.code as project_code',
-				'configs.name as project_status',
+				'statuses.name as project_status',
 				DB::raw('IF(project_versions.deleted_at IS NULL,"Active","Inactive") as status')
 			)
 			->join('projects', 'projects.id', 'project_versions.project_id')
-			->join('configs', 'configs.id', 'project_versions.status_id')
+			->join('statuses', 'statuses.id', 'project_versions.status_id')
 			->where('project_versions.company_id', Auth::user()->company_id)
 			->where(function ($query) use ($discussion_from_date, $discussion_to_date) {
 				if (!empty($discussion_from_date) && !empty($discussion_to_date)) {
@@ -133,13 +132,13 @@ class ProjectVersionController extends Controller {
 				'project',
 				'projectStatus',
 			])
-			->first();
+				->first();
 			$action = 'Edit';
 		}
 		$this->data['project_version'] = $project_version;
 		$this->data['extras'] = [
-			'project_statuses' => collect(Config::where('config_type_id', 50)->select('id', 'name')->get())->prepend(['name' => 'Select Project Status']),
-			'projects' => collect(Project::where('company_id', Auth::user()->company_id)->select('id', 'code')->get())->prepend(['code' => 'Select Project']),
+			'project_statuses' => collect(Status::where('type_id', 160)->select('id', 'name')->get())->prepend(['name' => 'Select Status']),
+			'projects' => collect(Project::where('company_id', Auth::user()->company_id)->select('id', 'code', 'short_name')->get())->prepend(['code' => 'Select Project']),
 		];
 		$this->data['action'] = $action;
 
@@ -165,7 +164,7 @@ class ProjectVersionController extends Controller {
 					'required:true',
 					'max:191',
 					'min:3',
-					'unique:project_versions,number,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
+					'unique:project_versions,number,' . $request->id . ',id,company_id,' . Auth::user()->company_id . ',project_id,' . $request->project_id,
 				],
 				'project_id' => [
 					'required:true',
@@ -192,7 +191,7 @@ class ProjectVersionController extends Controller {
 				// ],
 				'status_id' => [
 					'required:true',
-					'exists:configs,id',
+					'exists:statuses,id',
 					'integer',
 				],
 			], $error_messages);
@@ -248,4 +247,13 @@ class ProjectVersionController extends Controller {
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
+
+	public function getProjectVersions(Request $r) {
+		$this->data['success'] = true;
+		$this->data['project_versions'] =
+		collect(ProjectVersion::where('project_id', $r->project_id)->select('id', 'number')->get())->prepend(['id' => '', 'number' => 'Select Project Version'])
+		;
+		return response()->json($this->data);
+	}
+
 }

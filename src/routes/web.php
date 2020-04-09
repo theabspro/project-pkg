@@ -12,6 +12,7 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/project-version/save', 'ProjectVersionController@saveProjectVerison')->name('saveProjectVerison');
 	Route::get('/project-version/delete', 'ProjectVersionController@deleteProjectVerison')->name('deleteProjectVerison');
 	Route::get('project-version/filter', 'ProjectVersionController@getProjectVersionFilter')->name('getProjectVersionFilter');
+	Route::post('project-version/get', 'ProjectVersionController@getProjectVersions')->name('getProjectVersions');
 	//Project-Version//
 
 	Route::get('/task/get', 'TaskController@getTasks')->name('getTasks');
@@ -21,9 +22,8 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 
 	//Get Project Version List
 	Route::post('task/get-project-version-list/', 'TaskController@getProjectVersionList')->name('getProjectVersionList');
-	
+
 	//Get Project Module List
 	Route::post('task/get-project-module-list/', 'TaskController@getProjectModuleList')->name('getProjectModuleList');
-
 
 });

@@ -56,7 +56,9 @@
                                                         <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                                     </md-select-header>
                                                     <md-optgroup label="project">
-                                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.extras.projects | filter:searchProject">{{project.code}}</md-option>
+                                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.extras.projects | filter:searchProject">
+                                                            {{project.short_name}} / {{project.code}}
+                                                        </md-option>
                                                     </md-optgroup>
                                                 </md-select>
                                                 <input type="hidden" name="project_id" value='{{$ctrl.project_version.project_id}}' class="required">
