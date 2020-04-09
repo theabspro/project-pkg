@@ -89,6 +89,83 @@ class ProjectPkgPermissionSeeder extends Seeder {
 				'name' => 'delete-task',
 				'display_name' => 'Delete',
 			],
+
+			//PHASES
+			[
+				'display_order' => 10,
+				'parent' => null,
+				'name' => 'phases',
+				'display_name' => 'Phases',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'phases',
+				'name' => 'add-phase',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'phases',
+				'name' => 'edit-phase',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'phases',
+				'name' => 'delete-phase',
+				'display_name' => 'Delete',
+			],
+
+			//REVIEWS
+			[
+				'display_order' => 10,
+				'parent' => null,
+				'name' => 'reviews',
+				'display_name' => 'Reviews',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'reviews',
+				'name' => 'add-review',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'reviews',
+				'name' => 'edit-review',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'reviews',
+				'name' => 'delete-review',
+				'display_name' => 'Delete',
+			],
+			//TASK TYPES
+			[
+				'display_order' => 10,
+				'parent' => null,
+				'name' => 'task-types',
+				'display_name' => 'Task Types',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'task-types',
+				'name' => 'add-task-type',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'task-types',
+				'name' => 'edit-task-type',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'task-types',
+				'name' => 'delete-task-type',
+				'display_name' => 'Delete',
+			],
 		];
 
 		Permission::createFromArrays($permissions);
