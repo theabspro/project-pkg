@@ -6,6 +6,13 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/project/save', 'ProjectController@saveProject')->name('saveProject');
 	Route::get('/project/delete/', 'ProjectController@deleteProject')->name('deleteProject');
 
+	//GIT BRANCH
+	Route::get('/git-branch/filter', 'GitBranchController@getFilter')->name('getGitBranchFilter');
+	Route::get('/git-branch/get-list', 'GitBranchController@getList')->name('getGitBranchList');
+	Route::get('/git-branch/get-form-data', 'GitBranchController@getFormData')->name('getGitBranchFormData');
+	Route::post('/git-branch/save', 'GitBranchController@save')->name('saveGitBranch');
+	Route::get('/git-branch/delete/', 'GitBranchController@delete')->name('deleteGitBranch');
+
 	//Project-Version//
 	Route::get('/project-version/get-list', 'ProjectVersionController@getProjectVerisonList')->name('getProjectVerisonList');
 	Route::get('/project-version/get-form-data', 'ProjectVersionController@getProjectVerisonFormData')->name('getProjectVerisonFormData');
@@ -31,7 +38,7 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 
 	//TASKS
 	Route::get('/task-type/get-list', 'TaskTypeController@getTaskTypeList')->name('getTaskTypeList');
-	Route::get('/task-type/get-form-data', 'TaskTypeController@getTaskTypeFormData')->name('getProjectFormData');
+	Route::get('/task-type/get-form-data', 'TaskTypeController@getTaskTypeFormData')->name('getTaskTypeFormData');
 	Route::post('/task-type/save', 'TaskTypeController@saveTaskType')->name('saveTaskType');
 	Route::get('/task-type/delete/', 'TaskTypeController@deleteTaskType')->name('deleteTaskType');
 
