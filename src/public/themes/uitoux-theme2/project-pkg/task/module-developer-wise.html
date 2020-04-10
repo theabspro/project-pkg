@@ -94,7 +94,7 @@
                                     </h3>
                                 </div>
                                 <ul class="list-group" dnd-list="module.unassigned_tasks" dnd-allowed-types="$ctrl.task_types">
-                                    <li ng-repeat="(key2, task) in module.unassigned_tasks" class="list-group-item list-group-item-success" ng-click="addTask({'module':module})" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="$ctrl.task_type" dnd-moved="module.unassigned_tasks.splice(key2, 1)">
+                                    <li ng-repeat="(key2, task) in module.unassigned_tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="$ctrl.task_type" dnd-moved="module.unassigned_tasks.splice(key2, 1)">
                                         <span class="label label-default">{{task.date}}</span>
                                         <span class="label label-primary">
                                             EH : {{task.estimated_hours}} Hrs

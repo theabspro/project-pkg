@@ -15,10 +15,9 @@ class TaskType extends Model {
 	public $timestamps = true;
 	protected $fillable = [
 		'company_id',
-		'code',
+		'display_order',
 		'name',
-		'short_name',
-		'description',
+		'color',
 	];
 
 	public function tasks() {

@@ -5,15 +5,15 @@
         <div class="page-header-inner">
             <div class="page-header-content-left">
                 <div class="page-header-content button-block">
-                    <a href="#!/status-pkg/status/list" type="button" class="btn-back btn-img">
+                    <a href="#!/project-pkg/task-type/list" type="button" class="btn-back btn-img">
                         <img class="img-responsive my-tooltip" src="./public/theme/img/content/previous.svg" alt="Back" ng-shortcut="'meta+shift+left'" ng-shortcut-click data-title="ctrl+shift+left" />
                     </a>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content title-block">
-                    <h1 class="title"><b>{{$ctrl.action}} Status</b></h1>
+                    <h1 class="title"><b>{{$ctrl.action}} Task Type</b></h1>
                     <p class="subtitle">
-                        <a href="#!/status-pkg/status/list">
-                            Statuses
+                        <a href="#!/project-pkg/task-type/list">
+                            Task Types
                         </a> /
                         {{$ctrl.action}}
                     </p>
@@ -24,7 +24,7 @@
     <!-- Page Main Content -->
     <div class="page-main-content form-content type2">
         <form id="form" autocomplete="off" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="{{$ctrl.status.id}}">
+            <input type="hidden" name="id" value="{{$ctrl.task_type.id}}">
             <div class="page-tab-form pb-70">
                 <div class="tab-form-wrap">
                     <div class="tab-form-header">
@@ -47,27 +47,13 @@
                             <div class="tab-pane fade in active" id="general-information" data-animation="fadeInUp" data-animation-delay="300">
                                 <div class="tab-pane-wrap">
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <div class="separate-form-group">
-                                                <label>Type</label>
-                                                <ui-select ng-model="$ctrl.status.type_id" theme="select2">
-                                                    <ui-select-match placeholder="Select Designation">
-                                                        {{$select.selected.name || $select.selected}}
-                                                    </ui-select-match>
-                                                    <ui-select-choices repeat="i.id as i in $ctrl.type_list | propsFilter: {name: $select.search}">
-                                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
-                                                    </ui-select-choices>
-                                                </ui-select>
-                                                <input type="hidden" name="type_id" value="{{$ctrl.status.type_id}}" class="">
-                                            </div><!-- Field -->
-                                        </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>
                                                     Name
                                                     <sup class="mandatory">*</sup>
                                                 </label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.status.name" name="name" placeholder="Enter  Name" />
+                                                <input type="text" class="form-control" ng-model="$ctrl.task_type.name" name="name" placeholder="Enter Name" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
@@ -76,9 +62,18 @@
                                                     Color
                                                     <sup class="mandatory">*</sup>
                                                 </label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.status.color" name="color" placeholder="Enter Last Name" />
+                                                <color-picker options="color_picker_options" ng-model="$ctrl.task_type.color"></color-picker>
+                                                <input type="text" ng-model="$ctrl.task_type.color" name="color" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label>
+                                                    Display Order
+                                                </label>
+                                                <input type="text" class="form-control" ng-model="$ctrl.task_type.display_order" name="display_order" placeholder="Enter Display Order" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
+                                            </div>
+                                        </div>
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
                                                 <label>
@@ -96,7 +91,7 @@
                                         <div class="tab-pane-footer">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <a class="btn btn-cancel my-tooltip" href="#!/status-pkg/status/list" ng-shortcut="'meta+shift+left'" ng-shortcut-click data-title="ctrl+shift+left">Cancel</a>
+                                                    <a class="btn btn-cancel my-tooltip" href="#!/project-pkg/task-type/list" ng-shortcut="'meta+shift+left'" ng-shortcut-click data-title="ctrl+shift+left">Cancel</a>
                                                     <button type="submit" id="submit" class="btn btn-primary my-tooltip" ng-shortcut="'meta+shift+s'" ng-shortcut-click data-title="ctrl+shift+s">
                                                         Submit
                                                     </button>

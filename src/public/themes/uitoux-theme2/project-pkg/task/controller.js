@@ -163,7 +163,6 @@ app.component('moduleDeveloperWiseTasks', {
                     number: true,
                 },
                 'duration': {
-                    required: true,
                     number: true,
                 },
                 'priority': {
@@ -197,7 +196,7 @@ app.component('moduleDeveloperWiseTasks', {
                         $('#module-form-modal').modal('hide');
                         $('body').removeClass('modal-open');
                         $('.modal-backdrop').remove();
-                        $route.reload();
+                        $location.path('/project-pkg/task/module-developer-wise/' + (typeof($routeParams.project_version_id) == 'undefined' ? '' : $routeParams.project_version_id));
                         $scope.$apply();
                     })
                     .fail(function(xhr) {
@@ -232,6 +231,7 @@ app.component('moduleDeveloperWiseTasks', {
                 },
                 'status_id': {
                     required: true,
+                    number: true,
                 },
                 'estimated_hours': {
                     required: true,
@@ -265,11 +265,8 @@ app.component('moduleDeveloperWiseTasks', {
                         $('#task-form-modal').modal('hide');
                         $('body').removeClass('modal-open');
                         $('.modal-backdrop').remove();
-                        // $route.reload();
 
-                        console.log('/project-pkg/task/module-developer-wise/' + (typeof($routeParams.project_version_id) == 'undefined' ? '' : $routeParams.project_version_id));
                         $location.path('/project-pkg/task/module-developer-wise/' + (typeof($routeParams.project_version_id) == 'undefined' ? '' : $routeParams.project_version_id));
-
                         $scope.$apply();
 
                         //ISSUE : SARAVANAN
