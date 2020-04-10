@@ -26,12 +26,20 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::get('/task/user-date-wise', 'TaskController@getUserDateWiseTasks')->name('getUserDateWiseTasks');
 	Route::get('/task/get-form-data', 'TaskController@getTaskFormData')->name('getTaskFormData');
 	Route::post('/task/save', 'TaskController@saveTask')->name('saveTask');
-	Route::get('/task/delete/{id}', 'TaskController@deleteTask')->name('deleteTask');
+	Route::get('/task/delete/', 'TaskController@deleteTask')->name('deleteTask');
 
+	//ISSUE: SARAVANAN
 	//Get Project Version List
 	Route::post('task/get-project-version-list/', 'TaskController@getProjectVersionList')->name('getProjectVersionList');
 
+	//ISSUE: SARAVANAN
 	//Get Project Module List
 	Route::post('task/get-project-module-list/', 'TaskController@getProjectModuleList')->name('getProjectModuleList');
+
+	//TASKS
+	Route::get('/task-type/get-list', 'TaskTypeController@getTaskTypeList')->name('getTaskTypeList');
+	Route::get('/task-type/get-form-data', 'TaskTypeController@getTaskTypeFormData')->name('getProjectFormData');
+	Route::post('/task-type/save', 'TaskTypeController@saveTaskType')->name('saveTaskType');
+	Route::get('/task-type/delete/', 'TaskTypeController@deleteTaskType')->name('deleteTaskType');
 
 });

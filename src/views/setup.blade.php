@@ -87,6 +87,20 @@
 	    when('/project-pkg/project/view/:id', {
 	        template: '<task-view></task-view>',
 	        title: 'View Task',
+	    }).
+
+	    //TASK TYPES
+	    when('/project-pkg/task-type/list', {
+	        template: '<task-type-list></task-type-list>',
+	        title: 'Task Types',
+	    }).
+	    when('/project-pkg/task-type/add', {
+	        template: '<task-type-form></task-type-form>',
+	        title: 'Add Task Type',
+	    }).
+	    when('/project-pkg/task-type/edit/:id', {
+	        template: '<task-type-form></task-type-form>',
+	        title: 'Edit Task Type',
 	    });
 	}]);
 
@@ -117,6 +131,10 @@
     var task_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/view.html')}}";
 
 
+    var task_type_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/list.html')}}";
+    var task_type_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/form.html')}}";
+
+
     var image_scr2 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
     var image_scr3 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
 </script>
@@ -125,3 +143,4 @@
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/controller.js?v=2')}}"></script>

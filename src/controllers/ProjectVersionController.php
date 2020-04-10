@@ -112,8 +112,11 @@ class ProjectVersionController extends Controller {
 				$edit_img = asset('public/themes/' . $this->data['theme'] . '/img/content/table/edit-yellow.svg');;
 				$delete_img = asset('public/themes/' . $this->data['theme'] . '/img/content/table/delete-default.svg');
 				return '
-					<a href="#!/project-pkg/project-version/edit/' . $project_version->id . '">
+					<a href="#!/project-pkg/task/module-developer-wise/' . $project_version->id . '">
 						<img src="' . $edit_img . '" alt="View" class="img-responsive">
+					</a>
+					<a href="#!/project-pkg/project-version/edit/' . $project_version->id . '">
+						<img src="' . $edit_img . '" alt="Edit" class="img-responsive">
 					</a>
 					<a href="javascript:;" data-toggle="modal" data-target="#delete_project_version"
 					onclick="angular.element(this).scope().deleteProjectVerison(' . $project_version->id . ')" dusk = "delete-btn" title="Delete">
