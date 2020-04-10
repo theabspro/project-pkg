@@ -159,6 +159,7 @@ app.component('taskTypeForm', {
             return false;
         }
         self.angular_routes = angular_routes;
+        $scope.color_picker_options = color_picker_options;
         $http.get(
             laravel_routes['getTaskTypeFormData'], {
                 params: {
