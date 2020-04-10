@@ -14,12 +14,16 @@ class Phase extends Model {
 	protected $table = 'phases';
 	public $timestamps = true;
 	protected $fillable = [
-		'company_id',
-		'code',
-		'name',
-		'short_name',
-		'description',
+		'project_id',
+		'number',
+		'branch_id',
+		'credential_id',
+		'status_id',
 	];
+
+	public function modules() {
+		return $this->belongsToMany('Abs\ModulePkg\Module', 'phase_module', 'phase_id', 'module_id');
+	}
 
 	public static function createFromObject($record_data) {
 
