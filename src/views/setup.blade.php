@@ -26,6 +26,21 @@
 	        title: 'View Project',
 	    }).
 
+
+	    //GIT BRANCH
+	    when('/project-pkg/git-branch/list', {
+	        template: '<git-branch-list></git-branch-list>',
+	        title: 'Git Branches',
+	    }).
+	    when('/project-pkg/git-branch/add', {
+	        template: '<git-branch-form></git-branch-form>',
+	        title: 'Add Git Branch',
+	    }).
+	    when('/project-pkg/git-branch/edit/:id', {
+	        template: '<git-branch-form></git-branch-form>',
+	        title: 'Edit Git Branch',
+	    }).
+
 	    //VERSION
 	    when('/project-pkg/project-version/card-list', {
 	        template: '<project-version-card-list></project-version-card-list>',
@@ -79,6 +94,11 @@
     var project_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/form.html')}}";
     var project_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/view.html')}}";
 
+    //GIT BRANCH
+    var git_branch_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/git-branch/list.html')}}";
+    var git_branch_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/git-branch/form.html')}}";
+
+
     var project_version_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/card-list.html')}}";
     var project_version_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/list.html')}}";
     var project_version_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/form.html')}}";
@@ -101,6 +121,7 @@
     var image_scr3 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
 </script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/git-branch/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>
