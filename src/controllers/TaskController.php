@@ -30,7 +30,13 @@ class TaskController extends Controller {
 				$query->where('modules.project_version_id', $request->project_version_id);
 			}
 		})
-			->get();
+			->with([
+				'status',
+			])
+			->withCount('parentModules')
+			->orderBy('modules.priority')
+			->get()
+			->keyBy('id');
 
 		if ($request->project_version_id) {
 			$project_version = ProjectVersion::with([
@@ -177,7 +183,8 @@ class TaskController extends Controller {
 		$this->data['users_list'] = $users_list = Collect(User::select('id', 'first_name')->get())->prepend(['id' => '', 'first_name' => 'Select Assigned To']);
 		$this->data['project_list'] = $project_list = Collect(Project::select('id', 'short_name as name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
 		$this->data['task_type_list'] = Collect(TaskType::select('id', 'name')->company()->get())->prepend(['id' => '', 'name' => 'Select Type']);
-		$this->data['task_status_list'] = Collect(Status::select('id', 'name')->company()->where('type_id', 162)->get())->prepend(['id' => '', 'name' => 'Select Type']);
+		$this->data['task_status_list'] = Collect(Status::select('id', 'name')->company()->where('type_id', 162)->get())->prepend(['id' => '', 'name' => 'Select status']);
+		$this->data['module_status_list'] = Collect(Status::select('id', 'name')->company()->where('type_id', 161)->get())->prepend(['id' => '', 'name' => 'Select status']);
 		$this->data['task'] = $task;
 		$this->data['action'] = $action;
 		$this->data['success'] = true;
@@ -208,6 +215,7 @@ class TaskController extends Controller {
 			];
 			$validator = Validator::make($request->all(), [
 				'assigned_to_id' => [
+					'nullable',
 					'numeric:true',
 					'exists:users,id',
 				],
@@ -293,8 +301,8 @@ class TaskController extends Controller {
 			]);
 		}
 	}
-	public function deleteTask($id) {
-		$delete_status = Task::withTrashed()->where('id', $id)->forceDelete();
+	public function deleteTask(Request $r) {
+		$delete_status = Task::withTrashed()->where('id', $r->id)->forceDelete();
 		if ($delete_status) {
 			return response()->json(['success' => true]);
 		}
