@@ -137,6 +137,9 @@ class TaskTypeController extends Controller {
 				$task_type->deleted_by_id = NULL;
 				$task_type->deleted_at = NULL;
 			}
+			if ($request->display_order == NULL) {
+				$task_type->display_order = 999;
+			}
 			$task_type->save();
 
 			DB::commit();
