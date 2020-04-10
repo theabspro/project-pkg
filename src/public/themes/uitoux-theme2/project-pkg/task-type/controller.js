@@ -56,7 +56,7 @@ app.component('taskTypeList', {
                 { data: 'action', class: 'action', name: 'action', searchable: false },
                 { data: 'name', name: 'task_types.name' },
                 { data: 'color', name: 'task_types.color' },
-                // { data: 'display_order', name: 'task_types.display_order' },
+                { data: 'display_order', name: 'task_types.display_order' },
             ],
             "infoCallback": function(settings, start, end, max, total, pre) {
                 $('#table_info').html(total)
