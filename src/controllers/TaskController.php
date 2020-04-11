@@ -236,8 +236,12 @@ class TaskController extends Controller {
 				],
 				'type_id' => [
 					'required:true',
+					'exists:task_types,id',
+				],
+				'status_id' => [
+					'required:true',
 					'nullable',
-					'exists:configs,id',
+					'exists:statuses,id',
 				],
 				'subject' => [
 					'required:true',
