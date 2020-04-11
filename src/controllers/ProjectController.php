@@ -48,9 +48,10 @@ class ProjectController extends Controller {
 			->orderby('projects.id', 'desc');
 
 		return Datatables::of($project_list)
-			->addColumn('code', function ($project_list) {
+			->rawColumns(['action', 'short_name'])
+			->addColumn('short_name', function ($project_list) {
 				$status = $project_list->status == 'Active' ? 'green' : 'red';
-				return '<span class="status-indicator ' . $status . '"></span>' . $project_list->code;
+				return '<span class="status-indicator ' . $status . '"></span>' . $project_list->short_name;
 			})
 			->addColumn('action', function ($project_list) {
 				$edit_img = asset('public/themes/' . $this->data['theme'] . '/img/content/table/edit-yellow.svg');;
