@@ -13,6 +13,13 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/git-branch/save', 'GitBranchController@save')->name('saveGitBranch');
 	Route::get('/git-branch/delete/', 'GitBranchController@delete')->name('deleteGitBranch');
 
+	//PHASE
+	Route::get('/phase/filter', 'PhaseController@getFilter')->name('getPhaseFilter');
+	Route::get('/phase/get-list', 'PhaseController@getList')->name('getPhaseList');
+	Route::get('/phase/get-form-data', 'PhaseController@getFormData')->name('getPhaseFormData');
+	Route::post('/phase/save', 'PhaseController@save')->name('savePhase');
+	Route::get('/phase/delete/', 'PhaseController@delete')->name('deletePhase');
+
 	//Project-Version//
 	Route::get('/project-version/get-list', 'ProjectVersionController@getProjectVerisonList')->name('getProjectVerisonList');
 	Route::get('/project-version/get-form-data', 'ProjectVersionController@getProjectVerisonFormData')->name('getProjectVerisonFormData');

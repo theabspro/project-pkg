@@ -1,5 +1,5 @@
-app.component('gitBranchList', {
-    templateUrl: git_branch_list_template_url,
+app.component('phaseList', {
+    templateUrl: phase_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element) {
         $scope.loading = true;
         var self = this;
@@ -12,13 +12,13 @@ app.component('gitBranchList', {
         self.add_permission = self.hasPermission('add-git-branch');
 
         $http.get(
-            laravel_routes['getGitBranchFilter']
+            laravel_routes['getPhaseFilter']
             ).then(function(response) {
-            self.projects = response.data.extras.projects;
+            self.extras = response.data.extras;
 
             var table_scroll;
             table_scroll = $('.page-main-content.list-page-content').height() - 37;
-            $('#git_branch_list').DataTable({
+            $('#phase_list').DataTable({
                 "dom": cndn_dom_structure,
                 "language": {
                     // "search": "",
@@ -37,7 +37,7 @@ app.component('gitBranchList', {
                 stateLoadCallback: function(settings) {
                     var state_save_val = JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
                     if (state_save_val) {
-                        $('#search_git_branch').val(state_save_val.search.search);
+                        $('#search_phase').val(state_save_val.search.search);
                     }
                     return JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
                 },
@@ -47,19 +47,26 @@ app.component('gitBranchList', {
                 scrollY: table_scroll + "px",
                 scrollCollapse: true,
                 ajax: {
-                    url: laravel_routes['getGitBranchList'],
+                    url: laravel_routes['getPhaseList'],
                     type: "GET",
                     dataType: "json",
                     data: function(d) {
                         d.project_id = $('#project_id').val();
-                        d.git_branch_name = $('#git_branch_name').val();
+                        d.number = $('#number').val();
+                        d.branch_id = $('#branch_id').val();
+                        d.credential_id = $('#credential_id').val();
+                        d.status_id = $('#status_id').val();
                         d.status = $('#status').val();
                     },
                 },
                 columns: [
                     { data: 'action', class: 'action', name: 'action', searchable: false },
                     { data: 'project_name', name: 'projects.name', searchable: true },
-                    { data: 'name', name: 'git_branches.name', searchable: true },
+                    { data: 'number', name: 'phases.number', searchable: true },
+                    { data: 'phase_modules', searchable: false },
+                    { data: 'git_branch_name', name: 'git_branches.name', searchable: true },
+                    { data: 'credential_name', name: 'credentials.name', searchable: true },
+                    { data: 'status_name', name: 'statuses.name', searchable: true },
                 ],
                 "infoCallback": function(settings, start, end, max, total, pre) {
                     $('#table_info').html(total)
@@ -73,42 +80,42 @@ app.component('gitBranchList', {
             $('.dataTables_length select').select2();
 
             $('.refresh_table').on("click", function() {
-                $('#git_branch_list').DataTable().ajax.reload();
+                $('#phase_list').DataTable().ajax.reload();
             });
 
             $scope.clear_search = function() {
-                $('#search_git_branch').val('');
-                $('#git_branch_list').DataTable().search('').draw();
+                $('#search_phase').val('');
+                $('#phase_list').DataTable().search('').draw();
             }
 
-            var dataTable = $('#git_branch_list').dataTable();
-            $("#search_git_branch").keyup(function() {
+            var dataTable = $('#phase_list').dataTable();
+            $("#search_phase").keyup(function() {
                 dataTable.fnFilter(this.value);
             });
 
             //DELETE
-            $scope.deleteGitBranch = function($id) {
-                $('#git_branch_id').val($id);
+            $scope.deletePhase = function($id) {
+                $('#phase_id').val($id);
             }
             $scope.deleteConfirm = function() {
-                id = $('#git_branch_id').val();
+                id = $('#phase_id').val();
                 $http.get(
-                    laravel_routes['deleteGitBranch'], {
+                    laravel_routes['deletePhase'], {
                         params: {
                             id: id,
                         }
                     }
                 ).then(function(response) {
                     if (response.data.success) {
-                        custom_noty('success', 'Git Branch Deleted Successfully');
-                        $('#git_branch_list').DataTable().ajax.reload(function(json) {});
-                        $location.path('/project-pkg/git-branch/list');
+                        custom_noty('success', 'Phase Deleted Successfully');
+                        $('#phase_list').DataTable().ajax.reload(function(json) {});
+                        $location.path('/project-pkg/phase/list');
                     }
                 });
             }
 
             //FOR FILTER
-            self.status = [
+            self.active_status = [
                 { id: '', name: 'Select Status' },
                 { id: '1', name: 'Active' },
                 { id: '0', name: 'Inactive' },
@@ -131,35 +138,56 @@ app.component('gitBranchList', {
                     dataTable.fnFilter();
                 }, 900);
             }
-            $scope.onSelectedStatus = function(selected_status) {
+            $scope.onSelectedBranch = function(selected_branch_id) {
+                setTimeout(function() {
+                    $("#branch_id").val(selected_branch_id);
+                    dataTable.fnFilter();
+                }, 900);
+            }
+            $scope.onSelectedCredential = function(selected_credential_id) {
+                setTimeout(function() {
+                    $("#credential_id").val(selected_credential_id);
+                    dataTable.fnFilter();
+                }, 900);
+            }
+            $scope.onSelectedStatus = function(selected_status_id) {
+                setTimeout(function() {
+                    $("#status_id").val(selected_status_id);
+                    dataTable.fnFilter();
+                }, 900);
+            }
+            $scope.onSelectedActiveStatus = function(selected_status) {
                 setTimeout(function() {
                     $("#status").val(selected_status);
                     dataTable.fnFilter();
                 }, 900);
             }
 
-            $('#git_branch_name').on('keyup', function() {
+            $('#number').on('keyup', function() {
                 dataTable.fnFilter();
             });
 
             $scope.reset_filter = function() {
-                self.branch_filter = [];
+                self.phase_filter = [];
                 $("#project_id").val('');
-                $("#git_branch_name").val('');
+                $("#branch_id").val('');
+                $("#credential_id").val('');
+                $("#status_id").val('');
+                $("#number").val('');
                 $("#status").val('');
                 dataTable.fnFilter();
             }        
 
             $rootScope.loading = false;
-            
+
         });
     }
 });
 //------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
-app.component('gitBranchForm', {
-    templateUrl: git_branch_form_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope) {
+app.component('phaseForm', {
+    templateUrl: phase_form_template_url,
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element) {
         var self = this;
         self.hasPermission = HelperService.hasPermission;
         // if (!self.hasPermission('add-project') || !self.hasPermission('edit-project')) {
@@ -169,18 +197,18 @@ app.component('gitBranchForm', {
         self.angular_routes = angular_routes;
         $scope.theme = theme;
         $http.get(
-            laravel_routes['getGitBranchFormData'], {
+            laravel_routes['getPhaseFormData'], {
                 params: {
                     id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
                 }
             }
         ).then(function(response) {
             // console.log(response);
-            self.git_branch = response.data.git_branch;
-            self.project_list = response.data.project_list;
+            self.phase = response.data.phase;
+            self.extras = response.data.extras;
             self.action = response.data.action;
             if (self.action == 'Edit') {
-                if (self.git_branch.deleted_at) {
+                if (self.phase.deleted_at) {
                     self.switch_value = 'Inactive';
                 } else {
                     self.switch_value = 'Active';
@@ -191,13 +219,21 @@ app.component('gitBranchForm', {
             $rootScope.loading = false;
         });
 
+        $scope.searchModule;
+        $scope.clearSearchModules = function() {
+          $scope.searchModule = '';
+        };
+        
+        $element.find('input').on('keydown', function(ev) {
+              ev.stopPropagation();
+          });   
         $("input:text:visible:first").focus();
 
         var form_id = '#form';
         var v = jQuery(form_id).validate({
             ignore: '',
             rules: {
-                'name': {
+                'number': {
                     required: true,
                     minlength: 3,
                     maxlength: 191,
@@ -210,7 +246,7 @@ app.component('gitBranchForm', {
                 let formData = new FormData($(form_id)[0]);
                 $('#submit').button('loading');
                 $.ajax({
-                        url: laravel_routes['saveGitBranch'],
+                        url: laravel_routes['savePhase'],
                         method: "POST",
                         data: formData,
                         processData: false,
@@ -219,7 +255,7 @@ app.component('gitBranchForm', {
                     .done(function(res) {
                         if (res.success == true) {
                             custom_noty('success', res.message);
-                            $location.path('/project-pkg/git-branch/list');
+                            $location.path('/project-pkg/phase/list');
                             $scope.$apply();
                         } else {
                             if (!res.success == true) {
@@ -231,7 +267,7 @@ app.component('gitBranchForm', {
                                 custom_noty('error', errors);
                             } else {
                                 $('#submit').button('reset');
-                                $location.path('/project-pkg/git-branch/list');
+                                $location.path('/project-pkg/phase/list');
                                 $scope.$apply();
                             }
                         }

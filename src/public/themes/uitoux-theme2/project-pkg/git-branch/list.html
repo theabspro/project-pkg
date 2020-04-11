@@ -62,7 +62,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Project</label>
-                                <md-select ng-model="$ctrl.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchTerm()" ng-change="onSelectedProject($ctrl.project_id)">
+                                <md-select ng-model="$ctrl.branch_filter.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchTerm()" ng-change="onSelectedProject($ctrl.branch_filter.project_id)">
                                     <md-select-header class="demo-select-header">
                                         <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                     </md-select-header>
@@ -72,7 +72,7 @@
                                         </md-option>
                                     </md-optgroup>
                                 </md-select>
-                                <input type="hidden" name="project_id" id="project_id" value='{{$ctrl.project_id}}' class="required">
+                                <input type="hidden" name="project_id" id="project_id" value='{{$ctrl.branch_filter.project_id}}' class="required">
                             </div><!-- Feild -->
                         </div><!-- Column -->
                         <div class="col-md-6">
@@ -84,7 +84,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Status</label>
-                                <md-select ng-model="$ctrl.status.id" placeholder="Select Status" md-on-close="clearSearchStatus()" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedStatus($ctrl.status.id)">
+                                <md-select ng-model="$ctrl.branch_filter.status_id" placeholder="Select Status" md-on-close="clearSearchStatus()" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedStatus($ctrl.branch_filter.status_id)">
                                     <md-select-header class="demo-select-header">
                                         <input ng-model="searchStatus" type="search" placeholder="Search for a Status.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
                                     </md-select-header>

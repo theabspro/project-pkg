@@ -1,0 +1,168 @@
+<!-- Content Wrap -->
+<div class="content-wrap cndn-wrap">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content button-block">
+                    <a href="#!/project-pkg/phase/list" type="button" class="btn-back btn-img">
+                        <img class="img-responsive" ng-src="{{theme}}/img/content/previous.svg" alt="Back" />
+                    </a>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content title-block">
+                    <h1 class="title"><b>{{$ctrl.action}} Phase</b></h1>
+                    <p class="subtitle">
+                        <a href="#!/project-pkg/phase/list">
+                            Phase List
+                        </a> /
+                        {{$ctrl.action}}
+                    </p>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Left -->
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+    <!-- Page Main Content -->
+    <div class="page-main-content form-content type2">
+        <form id="form" autocomplete="off">
+            <input type="hidden" name="id" value="{{$ctrl.phase.id}}">
+            <div class="page-tab-form pb-70">
+                <div class="tab-form-wrap">
+                    <div class="tab-form-header">
+                        <div class="tab-header">
+                            <!-- Filters -->
+                            <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
+                                <ul class="nav nav-pills cndn-tabs">
+                                    <li class="active">
+                                        <a class="filter active" data-target="#general-information" data-toggle="tab" aria-expanded="true">
+                                            General Info
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div><!-- Filters -->
+                        </div><!-- Tab Header -->
+                    </div><!-- Tab Form Header -->
+                    <div class="tab-form-body">
+                        <div class="tab-content">
+                            <!-- TAB PANEL -->
+                            <div class="tab-pane fade in active" id="general-information" data-animation="fadeInUp" data-animation-delay="300">
+                                <div class="tab-pane-wrap">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Project <sup class="mandatory">*</sup></label>
+                                                <md-select ng-model="$ctrl.phase.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchProject()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="project">
+                                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.extras.projects | filter:searchProject">
+                                                            {{project.name}}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="project_id" value='{{$ctrl.phase.project_id}}' class="required">
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="input-text form-group">
+                                                <label> Number <sup class="mandatory">*</sup> </label>
+                                                <input type="text" class="form-control required" ng-model="$ctrl.phase.number" name="number" placeholder="Enter Phase Number" />
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Modules <sup class="mandatory">*</sup></label>
+                                                <md-select multiple ng-model="$ctrl.phase.module_ids" placeholder="Select Modules" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchModules()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchModule" type="search" placeholder="Search for a Module" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="module">
+                                                        <md-option ng-value="module.id" ng-repeat="module in $ctrl.extras.modules | filter:searchModule">
+                                                            {{module.name}}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="module_ids" value='{{$ctrl.phase.module_ids}}' class="required">
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Git Branch </label>
+                                                <md-select ng-model="$ctrl.phase.branch_id" placeholder="Select Git Branch" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchBranch()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchGitBranch" type="search" placeholder="Search for a Git Branch" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="git_branch">
+                                                        <md-option ng-value="git_branch.id" ng-repeat="git_branch in $ctrl.extras.git_branches | filter:searchGitBranch">
+                                                            {{git_branch.name}}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="branch_id" value='{{$ctrl.phase.branch_id}}'>
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Credential </label>
+                                                <md-select ng-model="$ctrl.phase.credential_id" placeholder="Select Credential" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchCredential()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchCredential" type="search" placeholder="Search for a Credential" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="credential">
+                                                        <md-option ng-value="credential.id" ng-repeat="credential in $ctrl.extras.credentials | filter:searchCredential">
+                                                            {{credential.name}}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="credential_id" value='{{$ctrl.phase.credential_id}}'>
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Status </label>
+                                                <md-select ng-model="$ctrl.phase.status_id" placeholder="Select Status" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchStatus()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchStatus" type="search" placeholder="Search for a Status" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="status">
+                                                        <md-option ng-value="status.id" ng-repeat="status in $ctrl.extras.statuses | filter:searchStatus">
+                                                            {{status.name}}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="status_id" value='{{$ctrl.phase.status_id}}'>
+                                            </div><!-- Feild -->
+                                        </div><!-- Column -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label> Active Status <sup class="mandatory">*</sup> </label>
+                                                <div class="tab-switch">
+                                                    <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                                        {{ $ctrl.switch_value }}
+                                                    </md-switch>
+                                                    <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
+                                                </div>
+                                            </div><!-- Form Group -->
+                                        </div><!-- Column -->
+                                        <div class="tab-pane-footer">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <!--                                                     <a class="btn btn-primary btn-nxt">
+                                                        Next
+                                                    </a> -->
+                                                    <button type="submit" id="submit" class="btn btn-primary">
+                                                        Submit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div><!-- Tab Footer -->
+                                    </div><!-- Row -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+                        </div><!-- Tab Content -->
+                    </div><!-- Tab Form Body -->
+                </div><!-- Tab Form Wrap -->
+            </div><!-- Page Form -->
+        </form>
+    </div><!-- Page Main Content -->
+</div><!-- Content Wrap -->
