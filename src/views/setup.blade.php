@@ -80,11 +80,15 @@
 	    //TASKS
 	    when('/project-pkg/task/module-developer-wise/:project_version_id?', {
 	        template: '<module-developer-wise-tasks></module-developer-wise-tasks>',
-	        title: 'Task / Module-Developer Wise',
+	        title: 'Tasks / Module-Developer Wise',
 	    }).
-	    when('/project-pkg/task/user-wise', {
-	        template: '<user-wise-tasks></user-wise-tasks>',
-	        title: 'Task - User Wise',
+	    when('/project-pkg/task/user-date-wise', {
+	        template: '<user-date-wise-tasks></user-date-wise-tasks>',
+	        title: 'Tasks / User-Date Wise',
+	    }).
+	    when('/project-pkg/task/status-date-wise', {
+	        template: '<status-date-wise-tasks></status-date-wise-tasks>',
+	        title: 'Tasks / Status-Date Wise',
 	    }).
 	    when('/project-pkg/task/list', {
 	        template: '<task-list></task-list>',
@@ -142,7 +146,8 @@
 
 
     var module_developer_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/module-developer-wise.html')}}";
-    var user_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/user-wise.html')}}";
+    var user_date_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/user-date-wise.html')}}";
+    var status_date_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/status-date-wise.html')}}";
     var task_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/list.html')}}";
     var task_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/form.html')}}";
     var task_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/view.html')}}";
@@ -150,6 +155,11 @@
 
     var task_type_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/list.html')}}";
     var task_type_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/form.html')}}";
+
+    //PARTIALS
+    var module_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/module-modal-form.html')}}";
+    var task_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/task-modal-form.html')}}";
+    var task_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/task-card-list.html')}}";
 
 
     var image_scr2 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
@@ -162,3 +172,4 @@
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/controller.js?v=2')}}"></script>

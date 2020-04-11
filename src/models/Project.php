@@ -56,4 +56,8 @@ class Project extends Model {
 		return $record;
 	}
 
+	public static function getList() {
+		return Collect(Project::select('id', 'short_name as name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
+	}
+
 }

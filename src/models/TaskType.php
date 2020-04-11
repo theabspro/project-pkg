@@ -59,4 +59,8 @@ class TaskType extends Model {
 		return $record;
 	}
 
+	public static function getList() {
+		return Collect(TaskType::select('id', 'name', 'color')->company()->orderBy('display_order')->get())->prepend(['id' => '', 'name' => 'Select Type']);
+	}
+
 }
