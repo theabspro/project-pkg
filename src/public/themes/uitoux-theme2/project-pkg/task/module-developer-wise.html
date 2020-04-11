@@ -357,15 +357,52 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
-                                        Task Date
+                                        Subject
+                                        <sup class="mandatory">*</sup>
                                     </label>
-                                    <div class="input-group date" data-provide="datepicker">
-                                        <input class="form-control  align-left" placeholder="Select a Date" name="date" id="date" ng-model="$ctrl.task.date" autocomplete="off">
-                                        <span class="input-group-addon">
-                                            <img class="img-responsive" ng-src="{{$ctrl.theme}}/img/content/calender-gray-icon.svg" alt="Calendar Image" />
-                                        </span>
-                                    </div><!-- Input Group -->
-                                </div><!-- Feild -->
+                                    <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control" ng-model="$ctrl.task.description" name="description" autocomplete="off"></textarea>
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Type
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select ng-model="$ctrl.task.type_id" theme="select2">
+                                        <ui-select-match placeholder="Select Task Type">
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.task_type_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="type_id" id="type_id" value="{{$ctrl.task.type_id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <!--row-->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            Estimated Hours
+                                            <sup class="mandatory">*</sup>
+                                        </label>
+                                        <input type="text" class="form-control" ng-model="$ctrl.task.estimated_hours" name="estimated_hours" autocomplete="off">
+                                    </div><!-- Field -->
+                                </div><!-- Column -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Actual Hours</label>
+                                        <input type="text" class="form-control" name="actual_hours" ng-model="$ctrl.task.actual_hours" autocomplete="off">
+                                    </div><!-- Field -->
+                                </div><!-- Column -->
                             </div>
                             <div class="col-sm-6" ng-show="$ctrl.show_assigned_to">
                                 <div class="separate-form-group">
@@ -381,6 +418,36 @@
                                     <input type="hidden" name="assigned_to_id" id="assigned_to_id" value="{{$ctrl.task.assigned_to.id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Status
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select ng-model="$ctrl.task.status_id" theme="select2">
+                                        <ui-select-match placeholder="Select Task Status">
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="status_id" id="status_id" value="{{$ctrl.task.status_id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Task Date
+                                    </label>
+                                    <div class="input-group date" data-provide="datepicker">
+                                        <input class="form-control  align-left" placeholder="Select a Date" name="date" id="date" ng-model="$ctrl.task.date" autocomplete="off">
+                                        <span class="input-group-addon">
+                                            <img class="img-responsive" ng-src="{{$ctrl.theme}}/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                        </span>
+                                    </div><!-- Input Group -->
+                                </div><!-- Feild -->
+                            </div>
                             <div class="col-sm-6" ng-show="$ctrl.show_project">
                                 <div class="separate-form-group">
                                     <label>Project <sup class="mandatory">*</sup> </label>
@@ -429,79 +496,6 @@
                                     <input type="hidden" name="module_id" id="module_id" value="{{$ctrl.task.module.id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                            <div class="col-sm-6">
-                                <div class="separate-form-group">
-                                    <label>
-                                        Type
-                                        <sup class="mandatory">*</sup>
-                                    </label>
-                                    <ui-select ng-model="$ctrl.task.type_id" theme="select2">
-                                        <ui-select-match placeholder="Select Task Type">
-                                            {{$select.selected.name || $select.selected}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in $ctrl.task_type_list | propsFilter: {name: $select.search}">
-                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <input type="hidden" name="type_id" id="type_id" value="{{$ctrl.task.type_id}}">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                        </div>
-                        <!--row-->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        Subject
-                                        <sup class="mandatory">*</sup>
-                                    </label>
-                                    <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                            <div class="col-sm-6">
-                                <div class="separate-form-group">
-                                    <label>
-                                        Status
-                                        <sup class="mandatory">*</sup>
-                                    </label>
-                                    <ui-select ng-model="$ctrl.task.status_id" theme="select2">
-                                        <ui-select-match placeholder="Select Task Status">
-                                            {{$select.selected.name || $select.selected}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
-                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <input type="hidden" name="status_id" id="status_id" value="{{$ctrl.task.status_id}}">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                        </div>
-                        <!--row-->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea class="form-control" ng-model="$ctrl.task.description" name="description" autocomplete="off"></textarea>
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                        </div>
-                        <!--row-->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        Estimated Hours
-                                        <sup class="mandatory">*</sup>
-                                    </label>
-                                    <input type="text" class="form-control" ng-model="$ctrl.task.estimated_hours" name="estimated_hours" autocomplete="off">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Actual Hours</label>
-                                    <input type="text" class="form-control" name="actual_hours" ng-model="$ctrl.task.actual_hours" autocomplete="off">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
                         </div>
                         <!--row-->
                         <div class="row">
