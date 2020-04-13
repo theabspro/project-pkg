@@ -173,7 +173,7 @@ class ProjectVersionController extends Controller {
 	}
 
 	public function saveProjectVerison(Request $request) {
-		// dd($request->all());
+		dd($request->all());
 		try {
 			$error_messages = [
 				'number.required' => 'Verison Number is Required',

@@ -161,6 +161,7 @@
     var module_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/module-modal-form.html')}}";
     var task_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/task-modal-form.html')}}";
     var task_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/task-card-list.html')}}";
+    var project_version_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/project-version-form.html')}}";
 
 
     var image_scr2 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";

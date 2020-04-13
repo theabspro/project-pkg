@@ -47,6 +47,27 @@ app.component('projectVersionCardList', {
             });
         }
 
+        // self.project_version = {};
+        $scope.showProjectVersionForm = function(project_version) {
+            console.log(project_version);
+            // console.log(self.project_versions);
+            // alert(1);
+            $('#project-version-form-modal').modal('show');
+            $('#project_id').focus();
+            
+            self.project_version = project_version;
+            
+            console.log('fbghjvshj======='+self.project_version.id);
+
+            // if (project_version) {
+            //     // self.show_project_version = false;
+            //     // self.show_project = false;
+            // } else {
+            //     // self.show_project_version = true;
+            //     // self.show_project = true;
+            // }
+        }
+
         $rootScope.loading = false;
     }
 });
