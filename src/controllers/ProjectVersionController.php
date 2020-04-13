@@ -17,6 +17,29 @@ class ProjectVersionController extends Controller {
 		$this->data['theme'] = config('custom.theme');
 	}
 
+	public function getProjectVerisons(Request $r) {
+		$project_versions = ProjectVersion::with([
+			'status',
+			'project',
+			'modules',
+			'modules.status',
+			'modules.platform',
+		])
+			->where([
+				'project_versions.company_id' => Auth::user()->company_id,
+			])
+			->select([
+				'project_versions.*',
+			])
+			->join('projects as p', 'p.id', 'project_versions.project_id')
+			->orderBy('p.short_name')
+			->get();
+		return response()->json([
+			'success' => true,
+			'project_versions' => $project_versions,
+		]);
+	}
+
 	public function getProjectVersionFilter() {
 		$this->data['extras'] = [
 			'project_statuses' => collect(Config::where('config_type_id', 50)->select('id', 'name')->get())->prepend(['id' => '', 'name' => 'Select Project Status']),

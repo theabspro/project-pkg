@@ -2,9 +2,9 @@
 
 namespace Abs\ProjectPkg;
 
+use Abs\BasicPkg\Config;
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
-use Abs\BasicPkg\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -25,6 +25,18 @@ class ProjectVersion extends Model {
 	];
 
 	protected $appends = ['switch_value'];
+
+	public function modules() {
+		return $this->hasMany('App\Module', 'project_version_id')->orderBy('priority');
+	}
+
+	public function project() {
+		return $this->belongsTo('App\Project', 'project_id');
+	}
+
+	public function status() {
+		return $this->belongsTo('App\Status')->where('type_id', 160);
+	}
 
 	public function getSwitchValueAttribute() {
 		return !empty($this->attributes['deleted_at']) ? 'Inactive' : 'Active';
@@ -52,14 +64,6 @@ class ProjectVersion extends Model {
 
 	public function setEstimatedEndDateAttribute($date) {
 		return $this->attributes['estimated_end_date'] = empty($date) ? NULL : date('Y-m-d', strtotime($date));
-	}
-
-	public function project() {
-		return $this->belongsTo('Abs\ProjectPkg\Project', 'project_id');
-	}
-
-	public function projectStatus() {
-		return $this->belongsTo('Abs\BasicPkg\Config', 'status_id', 'id')->where('config_type_id', 50); //ProjectVersionStatuses
 	}
 
 	public static function createFromObject($record_data) {

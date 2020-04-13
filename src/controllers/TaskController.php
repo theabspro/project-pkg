@@ -36,7 +36,8 @@ class TaskController extends Controller {
 			->withCount('parentModules')
 			->orderBy('modules.priority')
 			->get()
-			->keyBy('id');
+		// ->keyBy('id')
+		;
 
 		if ($request->project_version_id) {
 			$project_version = ProjectVersion::with([

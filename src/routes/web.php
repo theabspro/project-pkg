@@ -20,7 +20,8 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/phase/save', 'PhaseController@save')->name('savePhase');
 	Route::get('/phase/delete/', 'PhaseController@delete')->name('deletePhase');
 
-	//Project-Version//
+	//PROJECT VERSIONS
+	Route::get('/project-version/get', 'ProjectVersionController@getProjectVerisons')->name('getProjectVerisons');
 	Route::get('/project-version/get-list', 'ProjectVersionController@getProjectVerisonList')->name('getProjectVerisonList');
 	Route::get('/project-version/get-form-data', 'ProjectVersionController@getProjectVerisonFormData')->name('getProjectVerisonFormData');
 	Route::post('/project-version/save', 'ProjectVersionController@saveProjectVerison')->name('saveProjectVerison');

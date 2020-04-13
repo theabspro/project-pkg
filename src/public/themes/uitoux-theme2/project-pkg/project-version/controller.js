@@ -5,49 +5,44 @@ app.component('projectVersionCardList', {
         var self = this;
         $('#search_project_version').focus();
         self.hasPermission = HelperService.hasPermission;
-        // if (!self.hasPermission('project-versions')) {
-        //     window.location = "#!/page-permission-denied";
-        //     return false;
-        // }
+        if (!self.hasPermission('project-versions')) {
+            window.location = "#!/page-permission-denied";
+            return false;
+        }
         self.add_permission = self.hasPermission('add-project-version');
         self.theme = theme;
 
         $http.get(
-            laravel_routes['getTasks'], {
+            laravel_routes['getProjectVersions'], {
                 params: {
                     // id: $id,
                 }
             }
         ).then(function(response) {
             if (!response.data.success) {
+                showErrorNoty(response.data);
                 return;
             }
-
-            self.employees = response.data.employees;
+            self.project_versions = response.data.project_versions;
         });
 
-        $scope.addTask = function(project_version) {
-            $('#project-version-form-modal').modal('show');
-            console.log(project_version);
+        $scope.viewProjectVersion = function(project_version) {
+            $location.path('/project-pkg/task/module-developer-wise/' + project_version.id);
         }
 
-        //DELETE
-        $scope.deleteProject = function($id) {
-            $('#project-version_id').val($id);
-        }
         $scope.deleteConfirm = function() {
-            $id = $('#project-version_id').val();
+            $rootScope.loading = true;
+
             $http.get(
-                laravel_routes['deleteProject'], {
+                laravel_routes['deleteProjectVersion'], {
                     params: {
-                        id: $id,
+                        id: self.project_version.id,
                     }
                 }
             ).then(function(response) {
+                $rootScope.loading = false;
                 if (response.data.success) {
-                    custom_noty('success', 'Project Deleted Successfully');
-                    $('#project-versions_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('/project-pkg/project-version/list');
+                    custom_noty('success', response.data.success);
                 }
             });
         }

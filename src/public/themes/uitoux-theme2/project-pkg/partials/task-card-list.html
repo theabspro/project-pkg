@@ -1,33 +1,29 @@
-<ul class="list-group" dnd-list="$ctrl.tasks" dnd-allowed-types="['task']">
-    <li ng-if="$ctrl.tasks.length != 0" ng-repeat="(key2, task) in $ctrl.tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="$ctrl.tasks.splice(key2, 1)">
-        <span class="label label-primary">
-            {{task.module.project_version.project.short_name}}-{{task.module.project_version.number}}
-        </span>
-        &nbsp;
-        <span class="label label-info">{{task.module.name}}</span>
-        &nbsp;
-        <span class="label label-default">{{task.date}}</span>
-        &nbsp;
-        <span class="label label-primary">
-            EH : {{task.estimated_hours}} Hrs
-        </span>
-        &nbsp;
-        <span class="label label-success">
-            AH : {{task.actual_hours}} Hrs
-        </span>
-        &nbsp;
-        <span class="label label-danger">{{task.type.name}}</span>
-        <br />
-        {{task.number}} : {{task.subject}}
-        <a href="javascript:;" ng-click="deleteTask(task,$event,$ctrl.tasks,key2)">
-            <span class="glyphicon glyphicon-trash pull-right" aria-hidden="true">
-            </span>
-        </a>
-    </li>
-    <li ng-if="$ctrl.tasks.length == 0" class="">
-        No Tasks
-    </li>
-    <li class="dndPlaceholder">
-        Drop any <strong>Task</strong> here
-    </li>
-</ul>
+<span class="label label-primary">
+    {{task.module.project_version.project.short_name}}-{{task.module.project_version.number}}
+</span>
+&nbsp;
+<span class="label label-info">{{task.module.name}}</span>
+&nbsp;
+<span class="label label-default">{{task.date}}</span>
+&nbsp;
+<span class="label label-warning">{{task.status.name}}</span>
+&nbsp;
+<span class="label label-primary">
+    EH : {{task.estimated_hours}} Hrs
+</span>
+&nbsp;
+<span class="label label-success">
+    AH : {{task.actual_hours}} Hrs
+</span>
+&nbsp;
+<span class="label label-danger">{{task.type.name}}</span>
+<br />
+{{task.number}} : {{task.subject}}
+<a href="javascript:;" ng-click="deleteTask(task,$event,tasks,key2)">
+    <span class="glyphicon glyphicon-trash pull-right" aria-hidden="true">
+    </span>
+</a>
+<a href="javascript:;" ng-click="duplicateTask(task,$event,tasks,key2)">
+    <span class="glyphicon glyphicon-duplicate pull-right" aria-hidden="true">
+    </span>
+</a>

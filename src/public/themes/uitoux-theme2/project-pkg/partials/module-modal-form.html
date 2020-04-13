@@ -2,7 +2,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
                 <h5 class="modal-title" id="myModalLabel">
                     {{$ctrl.module.id ? 'Edit' : 'Add'}} Module
                     {{$ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+')' : ''}}
@@ -39,6 +41,8 @@
                                     <input type="hidden" name="status_id" value="{{$ctrl.module.status.id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
@@ -55,13 +59,15 @@
                                     <input type="text" class="form-control" name="priority" autocomplete="off" ng-model="$ctrl.module.priority">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
                                         Estimated Start Date
                                     </label>
                                     <div class="input-group date" data-provide="datepicker">
-                                        <input class="form-control  align-left" name="date" ng-model="$ctrl.module.start_date" autocomplete="off">
+                                        <input class="form-control  align-left" name="start_date" ng-model="$ctrl.module.start_date" autocomplete="off">
                                         <span class="input-group-addon">
                                             <img class="img-responsive" ng-src="{{$ctrl.theme}}/img/content/calender-gray-icon.svg" alt="Calendar Image" />
                                         </span>
@@ -74,13 +80,15 @@
                                         Estimated End Date
                                     </label>
                                     <div class="input-group date" data-provide="datepicker">
-                                        <input class="form-control  align-left" name="date" ng-model="$ctrl.module.end_date" autocomplete="off">
+                                        <input class="form-control  align-left" name="end_date" ng-model="$ctrl.module.end_date" autocomplete="off">
                                         <span class="input-group-addon">
                                             <img class="img-responsive" ng-src="{{$ctrl.theme}}/img/content/calender-gray-icon.svg" alt="Calendar Image" />
                                         </span>
                                     </div><!-- Input Group -->
                                 </div><!-- Feild -->
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6" ng-show="$ctrl.show_assigned_to">
                                 <div class="separate-form-group">
                                     <label>Assigned To </label>
@@ -104,6 +112,8 @@
                                     <input type="text" class="form-control" name="completed_percentage" autocomplete="off" ng-model="$ctrl.module.completed_percentage">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6" ng-show="$ctrl.show_project">
                                 <div class="separate-form-group">
                                     <label>Project <sup class="mandatory">*</sup> </label>
@@ -147,7 +157,7 @@
                         <!--row-->
                         <div class="row">
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-rose" ng-click="">
+                                <button type="submit" class="btn btn-rose" ng-click="saveModule()">
                                     Submit
                                 </button>
                             </div>

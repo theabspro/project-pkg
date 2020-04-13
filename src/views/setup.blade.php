@@ -55,10 +55,10 @@
 	        title: 'Edit Phase',
 	    }).
 
-	    //VERSION
+	    //PROJECT VERSION
 	    when('/project-pkg/project-version/card-list', {
 	        template: '<project-version-card-list></project-version-card-list>',
-	        title: 'Project Versions Card List',
+	        title: 'Project Versions (Card List)',
 	    }).
 	    when('/project-pkg/project-version/list', {
 	        template: '<project-version-list></project-version-list>',
@@ -80,15 +80,15 @@
 	    //TASKS
 	    when('/project-pkg/task/module-developer-wise/:project_version_id?', {
 	        template: '<module-developer-wise-tasks></module-developer-wise-tasks>',
-	        title: 'Tasks / Module-Developer Wise',
+	        title: 'Tasks (Module-Developer Wise)',
 	    }).
 	    when('/project-pkg/task/user-date-wise', {
 	        template: '<user-date-wise-tasks></user-date-wise-tasks>',
-	        title: 'Tasks / User-Date Wise',
+	        title: 'Tasks (User-Date Wise)',
 	    }).
 	    when('/project-pkg/task/status-date-wise', {
 	        template: '<status-date-wise-tasks></status-date-wise-tasks>',
-	        title: 'Tasks / Status-Date Wise',
+	        title: 'Tasks (Status-Date Wise)',
 	    }).
 	    when('/project-pkg/task/list', {
 	        template: '<task-list></task-list>',
@@ -134,6 +134,7 @@
     var phase_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/phase/list.html')}}";
     var phase_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/phase/form.html')}}";
 
+    //PROJECT VERSIONS
     var project_version_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/card-list.html')}}";
     var project_version_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/list.html')}}";
     var project_version_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/form.html')}}";

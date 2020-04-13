@@ -3,7 +3,9 @@
         <div class="page-header-inner">
             <div class="page-header-content-left">
                 <div class="page-header-content title-block">
-                    <h1 class="title type-2">Employee Wise Tasks</h1>
+                    <h1 class="title type-2">
+                        Project Versions
+                    </h1>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
                     <button class="btn btn-bordered" data-toggle="modal" data-target="#project-filter-modal"><i class="icon ion-md-funnel"></i>Filter</button>
@@ -16,141 +18,95 @@
                         <li class="red">Inactive</li>
                     </ul>
                 </div><!-- Page Header Content -->
-                <div class="page-header-content search-block">
-                    <div class="search_filter">
-                        <label>
-                            <input type="search" id="search_project" class="form-control" placeholder="Search" />
-                            <button class="btn-clear" ng-click="clear_search()">Clear</button>
-                        </label>
-                    </div><!-- Search Filter -->
-                </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
-                    <a href="#!/project-pkg/project/add" class="btn btn-primary">Add New</a>
+                    <a href="javascript:;" ng-click="showProjectVersionForm({})" class="btn btn-primary">
+                        Add
+                    </a>
                 </div><!-- Page Header Content -->
             </div><!-- Page Header Content Right -->
         </div><!-- Page Header Inner -->
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label>Date Range</label>
-                    <div class="input-group date">
-                        <input class="form-control daterange align-left" placeholder="Select a Date Range" name="invoice_date" id="invoice_date" value="" autocomplete="off">
-                        <span class="input-group-addon">
-                            <img class="img-responsive" ng-src="{{theme}}/img/content/calender-gray-icon.svg" alt="Calendar Image" />
-                        </span>
-                    </div><!-- Input Group -->
-                </div><!-- Feild -->
-            </div>
-            <div class="col-md-3">
-                <div class="input-text form-group">
-                    <label>Employee</label>
-                    <md-select multiple ng-model="$ctrl.field_group_ids" placeholder="Select Field Group" data-md-container-class="selectdemoSelectHeader">
-                        <md-select-header class="demo-select-header">
-                            <md-button layout-fill value="all" ng-if="$ctrl.field_group_ids.length != $ctrl.extras.field_group_list.length" ng-click="selectAllFieldGroups()">SELECT ALL</md-button>
-                            <md-button layout-fill value="all" ng-if="$ctrl.field_group_ids.length == $ctrl.extras.field_group_list.length" ng-click="deselectAllFieldGroups()">DESELECT ALL</md-button>
-                            <!-- <input ng-model="searchRoles" type="search" placeholder="Search Role" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()"> -->
-                        </md-select-header>
-                        <md-optgroup label="Field Group List">
-                            <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.field_group_list | filter:searchTravel">{{type.name}}</md-option>
-                        </md-optgroup>
-                    </md-select>
-                    <input type="hidden" name="field_group_id" value='{{$ctrl.field_group_ids}}'>
-                </div><!-- Feild -->
-            </div><!-- Column -->
-            <div class="col-md-3">
-                <div class="input-text form-group">
-                    <label>Project</label>
-                    <md-select multiple ng-model="$ctrl.field_group_ids" placeholder="Select Field Group" data-md-container-class="selectdemoSelectHeader">
-                        <md-select-header class="demo-select-header">
-                            <md-button layout-fill value="all" ng-if="$ctrl.field_group_ids.length != $ctrl.extras.field_group_list.length" ng-click="selectAllFieldGroups()">SELECT ALL</md-button>
-                            <md-button layout-fill value="all" ng-if="$ctrl.field_group_ids.length == $ctrl.extras.field_group_list.length" ng-click="deselectAllFieldGroups()">DESELECT ALL</md-button>
-                            <!-- <input ng-model="searchRoles" type="search" placeholder="Search Role" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()"> -->
-                        </md-select-header>
-                        <md-optgroup label="Field Group List">
-                            <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.field_group_list | filter:searchTravel">{{type.name}}</md-option>
-                        </md-optgroup>
-                    </md-select>
-                    <input type="hidden" name="field_group_id" value='{{$ctrl.field_group_ids}}'>
-                </div><!-- Feild -->
-            </div><!-- Column -->
-            <div class="col-md-3">
-                <div class="input-text form-group">
-                    <label>Status</label>
-                    <md-select multiple ng-model="$ctrl.field_group_ids" placeholder="Select Field Group" data-md-container-class="selectdemoSelectHeader">
-                        <md-select-header class="demo-select-header">
-                            <md-button layout-fill value="all" ng-if="$ctrl.field_group_ids.length != $ctrl.extras.field_group_list.length" ng-click="selectAllFieldGroups()">SELECT ALL</md-button>
-                            <md-button layout-fill value="all" ng-if="$ctrl.field_group_ids.length == $ctrl.extras.field_group_list.length" ng-click="deselectAllFieldGroups()">DESELECT ALL</md-button>
-                            <!-- <input ng-model="searchRoles" type="search" placeholder="Search Role" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()"> -->
-                        </md-select-header>
-                        <md-optgroup label="Field Group List">
-                            <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.field_group_list | filter:searchTravel">{{type.name}}</md-option>
-                        </md-optgroup>
-                    </md-select>
-                    <input type="hidden" name="field_group_id" value='{{$ctrl.field_group_ids}}'>
-                </div><!-- Feild -->
-            </div><!-- Column -->
-        </div>
     </div><!-- Page Header -->
+    <h5>
+        {{$ctrl.project ? $ctrl.project.short_name: '' }}
+    </h5>
     <div class="page-main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3" ng-repeat="(key, employee) in $ctrl.employees">
+        <br />
+        <div class="container-fluid" style="overflow-x: scroll;">
+            <div style="width: 5000px;" class="row">
+                <div class="col-md-3" style="width: 100%; max-width: 350px; float: left;" ng-repeat="(key1, project_version) in $ctrl.project_versions" ng-click="viewProjectVersion(project_version)">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                {{employee.user.first_name}}
-                                {{employee.user.last_name}}
-                                <a href="javascript:;" ng-click="addTask({'employee':employee})" class="btn btn-primary pull-right">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                </a>
+                                {{project_version.project.short_name}} - {{project_version.number}}
+                                {{project_version.modules.length}}
                             </h3>
-                        </div>
-                        <hr />
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        12 Mar (Wed)
-                                        <a href="javascript:;" ng-click="addTask({'employee':employee})" class="btn btn-primary pull-right">
-                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                        </a>
-                                        <br />
-                                        <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
-                                        <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
-                                    </h3>
+                            <div>
+                                <div class="btn-group">
+                                    <a href="./#!/project-pkg/task/module-developer-wise/{{project_version.id}}" class="btn btn-sm btn-default" ng-click="showModuleForm({},$event)" title="View">
+                                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true">
+                                        </span>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-default" ng-click="showModuleForm({},$event)" title="Add Module">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true">
+                                        </span>
+                                    </button>
                                 </div>
-                                <ul class="list-group">
-                                    <li class="list-group-item list-group-item-success" ng-click="addTask({'employee':employee})">
-                                        <span class="label label-default">VIMS-V2.1</span>
-                                        <span class="label label-primary">EH : 3.5 Hrs</span>
-                                        <span class="label label-success">AH : 3.5 Hrs</span>
-                                        <span class="label label-danger">Bug</span>
-                                        <span class="label label-info">Employee Master</span>
-                                        <br />
-                                        TSK003 : Page crashed during save
-                                    </li>
-                                    <li class="list-group-item list-group-item-info">
-                                        <span class="label label-default">JVA-V1.0</span>
-                                        <span class="label label-primary">EH : 4.5 Hrs</span>
-                                        <span class="label label-success">AH : 6.0 Hrs</span>
-                                        <span class="label label-success">New</span>
-                                        <span class="label label-info">Project Management</span>
-                                        <br />
-                                        TSK001 : Field level discussion call with Sasi sir
-                                    </li>
-                                    <li class="list-group-item list-group-item-danger">
-                                        <span class="label label-default">GIGO-V1.0</span>
-                                        <span class="label label-primary">EH : 2 Hrs</span>
-                                        <span class="label label-success">AH : 1.5 Hrs</span>
-                                        <span class="label label-success">New</span>
-                                        <span class="label label-info">Project Management</span>
-                                        <br />
-                                        TSK002 : call with API development team
-                                    </li>
-                                </ul>
+                                <span class="label label-default">
+                                    {{project_version.status.name}}
+                                </span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="col-md-12" ng-if="project_version.modules.length == 0">
+                            <div class="alert alert-info">
+                                No modules found
+                            </div>
+                        </div>
+                        <div class="col-md-12" ng-repeat="(key, module) in project_version.modules" style="background-color: white">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <h5>
+                                            {{module.name}}
+                                            <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showTaskForm({},$event)" class="pull-right">
+                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                            </a>
+                                        </h5>
+                                        <span class="label label-info">
+                                            <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+                                            {{module.platform.name}}
+                                        </span>
+                                        <span class="label label-warning">
+                                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                                            {{module.start_date}} to {{module.end_date}}
+                                        </span>
+                                        <div>
+                                            <div class="progress" style="margin: 0;" ng-show="!module.toggleSlider">
+                                                <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="{{module.completed_percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{module.completed_percentage}}%;">
+                                                    {{module.completed_percentage}}%
+                                                </div>
+                                            </div>
+                                            <dnd-nodrag>
+                                                <md-slider-container ng-disabled="isDisabled">
+                                                    <md-slider ng-show="module.toggleSlider" min="0" max="100" id="slider-{{module.id}}" ng-readonly="true" ng-model="module.completed_percentage" aria-label="completed percentage" class="md-warn">
+                                                    </md-slider>
+                                                </md-slider-container>
+                                            </dnd-nodrag>
+                                        </div>
+                                        <span class="label label-danger">
+                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                                            {{module.duration}} Hrs.
+                                        </span>
+                                        <span class="label label-default">
+                                            {{module.status.name}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <user-card-list tasks="project_version.members"></user-card-list>
                                 <div class="panel-footer">
-                                    Tasks : 8 / EH : 8 / AH : 8.5
+                                    Tasks : {{date.tasks.length}} /
+                                    EH : {{date.total_estimated_hour}} /
+                                    AH : {{date.total_actual_hour}}
                                 </div>
                             </div>
                         </div>
@@ -163,125 +119,7 @@
         </div><!-- Container -->
     </div><!-- Page Main Content -->
 </div><!-- Content Wrap -->
-<!-- Task Form Modal -->
-<div class="modal fade filter" id="task-form-modal" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
-                <h5 class="modal-title" id="myModalLabel">Add Task</h5>
-            </div><!-- Modal Header -->
-            <div class="modal-body">
-                <div class="modal-form">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Task Date</label>
-                                <div class="input-group date">
-                                    <input class="form-control daterange align-left" placeholder="Select a Date Range" name="invoice_date" id="invoice_date" value="" autocomplete="off">
-                                    <span class="input-group-addon">
-                                        <img class="img-responsive" ng-src="{{theme}}/img/content/calender-gray-icon.svg" alt="Calendar Image" />
-                                    </span>
-                                </div><!-- Input Group -->
-                            </div><!-- Feild -->
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Assigned To</label>
-                                <input type="text" class="form-control" id="project_code" name="project_code" placeholder="Enter Project Code" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="input-text form-group">
-                                <label>Project</label>
-                                <md-select ng-model="$ctrl.type_id" placeholder="Select Type" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedType($ctrl.type_id)">
-                                    <md-select-header class="demo-select-header ng-hide">
-                                        <input ng-model="searchCategory" type="search" placeholder="Search for a Type" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
-                                    </md-select-header>
-                                    <md-optgroup label="Travel List">
-                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.type_list | filter:searchTravel">{{type.name}}</md-option>
-                                    </md-optgroup>
-                                </md-select>
-                                <input type="hidden" name="type_id" id="type_id" value="">
-                            </div><!-- Feild -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="input-text form-group">
-                                <label>Module</label>
-                                <md-select ng-model="$ctrl.type_id" placeholder="Select Type" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedType($ctrl.type_id)">
-                                    <md-select-header class="demo-select-header ng-hide">
-                                        <input ng-model="searchCategory" type="search" placeholder="Search for a Type" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
-                                    </md-select-header>
-                                    <md-optgroup label="Travel List">
-                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.type_list | filter:searchTravel">{{type.name}}</md-option>
-                                    </md-optgroup>
-                                </md-select>
-                                <input type="hidden" name="type_id" id="type_id" value="">
-                            </div><!-- Feild -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="input-text form-group">
-                                <label>Type</label>
-                                <md-select ng-model="$ctrl.type_id" placeholder="Select Type" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedType($ctrl.type_id)">
-                                    <md-select-header class="demo-select-header ng-hide">
-                                        <input ng-model="searchCategory" type="search" placeholder="Search for a Type" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
-                                    </md-select-header>
-                                    <md-optgroup label="Travel List">
-                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.type_list | filter:searchTravel">{{type.name}}</md-option>
-                                    </md-optgroup>
-                                </md-select>
-                                <input type="hidden" name="type_id" id="type_id" value="">
-                            </div><!-- Feild -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Subject</label>
-                                <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea class="form-control" id="mobile_no" name="mobile_no" autocomplete="off"></textarea>
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Estimated Hours</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Actual Hours</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="input-text form-group">
-                                <label>Status</label>
-                                <md-select ng-model="$ctrl.type_id" placeholder="Select Type" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedType($ctrl.type_id)">
-                                    <md-select-header class="demo-select-header ng-hide">
-                                        <input ng-model="searchCategory" type="search" placeholder="Search for a Type" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
-                                    </md-select-header>
-                                    <md-optgroup label="Travel List">
-                                        <md-option ng-value="type.id" ng-repeat="type in $ctrl.extras.type_list | filter:searchTravel">{{type.name}}</md-option>
-                                    </md-optgroup>
-                                </md-select>
-                                <input type="hidden" name="type_id" id="type_id" value="">
-                            </div><!-- Feild -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">
-                                Submit
-                            </button>
-                        </div>
-                    </div><!-- Row -->
-                </div><!-- Modal Form -->
-            </div><!-- Modal Body -->
-        </div><!-- Modal Content -->
-    </div><!-- Modal Dialog -->
-</div><!-- Modal -->
+<task-modal-form task="$ctrl.project_version"></task-modal-form>
 <!-- Filter Modal -->
 <div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">

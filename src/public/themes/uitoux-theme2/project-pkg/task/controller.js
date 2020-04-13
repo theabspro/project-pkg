@@ -1,6 +1,6 @@
 app.component('moduleDeveloperWiseTasks', {
     templateUrl: module_developer_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $route, $routeParams, $rootScope, $location, $mdSelect, $element) {
+    controller: function($http, $location, HelperService, $scope, $route, $routeParams, $rootScope, $location, $mdSelect) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -12,6 +12,10 @@ app.component('moduleDeveloperWiseTasks', {
         self.add_permission = self.hasPermission('add-task');
         self.theme = theme;
 
+        $scope.module_modal_form_template_url = module_modal_form_template_url;
+        $scope.task_modal_form_template_url = task_modal_form_template_url;
+        $scope.task_card_list_template_url = task_card_list_template_url;
+
         self.show_module = false;
         self.show_assigned_to = true;
         self.show_project_version = true;
@@ -21,6 +25,9 @@ app.component('moduleDeveloperWiseTasks', {
         self.module_types = ['module'];
         self.task_type = 'task';
         self.module_type = 'module';
+
+        self.module = {};
+        self.task = {};
         $http.get(
             laravel_routes['getModuleDeveloperWiseTasks'], {
                 params: {
@@ -46,13 +53,11 @@ app.component('moduleDeveloperWiseTasks', {
                     }
                 }
             }
-            console.log(self.extras);
         });
-
 
         $scope.showModuleForm = function(module) {
             $('#module-form-modal').modal('show');
-            $('#module-name').show();
+            $('#module-name').focus();
 
             self.module = module;
             if (self.project_version) {
@@ -67,28 +72,41 @@ app.component('moduleDeveloperWiseTasks', {
             if (self.module.id) {
                 return;
             }
+        }
+
+        $scope.showTaskForm = function(task) {
+            $('#task-form-modal').modal('show');
+            $('#task-subject').focus();
+            self.task = task;
+
+            console.log(self.task);
+            if (self.project_version) {
+                self.task.project_version = self.project_version;
+                self.task.project = self.project_version.project;
+                // self.show_project_version = false;
+                // self.show_project = false;
+            } else {
+                // self.show_project_version = true;
+                // self.show_project = true;
+            }
+
+            if (self.task.id) {
+                return;
+            }
+            self.task.date = HelperService.getCurrentDate();
 
             if (self.assigned_to) {
                 self.task.assigned_to = self.assigned_to;
-                self.show_assigned_to = false;
+                // self.show_assigned_to = false;
+            }
+
+            if (self.module) {
+                self.task.module = self.module;
+                // self.show_module = false;
+            } else {
+                // self.show_module = true;
             }
         }
-
-        $http.get(
-            laravel_routes['getTaskFormData']
-        ).then(function(response) {
-            if (!response.data.success) {
-                alert(response.data.users_list);
-                return;
-            }
-            console.log(response.data.users_list);
-            self.task = response.data.task;
-            self.users_list = response.data.users_list;
-            self.project_list = response.data.project_list;
-            self.task_type_list = response.data.task_type_list;
-            self.task_status_list = response.data.task_status_list;
-            self.module_status_list = response.data.module_status_list;
-        });
 
         $scope.updateModulePriority = function(module, index) {
             $http.post(

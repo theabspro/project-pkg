@@ -9,13 +9,16 @@
                     {{$ctrl.task.id ? 'Edit' : 'Add'}} Task
                     {{$ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+' / '+$ctrl.task.module.name+')' : ''}}
                 </h5>
+                <pre>
+                    {{$ctrl.task | json}}
+                </pre>
             </div><!-- Modal Header -->
             <form id="task_form">
                 <input type="hidden" name="id" value="{{$ctrl.task.id}}">
                 <div class="modal-body">
                     <div class="modal-form">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label>
                                         Subject
@@ -24,12 +27,16 @@
                                     <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off" id="task-subject">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Description</label>
                                     <textarea class="form-control" ng-model="$ctrl.task.description" name="description" autocomplete="off"></textarea>
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
@@ -56,6 +63,8 @@
                                     <input type="text" class="form-control" ng-model="$ctrl.task.estimated_hours" name="estimated_hours" autocomplete="off">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Actual Hours</label>
@@ -76,6 +85,8 @@
                                     <input type="hidden" name="assigned_to_id" id="assigned_to_id" value="{{$ctrl.task.assigned_to.id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
@@ -106,6 +117,8 @@
                                     </div><!-- Input Group -->
                                 </div><!-- Feild -->
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6" ng-show="$ctrl.show_project">
                                 <div class="separate-form-group">
                                     <label>Project <sup class="mandatory">*</sup> </label>
@@ -155,22 +168,24 @@
                                 </div><!-- Field -->
                             </div><!-- Column -->
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Remarks</label>
-                                <textarea class="form-control" ng-model="$ctrl.task.remarks" name="remarks" autocomplete="off"></textarea>
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                    </div><!-- Row -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button type="submit" class="btn btn-rose" ng-click="">
-                                Submit
-                            </button>
-                        </div>
-                    </div><!-- Row -->
-                </div><!-- Modal Form -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea class="form-control" ng-model="$ctrl.task.remarks" name="remarks" autocomplete="off"></textarea>
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose" ng-click="saveTask()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
             </form>
-        </div><!-- Modal Body -->
-    </div><!-- Modal Content -->
-</div><!-- Modal Dialog -->
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div>
