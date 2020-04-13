@@ -393,30 +393,31 @@ app.component('userWiseTasks', {
         });
 
         $scope.onSelectedProject = function(id) {
-            $http.post(
-                laravel_routes['getProjectVersionList'], {
-                    project_id: id,
-                }
-            ).then(function(response) {
-                // console.log(response);
-                self.project_version_list = response.data.project_version_list;
-            });
-        }
+     $http.post(
+         laravel_routes['getProjectVersionList'], {
+             project_id: id,
+         }
+     ).then(function(response) {
+         // console.log(response);
+         self.project_version_list = response.data.project_version_list;
+     });
+ }
 
-        $scope.onSelectedProjectVersion = function(id) {
-            $http.post(
-                laravel_routes['getProjectModuleList'], {
-                    version_id: id,
-                }
-            ).then(function(response) {
-                // console.log(response);
-                self.module_list = response.data.module_list;
-            });
-        }
-        $("input:text:visible:first").focus();
+ $scope.onSelectedProjectVersion = function(id) {
+     $http.post(
+         laravel_routes['getProjectModuleList'], {
+             version_id: id,
+         }
+     ).then(function(response) {
+         // console.log(response);
+         self.module_list = response.data.module_list;
+     });
+ }
 
-        var task_form = '#task_form';
-        var v = jQuery(task_form).validate({
+ $("input:text:visible:first").focus();
+
+ var task_form = '#task_form';
+ var v = jQuery(task_form).validate({
             ignore: '',
             rules: {
                 'date': {

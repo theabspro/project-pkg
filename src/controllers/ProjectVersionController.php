@@ -253,9 +253,10 @@ class ProjectVersionController extends Controller {
 	}
 
 	public function getProjectVersions(Request $r) {
+		//dd($r->all());
 		$this->data['success'] = true;
 		$this->data['project_versions'] =
-		collect(ProjectVersion::where('project_id', $r->project_id)->select('id', 'number')->get())->prepend(['id' => '', 'number' => 'Select Project Version'])
+		collect(ProjectVersion::where('project_id', $r->project_id)->select('id', 'number as name')->get())->prepend(['id' => '', 'name' => 'Select Project Version'])
 		;
 		return response()->json($this->data);
 	}
