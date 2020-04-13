@@ -1,0 +1,149 @@
+<div class="modal fade filter" id="project-version-form-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <h5 class="modal-title" id="myModalLabel">
+                    <% $ctrl.project_version.id ? 'Edit' : 'Add' %> Project Version
+                    <% $ctrl.project_version.id ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+')' : '' %>
+                </h5>
+            </div><!-- Modal Header -->
+            <form id="project_version_form">
+                <input type="hidden" name="id" value="<% $ctrl.project_version.id %>">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="separate-form-group">
+                                    <label>Project
+                                        <sup class="mandatory">*</sup></label>
+                                <ui-select ng-model="$ctrl.project_version.project_id" theme="select2">
+                                    <ui-select-match placeholder="Select Project Version">
+                                        <% $select.selected.short_name || $select.selected %>
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.projects | propsFilter: {short_name: $select.search}">
+                                        <div ng-bind-html="i.short_name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                    <input type="hidden" name="project_id" value='<% $ctrl.project_version.project_id %>' id="project_id" class="required">
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="input-text form-group">
+                                    <label>
+                                        Version Number
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control required" ng-model="$ctrl.project_version.number" name="number" placeholder="Enter Project Version Number" />
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-text form-group">
+                                    <label>
+                                        Description
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control required" ng-model="$ctrl.project_version.description" name="description" placeholder="Enter Project Description" />
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Discussion Started Date
+                                    </label>
+                                    <div class="input-group date projectVersionPicker" data-provide="datepicker">
+                                        <input type="text" name="discussion_started_date" ng-model="$ctrl.project_version.discussion_started_date" class="form-control" placeholder="Select Discussion Start Date" value="<% $ctrl.project_version.discussion_started_date %>" />
+                                        <div class="input-group-addon">
+                                            <img class="img-responsive" ng-src="<% theme %>img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                        </div>
+                                    </div><!-- Input Group -->
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Development Started Date
+                                    </label>
+                                    <div class="input-group date projectVersionPicker" data-provide="datepicker">
+                                        <input type="text" name="development_started_date" ng-model="$ctrl.project_version.development_started_date" class="form-control" placeholder="Select Development Start Date" value="<% $ctrl.project_version.development_started_date %>" />
+                                        <div class="input-group-addon">
+                                            <img class="img-responsive" ng-src="<% theme %>img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                        </div>
+                                    </div><!-- Input Group -->
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Estimated End Date
+                                    </label>
+                                    <div class="input-group date projectVersionPicker" data-provide="datepicker">
+                                        <input type="text" name="estimated_end_date" ng-model="$ctrl.project_version.estimated_end_date" class="form-control" placeholder="Select Estimated End Date" value="<% $ctrl.project_version.estimated_end_date %>" />
+                                        <div class="input-group-addon">
+                                            <img class="img-responsive" ng-src="<% theme %>img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                        </div>
+                                    </div><!-- Input Group -->
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-text form-group">
+                                    <label>Status
+                                        <sup class="mandatory">*</sup></label>
+                                        <ui-select ng-model="$ctrl.project_version.status_id" theme="select2">
+                                    <ui-select-match placeholder="Select Project Version">
+                                        <% $select.selected.name || $select.selected %>
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.project_statuses | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                    <input type="hidden" name="status_id" value='<% $ctrl.project_version.status_id %>' class="required">
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="input-text form-group">
+                                    <label>
+                                        Display Order
+                                    </label>
+                                    <input type="text" class="form-control" ng-model="$ctrl.project_version.display_order" name="display_order" placeholder="Enter Display Order" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-text form-group">
+                                    <label>
+                                        Active Status
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <div class="tab-switch">
+                                        <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                            <%  $ctrl.switch_value  %>
+                                        </md-switch>
+                                        <input type="hidden" name="status" value="<% $ctrl.switch_value %>">
+                                    </div>
+                                </div><!-- Form Group -->
+                            </div><!-- Column -->
+                        </div>
+                        <!--row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose" ng-click="saveProjectVerison()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->

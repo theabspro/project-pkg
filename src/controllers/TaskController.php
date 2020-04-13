@@ -186,7 +186,6 @@ class TaskController extends Controller {
 			$date = date('Y-m-d');
 			$date_label = date('d D');
 		}
-
 		foreach ($statuses as $status) {
 			$dates = [];
 			$dates[0] = [
@@ -213,17 +212,50 @@ class TaskController extends Controller {
 
 			$status->dates = $dates;
 
-			$status->unplanned_tasks = $query2->where([
-				'status_id' => $status->id,
-			])
+			$status->unplanned_tasks = $query2
+				->where('status_id', $status->id)
 				->whereNull('date')
 				->get();
 		}
-
+		$all_statuses = collect($this->getAllStatusTasksByDate($date, $date_label));
+		$statuses = collect($statuses)->prepend($all_statuses);
 		return response()->json([
 			'success' => true,
 			'statuses' => $statuses,
 		]);
+	}
+
+	public function getAllStatusTasksByDate($date, $date_label) {
+		$status = new Status;
+		$status->name = "All Tasks";
+		$dates = [];
+		$dates[0] = [
+			'date' => $date,
+			'date_label' => $date_label,
+		];
+		$query1 = Task::with([
+			'module',
+			'module.projectVersion',
+			'module.projectVersion.project',
+			'status',
+			'type',
+		])
+		;
+		$query2 = clone $query1;
+
+		$dates[0]['tasks'] = $query1
+			->where([
+				'date' => $date,
+			])
+			->get();
+
+		$status->dates = $dates;
+
+		$status->unplanned_tasks = $query2
+			->whereNull('date')
+			->get();
+
+		return $status;
 	}
 
 	public function getTaskList(Request $request) {
@@ -366,15 +398,24 @@ class TaskController extends Controller {
 			}
 
 			DB::beginTransaction();
-			if (!$request->id) {
+			//ADD & EDIT TYPE
+			if (!$request->type_id) {
+				if (!$request->id) {
+					$task = new Task;
+					$task->created_by_id = Auth::user()->id;
+					$task->created_at = Carbon::now();
+					$task->updated_at = NULL;
+				} else {
+					$task = Task::withTrashed()->find($request->id);
+					$task->updated_by_id = Auth::user()->id;
+					$task->updated_at = Carbon::now();
+				}
+			} else {
+				//DUPLICATE TYPE
 				$task = new Task;
 				$task->created_by_id = Auth::user()->id;
 				$task->created_at = Carbon::now();
 				$task->updated_at = NULL;
-			} else {
-				$task = Task::withTrashed()->find($request->id);
-				$task->updated_by_id = Auth::user()->id;
-				$task->updated_at = Carbon::now();
 			}
 			$task->number = rand(1, 100000);
 			$task->fill($request->all());
@@ -390,16 +431,26 @@ class TaskController extends Controller {
 			$task->number = 'TSK-' . $task->id;
 			$task->save();
 			DB::commit();
-			if (!($request->id)) {
-				return response()->json([
-					'success' => true,
-					'message' => 'Task Details Added Successfully',
-					'task' => $task,
-				]);
+			//ADD & EDIT TYPE
+			if (!$request->type_id) {
+				if (!($request->id)) {
+					return response()->json([
+						'success' => true,
+						'message' => 'Task Details Added Successfully',
+						'task' => $task,
+					]);
+				} else {
+					return response()->json([
+						'success' => true,
+						'message' => 'Task Details Updated Successfully',
+					]);
+				}
 			} else {
+				//DUPLICATE TYPE
 				return response()->json([
 					'success' => true,
-					'message' => 'Task Details Updated Successfully',
+					'message' => 'Duplicate Task Details created Successfully',
+					'task' => $task,
 				]);
 			}
 		} catch (Exceprion $e) {

@@ -1,5 +1,5 @@
 <ul class="list-group" dnd-list="tasks" dnd-allowed-types="['task']">
-    <li ng-if="tasks.length != 0" ng-repeat="(key2, task) in tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="tasks.splice(key2, 1)">
+    <li ng-if="tasks.length != 0" ng-repeat="(key2, task) in tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task, 0)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="tasks.splice(key2, 1)">
         <span class="label label-primary">
             <md-tooltip md-direction="top">
                 Project
@@ -61,7 +61,8 @@
             <span class="glyphicon glyphicon-trash pull-right" aria-hidden="true">
             </span>
         </a>
-        <a href="javascript:;" ng-click="duplicateTask(task,$event,tasks,key2)">
+        <!-- <a href="javascript:;" ng-click="duplicateTask(task,$event,tasks,key2)"> -->
+        <a href="javascript:;" ng-click="showTaskForm(task,1,$event,tasks,key2)">
             <md-tooltip md-direction="top">
                 Clone Task
             </md-tooltip>
