@@ -222,10 +222,136 @@ app.component('statusDateWiseTasks', {
             self.project_list = response.data.project_list;
             self.task_type_list = response.data.task_type_list;
         });
+        $scope.onSelectedProject = function(id) {
+            $http.post(
+                laravel_routes['getProjectVersionList'], {
+                    project_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                self.project_version_list = response.data.project_version_list;
+            });
+        }
 
+        $scope.onSelectedProjectVersion = function(id) {
+            $http.post(
+                laravel_routes['getProjectModuleList'], {
+                    version_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                self.module_list = response.data.module_list;
+            });
+        }
 
         $("input:text:visible:first").focus();
 
+        var task_form = '#task_form';
+        var v = jQuery(task_form).validate({
+            ignore: '',
+            rules: {
+                'date': {
+                    required: true,
+                },
+                'assigned_to_id': {
+                    required: true,
+                },
+                'project_id': {
+                    required: true,
+                },
+                'subject': {
+                    required: true,
+                },
+                'estimated_hours': {
+                    required: true,
+                    number: true,
+                },
+                'actual_hours': {
+                    required: true,
+                    number: true,
+                },
+            },
+            submitHandler: function(form) {
+                let formData = new FormData($(task_form)[0]);
+                $('#submit').button('loading');
+                $.ajax({
+                        url: laravel_routes['saveTask'],
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                    })
+                    .done(function(res) {
+                        if (res.success == true) {
+                            custom_noty('success', res.message);
+                            $location.path('/project-pkg/task/card-list');
+                            $scope.$apply();
+                        } else {
+                            if (!res.success == true) {
+                                $('#submit').button('reset');
+                                var errors = '';
+                                for (var i in res.errors) {
+                                    errors += '<li>' + res.errors[i] + '</li>';
+                                }
+                                custom_noty('error', errors);
+                            } else {
+                                $('#submit').button('reset');
+                                $('#task-form-modal').modal('hide');
+                                $location.path('/project-pkg/task/card-list');
+                                $scope.$apply();
+                            }
+                        }
+                    })
+                    .fail(function(xhr) {
+                        $('#submit').button('reset');
+                        custom_noty('error', 'Something went wrong at server');
+                    });
+            }
+        });
+
+        //DELETE
+        $scope.deleteProject = function($id) {
+            $('#task_id').val($id);
+        }
+        $scope.deleteConfirm = function() {
+            $id = $('#task_id').val();
+            $http.get(
+                laravel_routes['deleteProject'], {
+                    params: {
+                        id: $id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Project Deleted Successfully');
+                    $('#tasks_list').DataTable().ajax.reload(function(json) {});
+                    $location.path('/project-pkg/task/list');
+                }
+            });
+        }
+
+
+        $scope.onSelectedProject = function(id) {
+            $http.post(
+                laravel_routes['getProjectVersionList'], {
+                    project_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                self.project_version_list = response.data.project_version_list;
+            });
+        }
+
+        $scope.onSelectedProjectVersion = function(id) {
+            $http.post(
+                laravel_routes['getProjectModuleList'], {
+                    version_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                self.module_list = response.data.module_list;
+            });
+        }
         $rootScope.loading = false;
     }
 });
