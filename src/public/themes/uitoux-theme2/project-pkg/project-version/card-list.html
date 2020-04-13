@@ -38,7 +38,7 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 {{project_version.project.short_name}} - {{project_version.number}}
-                                {{project_version.modules.length}}
+                                ({{project_version.modules.length}} Modules)
                             </h3>
                             <div>
                                 <div class="btn-group">
@@ -66,12 +66,12 @@
                             <div class="panel panel-info">
                                 <div class="panel-heading">
                                     <div class="panel-title">
-                                        <h5>
+                                        <h6>
                                             {{module.name}}
                                             <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showTaskForm({},$event)" class="pull-right">
                                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                             </a>
-                                        </h5>
+                                        </h6>
                                         <span class="label label-info">
                                             <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
                                             {{module.platform.name}}

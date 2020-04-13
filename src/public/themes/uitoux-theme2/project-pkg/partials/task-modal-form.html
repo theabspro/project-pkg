@@ -9,9 +9,6 @@
                     {{$ctrl.task.id ? 'Edit' : 'Add'}} Task
                     {{$ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+' / '+$ctrl.task.module.name+')' : ''}}
                 </h5>
-                <pre>
-                    {{$ctrl.task | json}}
-                </pre>
             </div><!-- Modal Header -->
             <form id="task_form">
                 <input type="hidden" name="id" value="{{$ctrl.task.id}}">

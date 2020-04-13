@@ -120,7 +120,7 @@ class TaskController extends Controller {
 			->orderBy('first_name')
 			->get();
 
-		$request->date = '2020-04-10';
+		// $request->date = '2020-04-10';
 		if ($request->date) {
 			$date = date('Y-m-d', strtotime($request->date));
 			$date_label = date('d D', strtotime($date));
@@ -178,7 +178,7 @@ class TaskController extends Controller {
 			->orderBy('display_order')
 			->get();
 
-		$request->date = '2020-04-10';
+		// $request->date = '2020-04-10';
 		if ($request->date) {
 			$date = date('Y-m-d', strtotime($request->date));
 			$date_label = date('d D', strtotime($date));
