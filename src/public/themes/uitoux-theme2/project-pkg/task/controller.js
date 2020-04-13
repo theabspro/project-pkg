@@ -74,6 +74,10 @@ app.component('moduleDeveloperWiseTasks', {
             }
         }
 
+        $('.refresh_table').on("click", function() {
+            $route.reload();
+        });
+
         $scope.showTaskForm = function(task, type_id) {
             // console.log(' == type_id ===='+type_id);
             $('#task-form-modal').modal('show');

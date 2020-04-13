@@ -217,7 +217,7 @@ class TaskController extends Controller {
 				->whereNull('date')
 				->get();
 		}
-		$all_statuses = collect($this->getAllStatusTasks($date, $date_label));
+		$all_statuses = collect($this->getAllStatusTasksByDate($date, $date_label));
 		$statuses = collect($statuses)->prepend($all_statuses);
 		return response()->json([
 			'success' => true,
@@ -225,7 +225,7 @@ class TaskController extends Controller {
 		]);
 	}
 
-	public function getAllStatusTasks($date, $date_label) {
+	public function getAllStatusTasksByDate($date, $date_label) {
 		$status = new Status;
 		$status->name = "All Tasks";
 		$dates = [];
