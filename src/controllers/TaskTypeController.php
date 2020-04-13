@@ -30,11 +30,11 @@ class TaskTypeController extends Controller {
 				DB::raw('IF(task_types.deleted_at IS NULL, "Active","Inactive") as status'),
 			])
 			->where('task_types.company_id', Auth::user()->company_id)
-			->where(function ($query) use ($request) {
-				if (!empty($request->color)) {
-					$query->where('task_types.color', 'LIKE', '%' . $request->color . '%');
-				}
-			})
+		// ->where(function ($query) use ($request) {
+		// 	if (!empty($request->color)) {
+		// 		$query->where('task_types.color', 'LIKE', '%' . $request->color . '%');
+		// 	}
+		// })
 			->where(function ($query) use ($request) {
 				if (!empty($request->name)) {
 					$query->where('task_types.name', 'LIKE', '%' . $request->name . '%');

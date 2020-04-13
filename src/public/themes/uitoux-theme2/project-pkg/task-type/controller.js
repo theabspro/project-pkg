@@ -46,7 +46,7 @@ app.component('taskTypeList', {
                 dataType: "json",
                 data: function(d) {
                     d.name = $('#name').val();
-                    d.color = $('#color').val();
+                    // d.color = $('#color').val();
                     d.display_order = $('#display_order').val();
                     d.status = $('#status').val();
                 },
@@ -125,9 +125,9 @@ app.component('taskTypeList', {
         $('#name').on('keyup', function() {
             dataTables.fnFilter();
         });
-        $('#color').on('keyup', function() {
-            dataTables.fnFilter();
-        });
+        // $('#color').on('keyup', function() {
+        //     dataTables.fnFilter();
+        // });
         $('#display_order').on('keyup', function() {
             dataTables.fnFilter();
         });
@@ -138,7 +138,7 @@ app.component('taskTypeList', {
         }
         $scope.reset_filter = function() {
             $("#name").val('');
-            $("#color").val('');
+            // $("#color").val('');
             $("#display_order").val('');
             $("#status").val('');
             dataTables.fnFilter();
