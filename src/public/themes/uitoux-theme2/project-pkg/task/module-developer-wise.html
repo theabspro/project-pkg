@@ -131,7 +131,8 @@
                                         </a>
                                     </h3>
                                 </div>
-                                <div ng-include="task_card_list_template_url"></div>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = module.unassigned_tasks"></ng-include>
+                                <!-- <ng-include src="task_card_list_template_url" ng-init="task"></ng-include> -->
                                 <!-- <task-card-list tasks="module.unassigned_tasks"></task-card-list> -->
                                 <div class="panel-footer">
                                     Tasks : 8 / EH : 8 / AH : 8.5
@@ -165,7 +166,8 @@
                                         </span>
                                     </h3>
                                 </div>
-                                <ul class="list-group" dnd-list="developer.tasks" dnd-allowed-types="['task']">
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = developer.tasks"></ng-include>
+                                <!--                                 <ul class="list-group" dnd-list="developer.tasks" dnd-allowed-types="['task']">
                                     <li ng-if="developer.tasks.length != 0" ng-repeat="(key2, task) in developer.tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="developer.tasks.splice(key2, 1)">
                                         <div ng-include="task_card_list_template_url"></div>
                                     </li>
@@ -176,6 +178,7 @@
                                         Drop any <strong>Task</strong> here
                                     </li>
                                 </ul>
+ -->
                                 <!-- <task-card-list tasks="developer.tasks" task="$ctrl.task" showTaskForm="showTaskForm(task)"></task-card-list> -->
                                 <div class="panel-footer">
                                     Tasks : {{developer.tasks.length}} /
