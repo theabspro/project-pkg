@@ -246,6 +246,9 @@ class ProjectVersionController extends Controller {
 				$project_version->deleted_by_id = NULL;
 				$project_version->deleted_at = NULL;
 			}
+			if ($request->display_order == NULL) {
+				$project_version->display_order = 999;
+			}
 			$project_version->save();
 			DB::commit();
 			if (!($request->id)) {

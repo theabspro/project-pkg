@@ -21,6 +21,7 @@ class ProjectVersion extends Model {
 		'discussion_started_date',
 		'development_started_date',
 		'estimated_end_date',
+		'display_order',
 		'status_id',
 	];
 
