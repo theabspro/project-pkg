@@ -74,11 +74,16 @@ app.component('moduleDeveloperWiseTasks', {
             }
         }
 
-        $scope.showTaskForm = function(task) {
+        $scope.showTaskForm = function(task, type_id) {
+            // console.log(' == type_id ===='+type_id);
             $('#task-form-modal').modal('show');
             $('#task-subject').focus();
             self.task = task;
-
+            if(!type_id || type_id == ''){
+                self.task.type_id = 0;                
+            }else{
+                self.task.type_id = type_id;
+            }
             console.log(self.task);
             if (self.project_version) {
                 self.task.project_version = self.project_version;

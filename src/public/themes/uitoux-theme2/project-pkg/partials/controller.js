@@ -103,10 +103,11 @@ app.directive('taskModalForm', function() {
         controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = theme;
-
+// console.log(' ==== task modal ===');
             $http.get(
                 laravel_routes['getTaskFormData']
             ).then(function(response) {
+// console.log(' ==== response ==='+response);
                 if (!response.data.success) {
                     alert(response.data.users_list);
                     return;
@@ -162,6 +163,7 @@ app.directive('taskModalForm', function() {
                     submitHandler: function(form) {
                         let formData = new FormData($(task_form)[0]);
                         $('#submit').button('loading');
+                        console.log(' === saveTask ====');
                         $.ajax({
                                 url: laravel_routes['saveTask'],
                                 method: "POST",
