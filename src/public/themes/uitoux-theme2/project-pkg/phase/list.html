@@ -1,0 +1,176 @@
+<div class="content-wrap cndn-wrap">
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content title-block">
+                    <h1 class="title type-2">Phases</h1>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content button-block">
+                    <button class="btn btn-bordered" data-toggle="modal" data-target="#phase-filter-modal"><i class="icon ion-md-funnel"></i>Filter</button>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Left -->
+            <div class="page-header-content-right">
+                <div class="page-header-content indicator-block">
+                    <ul class="indicator-list">
+                        <li class="green">Active</li>
+                        <li class="red">Inactive</li>
+                    </ul>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content search-block">
+                    <div class="search_filter">
+                        <label>
+                            <input type="search" id="search_phase" class="form-control" placeholder="Search" />
+                            <button class="btn-clear" ng-click="clear_search()">Clear</button>
+                        </label>
+                    </div><!-- Search Filter -->
+                </div><!-- Page Header Content -->
+                <div class="page-header-content button-block">
+                    <a href="#!/project-pkg/phase/add" class="btn btn-primary">Add New</a>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Right -->
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+    <div class="page-main-content list-page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table" id="phase_list" style="width: 100% !important;">
+                        <thead>
+                            <tr>
+                                <th class="action">Action</th>
+                                <th>Project Name</th>
+                                <th>Number</th>
+                                <th>Modules</th>
+                                <th>Git Branch Name</th>
+                                <th>Credential Name</th>
+                                <th>Status Name</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div><!-- Column -->
+            </div><!-- Row -->
+        </div><!-- Container -->
+    </div><!-- Page Main Content -->
+</div><!-- Content Wrap -->
+<!-- Filter Modal -->
+<div class="modal fade filter" id="phase-filter-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
+                <h5 class="modal-title" id="myModalLabel">Phase Filter</h5>
+            </div><!-- Modal Header -->
+            <div class="modal-body">
+                <div class="modal-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Project</label>
+                                <md-select ng-model="$ctrl.phase_filter.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchProject()" ng-change="onSelectedProject($ctrl.phase_filter.project_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup label="project">
+                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.extras.projects | filter:searchProject">
+                                            {{project.name}}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="project_id" id="project_id" value='{{$ctrl.phase_filter.project_id}}' class="required">
+                            </div><!-- Feild -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Git Branch</label>
+                                <md-select ng-model="$ctrl.phase_filter.branch_id" placeholder="Select Git Branch" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchBranch()" ng-change="onSelectedBranch($ctrl.phase_filter.branch_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchBranch" type="search" placeholder="Search for a Git Branch" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup label="git_branch">
+                                        <md-option ng-value="git_branch.id" ng-repeat="git_branch in $ctrl.extras.git_branches | filter:searchBranch">
+                                            {{git_branch.name}}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="branch_id" id="branch_id" value='{{$ctrl.phase_filter.branch_id}}' class="required">
+                            </div><!-- Feild -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Credential</label>
+                                <md-select ng-model="$ctrl.phase_filter.credential_id" placeholder="Select Credential" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchCredential()" ng-change="onSelectedCredential($ctrl.phase_filter.credential_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchCredential" type="search" placeholder="Search for a Credential" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup label="credential">
+                                        <md-option ng-value="credential.id" ng-repeat="credential in $ctrl.extras.credentials | filter:searchCredential">
+                                            {{credential.name}}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="credential_id" id="credential_id" value='{{$ctrl.phase_filter.credential_id}}' class="required">
+                            </div><!-- Feild -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <md-select ng-model="$ctrl.phase_filter.status_id" placeholder="Select Status" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchStatus()" ng-change="onSelectedStatus($ctrl.phase_filter.status_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchStatus" type="search" placeholder="Search for a Status" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup label="status">
+                                        <md-option ng-value="status.id" ng-repeat="status in $ctrl.extras.statuses | filter:searchStatus">
+                                            {{status.name}}
+                                        </md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="status_id" id="status_id" value='{{$ctrl.phase_filter.status_id}}' class="required">
+                            </div><!-- Feild -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Number</label>
+                                <input type="text" class="form-control" id="number" name="number" placeholder="Enter number" autocomplete="off">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Active Status</label>
+                                <md-select ng-model="$ctrl.phase_filter.active_status_id" placeholder="Select Active Status" md-on-close="clearSearchActiveStatus()" data-md-container-class="selectdemoSelectHeader" ng-change="onSelectedActiveStatus($ctrl.phase_filter.active_status_id)">
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="searchActiveStatus" type="search" placeholder="Search for a Active Status.." class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                    </md-select-header>
+                                    <md-optgroup>
+                                        <md-option ng-value="i.id" ng-repeat="i in $ctrl.active_status | filter:searchStatus">{{i.name}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                                <input type="hidden" name="status" id="status" value="">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
+                        </div>
+                    </div><!-- Row -->
+                </div><!-- Modal Form -->
+            </div><!-- Modal Body -->
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_phase" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="phase_id" id="phase_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->

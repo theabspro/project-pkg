@@ -1,25 +1,18 @@
-app.component('statusList', {
-    templateUrl: status_list_template_url,
+app.component('taskTypeList', {
+    templateUrl: task_type_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element) {
         $scope.loading = true;
         var self = this;
-        $('#search_status').focus();
+        $('#search_task_type').focus();
         self.hasPermission = HelperService.hasPermission;
-        // if (!self.hasPermission('statuses')) {
-        //     window.location = "#!/page-permission-denied";
-        //     return false;
-        // }
-        $http.get(
-            laravel_routes['getStatusFilterData']
-        ).then(function(response) {
-            // console.log(response.data);
-            self.type_list = response.data.type_list;
-            $rootScope.loading = false;
-        });
-        self.add_permission = self.hasPermission('add-status');
+        if (!self.hasPermission('task-types')) {
+            window.location = "#!/page-permission-denied";
+            return false;
+        }
+        self.add_permission = self.hasPermission('add-task-type');
         var table_scroll;
         table_scroll = $('.page-main-content.list-page-content').height() - 37;
-        var dataTable = $('#statuses_list').DataTable({
+        var dataTable = $('#task_types_list').DataTable({
             "dom": cndn_dom_structure,
             "language": {
                 // "search": "",
@@ -38,7 +31,7 @@ app.component('statusList', {
             stateLoadCallback: function(settings) {
                 var state_save_val = JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
                 if (state_save_val) {
-                    $('#search_status').val(state_save_val.search.search);
+                    $('#search_task_type').val(state_save_val.search.search);
                 }
                 return JSON.parse(localStorage.getItem('CDataTables_' + settings.sInstance));
             },
@@ -48,22 +41,22 @@ app.component('statusList', {
             scrollY: table_scroll + "px",
             scrollCollapse: true,
             ajax: {
-                url: laravel_routes['getStatusList'],
+                url: laravel_routes['getTaskTypeList'],
                 type: "GET",
                 dataType: "json",
                 data: function(d) {
                     d.name = $('#name').val();
                     d.color = $('#color').val();
-                    d.type_id = $('#type_id').val();
+                    d.display_order = $('#display_order').val();
                     d.status = $('#status').val();
                 },
             },
 
             columns: [
                 { data: 'action', class: 'action', name: 'action', searchable: false },
-                { data: 'type_name', name: 'type.name' },
-                { data: 'name', name: 'statuses.name' },
-                { data: 'color', name: 'statuses.color' },
+                { data: 'name', name: 'task_types.name' },
+                { data: 'color', name: 'task_types.color' },
+                { data: 'display_order', name: 'task_types.display_order' },
             ],
             "infoCallback": function(settings, start, end, max, total, pre) {
                 $('#table_info').html(total)
@@ -76,37 +69,36 @@ app.component('statusList', {
         $('.dataTables_length select').select2();
 
         $('.refresh_table').on("click", function() {
-            $('#statuses_list').DataTable().ajax.reload();
+            $('#task_types_list').DataTable().ajax.reload();
         });
 
         $scope.clear_search = function() {
-            $('#search_status').val('');
-            $('#statuses_list').DataTable().search('').draw();
+            $('#search_task_type').val('');
+            $('#task_types_list').DataTable().search('').draw();
         }
 
-        var dataTables = $('#statuses_list').dataTable();
-        $("#search_status").keyup(function() {
-            console.log(this.value);
+        var dataTables = $('#task_types_list').dataTable();
+        $("#search_task_type").keyup(function() {
             dataTables.fnFilter(this.value);
         });
 
         //DELETE
-        $scope.deleteStatus = function($id) {
-            $('#status_id').val($id);
+        $scope.deleteTaskType = function($id) {
+            $('#task_type_id').val($id);
         }
         $scope.deleteConfirm = function() {
-            $id = $('#status_id').val();
+            $id = $('#task_type_id').val();
             $http.get(
-                laravel_routes['deleteStatus'], {
+                laravel_routes['deleteTaskType'], {
                     params: {
                         id: $id,
                     }
                 }
             ).then(function(response) {
                 if (response.data.success) {
-                    custom_noty('success', 'Status Deleted Successfully');
-                    $('#statuses_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('/status-pkg/status/list');
+                    custom_noty('success', 'Task Types Deleted Successfully');
+                    $('#task_types_list').DataTable().ajax.reload(function(json) {});
+                    $location.path('/project-pkg/task-type/list');
                 }
             });
         }
@@ -130,26 +122,24 @@ app.component('statusList', {
             }
         });
 
-
         $('#name').on('keyup', function() {
             dataTables.fnFilter();
         });
         $('#color').on('keyup', function() {
             dataTables.fnFilter();
         });
-        $scope.onselectType = function(id) {
-            $('#type_id').val(id);
+        $('#display_order').on('keyup', function() {
             dataTables.fnFilter();
-        }
+        });
 
         $scope.onSelectedStatus = function(val) {
             $("#status").val(val);
             dataTables.fnFilter();
         }
         $scope.reset_filter = function() {
-            $("#type_id").val('');
             $("#name").val('');
             $("#color").val('');
+            $("#display_order").val('');
             $("#status").val('');
             dataTables.fnFilter();
         }
@@ -159,52 +149,45 @@ app.component('statusList', {
 });
 //------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
-app.component('statusForm', {
-    templateUrl: status_form_template_url,
+app.component('taskTypeForm', {
+    templateUrl: task_type_form_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope) {
         var self = this;
         self.hasPermission = HelperService.hasPermission;
-        if (!self.hasPermission('add-status') || !self.hasPermission('edit-status')) {
+        if (!self.hasPermission('add-task-type') || !self.hasPermission('edit-task-type')) {
             window.location = "#!/page-permission-denied";
             return false;
         }
         self.angular_routes = angular_routes;
+        $scope.color_picker_options = color_picker_options;
         $http.get(
-            laravel_routes['getStatusFormData'], {
+            laravel_routes['getTaskTypeFormData'], {
                 params: {
                     id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
                 }
             }
         ).then(function(response) {
-            // console.log(response);
-            self.status = response.data.status;
-            console.log(self.status);
-            self.type_list = response.data.type_list;
+            self.task_type = response.data.task_type;
             self.action = response.data.action;
             $rootScope.loading = false;
             if (self.action == 'Edit') {
-                if (self.status.deleted_at) {
+                if (self.task_type.deleted_at) {
                     self.switch_value = 'Inactive';
                 } else {
                     self.switch_value = 'Active';
                 }
-                console.log(response.data.status);
-
             } else {
                 self.switch_value = 'Active';
             }
         });
+        self.image_back = image_scr3;
 
-
-        //$("input:select:visible:first").focus();
+        $("input:text:visible:first").focus();
 
         var form_id = '#form';
         var v = jQuery(form_id).validate({
             ignore: '',
             rules: {
-                'type_id': {
-                    required: true,
-                },
                 'name': {
                     required: true,
                     minlength: 3,
@@ -216,11 +199,21 @@ app.component('statusForm', {
                     maxlength: 255,
                 },
             },
+            messages: {
+                'name': {
+                    minlength: 'Minimum 3 Characters',
+                    maxlength: 'Maximum 191 Characters',
+                },
+                'color': {
+                    minlength: 'Minimum 3 Characters',
+                    maxlength: 'Maximum 255 Characters',
+                },
+            },
             submitHandler: function(form) {
                 let formData = new FormData($(form_id)[0]);
                 $('#submit').button('loading');
                 $.ajax({
-                        url: laravel_routes['saveStatus'],
+                        url: laravel_routes['saveTaskType'],
                         method: "POST",
                         data: formData,
                         processData: false,
@@ -229,7 +222,7 @@ app.component('statusForm', {
                     .done(function(res) {
                         if (res.success == true) {
                             custom_noty('success', res.message);
-                            $location.path('/status-pkg/status/list');
+                            $location.path('/project-pkg/task-type/list');
                             $scope.$apply();
                         } else {
                             $('#submit').button('reset');

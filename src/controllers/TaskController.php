@@ -95,35 +95,132 @@ class TaskController extends Controller {
 		]);
 	}
 
-	public function getUsetWiseTasks(Request $request) {
+	public function getUserDateWiseTasks(Request $request) {
+		$unassigned_tasks = Task::with([
+			'module',
+			'module.projectVersion',
+			'module.projectVersion.project',
+			'status',
+			'type',
+		])
+			->whereNull('assigned_to_id')
+		// ->whereNull('date')
+			->get()
+		;
+
 		$users = User::with([
-		])->company()->get();
+			'employee',
+			'employee.designation',
+		])
+			->where([
+				'user_type_id' => 1,
+			])
+			->company()
+			->orderBy('first_name')
+			->get();
+
+		$request->date = '2020-04-10';
+		if ($request->date) {
+			$date = date('Y-m-d', strtotime($request->date));
+			$date_label = date('d D', strtotime($date));
+		} else {
+			$date = date('Y-m-d');
+			$date_label = date('d D');
+		}
+
 		foreach ($users as $user) {
-			$tasks = [];
-			$tasks[0] = new Task();
-			$tasks[0]->version = 'VIMS-V2.1';
-			$tasks[0]->eh = '3.5';
-			$tasks[0]->ah = '3.5';
-			$tasks[0]->type = 'Bug';
-			$tasks[0]->module_name = 'Employee Master';
-			$tasks[0]->number = 'TSK003';
-			$tasks[0]->subject = 'Page crashed during save';
+			$dates = [];
+			$dates[0] = [
+				'date' => $date,
+				'date_label' => $date_label,
+			];
+			$query1 = Task::with([
+				'module',
+				'module.projectVersion',
+				'module.projectVersion.project',
+				'status',
+				'type',
+			])
+			;
+			$query2 = clone $query1;
 
-			$tasks[1] = new Task();
-			$tasks[1]->version = 'VIMS-V2.1';
-			$tasks[1]->eh = '3.5';
-			$tasks[1]->ah = '3.5';
-			$tasks[1]->type = 'Bug';
-			$tasks[1]->module_name = 'Employee Master';
-			$tasks[1]->number = 'TSK003';
-			$tasks[1]->subject = 'Page crashed during save';
+			$dates[0]['tasks'] = $query1
+				->where([
+					'assigned_to_id' => $user->id,
+					'date' => $date,
+				])
+				->get();
 
-			$user->tasks = $tasks;
+			$user->dates = $dates;
+
+			$user->unplanned_tasks = $query2->where([
+				'assigned_to_id' => $user->id,
+			])
+				->whereNull('date')
+				->get();
 		}
 
 		return response()->json([
 			'success' => true,
 			'users' => $users,
+			'unassigned_tasks' => $unassigned_tasks,
+		]);
+	}
+
+	public function getStatusDateWiseTasks(Request $request) {
+		$statuses = Status::with([
+		])
+			->where([
+				'type_id' => 162,
+			])
+			->company()
+			->orderBy('display_order')
+			->get();
+
+		$request->date = '2020-04-10';
+		if ($request->date) {
+			$date = date('Y-m-d', strtotime($request->date));
+			$date_label = date('d D', strtotime($date));
+		} else {
+			$date = date('Y-m-d');
+			$date_label = date('d D');
+		}
+
+		foreach ($statuses as $status) {
+			$dates = [];
+			$dates[0] = [
+				'date' => $date,
+				'date_label' => $date_label,
+			];
+			$query1 = Task::with([
+				'module',
+				'module.projectVersion',
+				'module.projectVersion.project',
+				'status',
+				'type',
+			])
+			;
+			$query2 = clone $query1;
+
+			$dates[0]['tasks'] = $query1
+				->where([
+					'status_id' => $status->id,
+					'date' => $date,
+				])
+				->get();
+
+			$status->dates = $dates;
+
+			$status->unplanned_tasks = $query2->where([
+				'status_id' => $status->id,
+			])
+				->whereNull('date')
+				->get();
+		}
+
+		return response()->json([
+			'success' => true,
+			'statuses' => $statuses,
 		]);
 	}
 
@@ -177,34 +274,40 @@ class TaskController extends Controller {
 			$task = new Task;
 			$action = 'Add';
 		} else {
-			$task = Task::withTrashed()->find($r->id);
+			$task = Task::company()->withTrashed()->find($r->id);
+			//issue : saravanan : company not filtered
+			// $task = Task::withTrashed()->find($r->id);
+
 			$action = 'Edit';
 		}
-		$this->data['users_list'] = $users_list = Collect(User::select('id', 'first_name')->get())->prepend(['id' => '', 'first_name' => 'Select Assigned To']);
-		$this->data['project_list'] = $project_list = Collect(Project::select('id', 'short_name as name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
-		$this->data['task_type_list'] = Collect(TaskType::select('id', 'name')->company()->get())->prepend(['id' => '', 'name' => 'Select Type']);
-		$this->data['task_status_list'] = Collect(Status::select('id', 'name')->company()->where('type_id', 162)->get())->prepend(['id' => '', 'name' => 'Select status']);
-		$this->data['module_status_list'] = Collect(Status::select('id', 'name')->company()->where('type_id', 161)->get())->prepend(['id' => '', 'name' => 'Select status']);
+		//ISSUE : SARAVANAN : unwanted variable : not reusable and maintainable
+		$this->data['users_list'] = User::getList(1, 'Select Assignee');
+		// $this->data['users_list'] = $users_list = Collect(User::select('id', 'first_name')->get())->prepend(['id' => '', 'first_name' => 'Select Assigned To']);
+		//ISSUE : SARAVANAN
+		$this->data['project_list'] = Project::getList();
+		// $this->data['project_list'] = Collect(Project::select('id', 'short_name as name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
+		$this->data['task_type_list'] = TaskType::getList();
+		$this->data['task_status_list'] = Status::getTaskStatusList();
+		$this->data['module_status_list'] = Status::getModuleStatusList();
 		$this->data['task'] = $task;
 		$this->data['action'] = $action;
 		$this->data['success'] = true;
 		return response()->json($this->data);
-
-		//return response()->json($this->data);
 	}
+
+	//issue : saravanan : not reusable
 	public function getProjectVersionList(Request $request) {
-		//dd($request->all());
 		$this->data = Task::getProjectVersion($request->project_id);
 		return response()->json($this->data);
 	}
 
+	//issue : saravanan : not reusable
 	public function getProjectModuleList(Request $request) {
 		$this->data = Task::getProjectModule($request->version_id);
 		return response()->json($this->data);
 	}
 
 	public function saveTask(Request $request) {
-		//dd($request->all());
 		try {
 			$error_messages = [
 				'assigned_to_id.required' => 'Assigned To is Required',
@@ -236,8 +339,12 @@ class TaskController extends Controller {
 				],
 				'type_id' => [
 					'required:true',
+					'exists:task_types,id',
+				],
+				'status_id' => [
+					'required:true',
 					'nullable',
-					'exists:configs,id',
+					'exists:statuses,id',
 				],
 				'subject' => [
 					'required:true',

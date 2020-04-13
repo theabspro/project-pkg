@@ -15,10 +15,9 @@ class TaskType extends Model {
 	public $timestamps = true;
 	protected $fillable = [
 		'company_id',
-		'code',
+		'display_order',
 		'name',
-		'short_name',
-		'description',
+		'color',
 	];
 
 	public function tasks() {
@@ -58,6 +57,10 @@ class TaskType extends Model {
 		$record->created_by_id = $admin->id;
 		$record->save();
 		return $record;
+	}
+
+	public static function getList() {
+		return Collect(TaskType::select('id', 'name', 'color')->company()->orderBy('display_order')->get())->prepend(['id' => '', 'name' => 'Select Type']);
 	}
 
 }

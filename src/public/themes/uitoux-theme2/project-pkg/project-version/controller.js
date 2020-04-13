@@ -65,6 +65,7 @@ app.component('projectVersionList', {
         var self = this;
         $('#search_project_version').focus();
         self.hasPermission = HelperService.hasPermission;
+        $scope.theme = theme;
         // if (!self.hasPermission('project-versions')) {
         //     window.location = "#!/page-permission-denied";
         //     return false;

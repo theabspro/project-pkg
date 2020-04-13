@@ -5,15 +5,15 @@
         <div class="page-header-inner">
             <div class="page-header-content-left">
                 <div class="page-header-content button-block">
-                    <a href="#!/project-pkg/task-type/list" type="button" class="btn-back btn-img">
-                        <img class="img-responsive my-tooltip" src="./public/theme/img/content/previous.svg" alt="Back" ng-shortcut="'meta+shift+left'" ng-shortcut-click data-title="ctrl+shift+left" />
+                    <a href="#!/project-pkg/git-branch/list" type="button" class="btn-back btn-img">
+                        <img class="img-responsive" ng-src="{{theme}}/img/content/previous.svg" alt="Back" />
                     </a>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content title-block">
-                    <h1 class="title"><b>{{$ctrl.action}} Task Type</b></h1>
+                    <h1 class="title"><b>{{$ctrl.action}} Git Branch</b></h1>
                     <p class="subtitle">
-                        <a href="#!/project-pkg/task-type/list">
-                            Task Types
+                        <a href="#!/project-pkg/git-branch/list">
+                            Git Branch List
                         </a> /
                         {{$ctrl.action}}
                     </p>
@@ -23,8 +23,8 @@
     </div><!-- Page Header -->
     <!-- Page Main Content -->
     <div class="page-main-content form-content type2">
-        <form id="form" autocomplete="off" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="{{$ctrl.task_type.id}}">
+        <form id="form" autocomplete="off">
+            <input type="hidden" name="id" value="{{$ctrl.git_branch.id}}">
             <div class="page-tab-form pb-70">
                 <div class="tab-form-wrap">
                     <div class="tab-form-header">
@@ -48,38 +48,30 @@
                                 <div class="tab-pane-wrap">
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <div class="input-text form-group">
-                                                <label>
-                                                    Name
-                                                    <sup class="mandatory">*</sup>
-                                                </label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.task_type.name" name="name" placeholder="Enter Name" />
+                                            <div class="form-group">
+                                                <label>Project <sup class="mandatory">*</sup></label>
+                                                <md-select ng-model="$ctrl.git_branch.project_id" placeholder="Select Project" data-md-container-class="selectdemoSelectHeader" md-on-close="clearSearchTerm()">
+                                                    <md-select-header class="demo-select-header">
+                                                        <input ng-model="searchProject" type="search" placeholder="Search for a Project" class="demo-header-searchbox md-text" ng-keydown="$event.stopPropagation()">
+                                                    </md-select-header>
+                                                    <md-optgroup label="project">
+                                                        <md-option ng-value="project.id" ng-repeat="project in $ctrl.project_list | filter:searchProject">
+                                                            {{project.name}}
+                                                        </md-option>
+                                                    </md-optgroup>
+                                                </md-select>
+                                                <input type="hidden" name="project_id" value='{{$ctrl.git_branch.project_id}}' class="required">
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
                                             <div class="input-text form-group">
-                                                <label>
-                                                    Color
-                                                    <sup class="mandatory">*</sup>
-                                                </label>
-                                                <color-picker options="color_picker_options" ng-model="$ctrl.task_type.color"></color-picker>
-                                                <input type="text" ng-model="$ctrl.task_type.color" name="color" />
+                                                <label> Name <sup class="mandatory">*</sup> </label>
+                                                <input type="text" class="form-control required" ng-model="$ctrl.git_branch.name" name="name" placeholder="Enter Git Branch Name" />
                                             </div><!-- Feild -->
                                         </div><!-- Column -->
                                         <div class="col-md-3">
-                                            <div class="input-text form-group">
-                                                <label>
-                                                    Display Order
-                                                </label>
-                                                <input type="text" class="form-control" ng-model="$ctrl.task_type.display_order" name="display_order" placeholder="Enter Display Order" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="input-text form-group">
-                                                <label>
-                                                    Active Status
-                                                    <sup class="mandatory">*</sup>
-                                                </label>
+                                            <div class="form-group">
+                                                <label> Active Status <sup class="mandatory">*</sup> </label>
                                                 <div class="tab-switch">
                                                     <md-switch ng-model="$ctrl.switch_value" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
                                                         {{ $ctrl.switch_value }}
@@ -91,8 +83,10 @@
                                         <div class="tab-pane-footer">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <a class="btn btn-cancel my-tooltip" href="#!/project-pkg/task-type/list" ng-shortcut="'meta+shift+left'" ng-shortcut-click data-title="ctrl+shift+left">Cancel</a>
-                                                    <button type="submit" id="submit" class="btn btn-primary my-tooltip" ng-shortcut="'meta+shift+s'" ng-shortcut-click data-title="ctrl+shift+s">
+                                                    <!--                                                     <a class="btn btn-primary btn-nxt">
+                                                        Next
+                                                    </a> -->
+                                                    <button type="submit" id="submit" class="btn btn-primary">
                                                         Submit
                                                     </button>
                                                 </div>

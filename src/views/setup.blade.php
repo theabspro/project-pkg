@@ -26,6 +26,35 @@
 	        title: 'View Project',
 	    }).
 
+
+	    //GIT BRANCH
+	    when('/project-pkg/git-branch/list', {
+	        template: '<git-branch-list></git-branch-list>',
+	        title: 'Git Branches',
+	    }).
+	    when('/project-pkg/git-branch/add', {
+	        template: '<git-branch-form></git-branch-form>',
+	        title: 'Add Git Branch',
+	    }).
+	    when('/project-pkg/git-branch/edit/:id', {
+	        template: '<git-branch-form></git-branch-form>',
+	        title: 'Edit Git Branch',
+	    }).
+
+	    //PHASE
+	    when('/project-pkg/phase/list', {
+	        template: '<phase-list></phase-list>',
+	        title: 'Phases',
+	    }).
+	    when('/project-pkg/phase/add', {
+	        template: '<phase-form></phase-form>',
+	        title: 'Add Phase',
+	    }).
+	    when('/project-pkg/phase/edit/:id', {
+	        template: '<phase-form></phase-form>',
+	        title: 'Edit Phase',
+	    }).
+
 	    //VERSION
 	    when('/project-pkg/project-version/card-list', {
 	        template: '<project-version-card-list></project-version-card-list>',
@@ -51,11 +80,15 @@
 	    //TASKS
 	    when('/project-pkg/task/module-developer-wise/:project_version_id?', {
 	        template: '<module-developer-wise-tasks></module-developer-wise-tasks>',
-	        title: 'Task / Module-Developer Wise',
+	        title: 'Tasks / Module-Developer Wise',
 	    }).
-	    when('/project-pkg/task/user-wise', {
-	        template: '<user-wise-tasks></user-wise-tasks>',
-	        title: 'Task - User Wise',
+	    when('/project-pkg/task/user-date-wise', {
+	        template: '<user-date-wise-tasks></user-date-wise-tasks>',
+	        title: 'Tasks / User-Date Wise',
+	    }).
+	    when('/project-pkg/task/status-date-wise', {
+	        template: '<status-date-wise-tasks></status-date-wise-tasks>',
+	        title: 'Tasks / Status-Date Wise',
 	    }).
 	    when('/project-pkg/task/list', {
 	        template: '<task-list></task-list>',
@@ -93,6 +126,14 @@
     var project_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/form.html')}}";
     var project_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/view.html')}}";
 
+    //GIT BRANCH
+    var git_branch_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/git-branch/list.html')}}";
+    var git_branch_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/git-branch/form.html')}}";
+
+    //PHASE
+    var phase_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/phase/list.html')}}";
+    var phase_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/phase/form.html')}}";
+
     var project_version_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/card-list.html')}}";
     var project_version_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/list.html')}}";
     var project_version_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/form.html')}}";
@@ -105,7 +146,8 @@
 
 
     var module_developer_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/module-developer-wise.html')}}";
-    var user_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/user-wise.html')}}";
+    var user_date_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/user-date-wise.html')}}";
+    var status_date_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/status-date-wise.html')}}";
     var task_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/list.html')}}";
     var task_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/form.html')}}";
     var task_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/view.html')}}";
@@ -114,12 +156,20 @@
     var task_type_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/list.html')}}";
     var task_type_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/form.html')}}";
 
+    //PARTIALS
+    var module_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/module-modal-form.html')}}";
+    var task_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/task-modal-form.html')}}";
+    var task_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/task-card-list.html')}}";
+
 
     var image_scr2 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
     var image_scr3 = "{{URL::asset('public/themes/".+$theme+."/img/content/arrow.svg')}}";
 </script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/git-branch/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/phase/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/controller.js?v=2')}}"></script>

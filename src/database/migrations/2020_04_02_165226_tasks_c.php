@@ -25,8 +25,8 @@ class TasksC extends Migration {
 				$table->string('subject', 255);
 				$table->text('description')->nullable();
 				$table->unsignedInteger('type_id')->nullable();
-				$table->unsignedDecimal('estimated_hours', 5, 2)->default(0);
-				$table->unsignedDecimal('actual_hours', 5, 2)->default(0);
+				$table->unsignedDecimal('estimated_hours', 5, 2)->nullable()->default(0);
+				$table->unsignedDecimal('actual_hours', 5, 2)->nullable()->default(0);
 				$table->unsignedInteger('status_id')->nullable();
 				$table->text('remarks')->nullable();
 				$table->unsignedInteger('created_by_id')->nullable();
