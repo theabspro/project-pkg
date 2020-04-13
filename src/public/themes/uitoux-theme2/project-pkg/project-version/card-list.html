@@ -125,7 +125,7 @@
         </div><!-- Container -->
     </div><!-- Page Main Content -->
 </div><!-- Content Wrap -->
-<div ng-include="project_version_modal_form_template_url"></div>
+<ng-include src="project_version_modal_form_template_url" ng-init="project_version = $ctrl.project_version"></ng-include>
 <!-- <project-version-modal-form project_version="$ctrl.project_version"></project-version-modal-form> -->
 <!-- Filter Modal -->
 <div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
