@@ -48,30 +48,9 @@
                             </div>
                         </div>
                         <!-- UNASSIGNED TASKS OF MODULES -->
-                        <div class="col-md-12" style="background-color: white">
+                        <div class="panel-body">
                             <br />
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        UNPLANNED TASKS
-                                        <a href="javascript:;" ng-click="$ctrl.module=module;showTaskForm({},0,$event)" class="pull-right">
-                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                        </a>
-                                        <br />
-                                        <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
-                                        <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
-                                    </h3>
-                                </div>
-                                <task-card-list tasks="status.unplanned_tasks"></task-card-list>
-                                <div class="panel-footer">
-                                    Tasks : {{status.unplanned_tasks.length}} /
-                                    EH : 8 /
-                                    AH : 8.5
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12" ng-repeat="(key, date) in status.dates" style="background-color: white">
-                            <div class="panel panel-info">
+                            <div class="panel panel-info" ng-repeat="(key, date) in status.dates">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <span class="glyphicon glyphicon-calendar" aria-hidden="true">
@@ -90,6 +69,25 @@
                                     Tasks : {{date.tasks.length}} /
                                     EH : {{date.total_estimated_hour}} /
                                     AH : {{date.total_actual_hour}}
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        UNPLANNED TASKS
+                                        <a href="javascript:;" ng-click="$ctrl.module=module;showTaskForm({},0,$event)" class="pull-right">
+                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        </a>
+                                        <br />
+                                        <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
+                                        <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
+                                    </h3>
+                                </div>
+                                <task-card-list tasks="status.unplanned_tasks"></task-card-list>
+                                <div class="panel-footer">
+                                    Tasks : {{status.unplanned_tasks.length}} /
+                                    EH : 8 /
+                                    AH : 8.5
                                 </div>
                             </div>
                         </div>
