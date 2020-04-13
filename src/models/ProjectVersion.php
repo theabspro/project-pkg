@@ -2,9 +2,9 @@
 
 namespace Abs\ProjectPkg;
 
+use Abs\BasicPkg\Config;
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
-use Abs\BasicPkg\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,6 +21,7 @@ class ProjectVersion extends Model {
 		'discussion_started_date',
 		'development_started_date',
 		'estimated_end_date',
+		'display_order',
 		'status_id',
 	];
 
