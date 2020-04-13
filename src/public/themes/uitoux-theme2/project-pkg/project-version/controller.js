@@ -1,6 +1,6 @@
 app.component('projectVersionCardList', {
     templateUrl: project_version_card_list_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
         $scope.loading = true;
         var self = this;
         $('#search_project_version').focus();
@@ -11,6 +11,7 @@ app.component('projectVersionCardList', {
         }
         self.add_permission = self.hasPermission('add-project-version');
         self.theme = theme;
+        $scope.project_version_modal_form_template_url = project_version_modal_form_template_url;
 
         $http.get(
             laravel_routes['getProjectVersions'], {
@@ -43,6 +44,98 @@ app.component('projectVersionCardList', {
                 $rootScope.loading = false;
                 if (response.data.success) {
                     custom_noty('success', response.data.success);
+                }
+            });
+        }
+
+        $scope.showProjectVersionForm = function(project_version) {
+            console.log(project_version);
+            $('#project-version-form-modal').modal('show');
+            $('#project_id').focus();
+
+            self.project_version = project_version;
+        }
+
+        //SAVE PROJECT VERSION
+        $http.get(
+            laravel_routes['getProjectVerisonFormData'], {
+                params: {
+                    id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
+                }
+            }
+        ).then(function(response) {
+            console.log(response.data);
+            self.project_version = response.data.project_version;
+            self.extras = response.data.extras;
+            self.action = response.data.action;
+            $rootScope.loading = false;
+            if (self.action == 'Edit') {
+                if (self.project_version.deleted_at) {
+                    self.switch_value = 'Inactive';
+                } else {
+                    self.switch_value = 'Active';
+                }
+            } else {
+                self.switch_value = 'Active';
+            }
+        });
+
+        // $("input:text:visible:first").focus();
+        /* Project-Version DatePicker*/
+        $('.projectVersionPicker').bootstrapDP({
+            format: "dd-mm-yyyy",
+            autoclose: "true",
+            todayHighlight: true,
+            // startDate: min_offset,
+            // endDate: max_offset
+        });
+
+         $scope.saveProjectVerison = function() {
+            var project_version_form_id = '#project_version_form';
+            var v = jQuery(project_version_form_id).validate({
+                ignore: '',
+                rules: {
+                    'number': {
+                        required: true,
+                        minlength: 3,
+                        maxlength: 191,
+                    },
+                    'project_id': {
+                        required: true,
+                    },
+                    'description': {
+                        minlength: 3,
+                        maxlength: 255,
+                    },
+                    'status_id': {
+                        required: true,
+                    },
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(project_version_form_id)[0]);
+                    $('#submit').button('loading');
+                    $.ajax({
+                            url: laravel_routes['saveProjectVerison'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('#submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            $('#project-version-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            $route.reload();
+                        })
+                        .fail(function(xhr) {
+                            $('#submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
                 }
             });
         }

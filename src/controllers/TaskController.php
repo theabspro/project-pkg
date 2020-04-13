@@ -199,6 +199,7 @@ class TaskController extends Controller {
 				'status',
 				'type',
 			])
+				->where('assigned_to_id', Auth::id())
 			;
 			$query2 = clone $query1;
 

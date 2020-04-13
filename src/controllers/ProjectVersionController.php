@@ -165,7 +165,7 @@ class ProjectVersionController extends Controller {
 		$this->data['project_version'] = $project_version;
 		$this->data['extras'] = [
 			'project_statuses' => collect(Status::where('type_id', 160)->select('id', 'name')->get())->prepend(['name' => 'Select Status']),
-			'projects' => collect(Project::where('company_id', Auth::user()->company_id)->select('id', 'code', 'short_name')->get())->prepend(['code' => 'Select Project']),
+			'projects' => collect(Project::where('company_id', Auth::user()->company_id)->select('id', 'code', 'short_name')->get())->prepend(['short_name' => 'Select Project']),
 		];
 		$this->data['action'] = $action;
 
