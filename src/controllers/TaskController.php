@@ -227,8 +227,8 @@ class TaskController extends Controller {
 				->join('statuses as s', 's.id', 'tasks.status_id')
 				->where('assigned_to_id', Auth::id())
 				->orderBy('s.display_order')
-				->orderBy('date')
-				->orderBy('type_id')
+				->orderBy('tasks.date')
+				->orderBy('tasks.type_id')
 			;
 			$query2 = clone $query1;
 
