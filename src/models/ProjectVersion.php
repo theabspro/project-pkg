@@ -35,6 +35,10 @@ class ProjectVersion extends Model {
 		return $this->belongsTo('App\Project', 'project_id');
 	}
 
+	public function members() {
+		return $this->belongsToMany('App\User', 'project_version_member', 'project_version_id', 'member_id');
+	}
+
 	public function status() {
 		return $this->belongsTo('App\Status')->where('type_id', 160);
 	}

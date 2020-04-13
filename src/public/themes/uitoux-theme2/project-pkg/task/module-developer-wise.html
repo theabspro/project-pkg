@@ -150,7 +150,8 @@
                             <div class="panel panel-info">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
-                                        <span class="glyphicon glyphicon-user" aria-hidden="true">
+                                        <img ng-if="developer.profile_image" ng-src="./storage/app/public/user-profile-images/<% developer.profile_image.name %>" title="{{developer.first_name}}" class="img-circle" style="width: 50px; height: 50px; " />
+                                        <span ng-if="!developer.profile_image" class="glyphicon glyphicon-user img-circle" aria-hidden="true" style="width: 50px; height: 50px">
                                         </span>
                                         {{developer.first_name}} {{developer.last_name}}
                                         <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showTaskForm({}, 0, $event)" class="pull-right">

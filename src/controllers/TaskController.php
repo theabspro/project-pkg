@@ -54,8 +54,18 @@ class TaskController extends Controller {
 			$project_version = null;
 			$project_version_list = null;
 		}
+
+		$member_ids = $project_version->members()->pluck('id');
 		foreach ($modules as $module) {
-			$module->developers = User::where('user_type_id', 1)->company()->get();
+			$module->developers = User::where('user_type_id', 1)
+				->whereIn('id', $member_ids)
+				->company()
+				->with([
+					'profileImage',
+				])
+				->orderBy('first_name')
+				->get()
+			;
 			foreach ($module->developers as $developer) {
 				$developer->tasks = Task::where([
 					'module_id' => $module->id,
@@ -66,9 +76,14 @@ class TaskController extends Controller {
 						'status',
 						'type',
 						'assignedTo',
+						'assignedTo.profileImage',
 					])
+					->orderBy('date')
+					->orderBy('type_id')
+					->orderBy('status_id')
 					->get()
-					->keyBy('id');
+				// ->keyBy('id')
+				;
 			}
 			//Getting unassigned tasks of module
 			$module->unassigned_tasks = Task::where([
@@ -79,10 +94,13 @@ class TaskController extends Controller {
 					'module',
 					'status',
 					'type',
-					'assignedTo',
 				])
+				->orderBy('date')
+				->orderBy('type_id')
+				->orderBy('status_id')
 				->get()
-				->keyBy('id');
+			// ->keyBy('id')
+			;
 
 		}
 
@@ -103,6 +121,8 @@ class TaskController extends Controller {
 			'module.projectVersion.project',
 			'status',
 			'type',
+			'assignedTo',
+			'assignedTo.profileImage',
 		])
 			->whereNull('assigned_to_id')
 		// ->whereNull('date')
@@ -142,6 +162,9 @@ class TaskController extends Controller {
 				'status',
 				'type',
 			])
+				->orderBy('date')
+				->orderBy('type_id')
+				->orderBy('status_id')
 			;
 			$query2 = clone $query1;
 
@@ -198,8 +221,14 @@ class TaskController extends Controller {
 				'module.projectVersion.project',
 				'status',
 				'type',
+				'assignedTo',
+				'assignedTo.profileImage',
 			])
+				->join('statuses as s', 's.id', 'tasks.status_id')
 				->where('assigned_to_id', Auth::id())
+				->orderBy('s.display_order')
+				->orderBy('date')
+				->orderBy('type_id')
 			;
 			$query2 = clone $query1;
 
@@ -239,6 +268,8 @@ class TaskController extends Controller {
 			'module.projectVersion.project',
 			'status',
 			'type',
+			'assignedTo',
+			'assignedTo.profileImage',
 		])
 		;
 		$query2 = clone $query1;
