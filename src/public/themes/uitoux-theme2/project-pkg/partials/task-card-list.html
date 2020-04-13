@@ -1,39 +1,70 @@
 <ul class="list-group" dnd-list="tasks" dnd-allowed-types="['task']">
     <li ng-if="tasks.length != 0" ng-repeat="(key2, task) in tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="tasks.splice(key2, 1)">
         <span class="label label-primary">
+            <md-tooltip md-direction="top">
+                Project
+            </md-tooltip>
             <% task.module.project_version.project.short_name %>-
             <% task.module.project_version.number %>
         </span>
         &nbsp;
         <span class="label label-info">
-            <% task.module.name %></span>
+            <md-tooltip md-direction="top">
+                Module Name
+            </md-tooltip>
+            <% task.module.name %>
+        </span>
         &nbsp;
         <span class="label label-default">
-            <% task.date %></span>
+            <md-tooltip md-direction="top">
+                Task Date
+            </md-tooltip>
+            <% task.date %>
+        </span>
         &nbsp;
         <span class="label label-warning">
-            <% task.status.name %></span>
+            <md-tooltip md-direction="top">
+                Status
+            </md-tooltip>
+            <% task.status.name %>
+        </span>
         &nbsp;
         <span class="label label-primary">
+            <md-tooltip md-direction="top">
+                Estimated Hours
+            </md-tooltip>
             EH :
             <% task.estimated_hours %> Hrs
         </span>
         &nbsp;
         <span class="label label-success">
+            <md-tooltip md-direction="top">
+                Actual Hours
+            </md-tooltip>
             AH :
             <% task.actual_hours %> Hrs
         </span>
         &nbsp;
         <span class="label label-danger">
-            <% task.type.name %></span>
+            <md-tooltip md-direction="top">
+                Task Type
+            </md-tooltip>
+            <% task.type.name %>
+        </span>
         <br />
         <% task.number %> :
         <% task.subject %>
         <a href="javascript:;" ng-click="deleteTask(task,$event,tasks,key2)">
+            <md-tooltip md-direction="top">
+                Delete Task
+            </md-tooltip>
             <span class="glyphicon glyphicon-trash pull-right" aria-hidden="true">
             </span>
         </a>
         <a href="javascript:;" ng-click="duplicateTask(task,$event,tasks,key2)">
+            <md-tooltip md-direction="top">
+                Clone Task
+            </md-tooltip>
             <span class="glyphicon glyphicon-duplicate pull-right" aria-hidden="true">
             </span>
         </a>
