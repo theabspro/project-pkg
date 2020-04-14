@@ -209,35 +209,52 @@ class TaskController extends Controller {
 			$date = date('Y-m-d');
 			$date_label = date('d D');
 		}
-		foreach ($statuses as $status) {
-			$dates = [];
-			$dates[0] = [
-				'date' => $date,
-				'date_label' => $date_label,
-			];
-			$query1 = Task::with([
-				'module',
-				'module.projectVersion',
-				'module.projectVersion.project',
-				'status',
-				'type',
-				'assignedTo',
-				'assignedTo.profileImage',
-			])
-				->join('statuses as s', 's.id', 'tasks.status_id')
-				->where('assigned_to_id', Auth::id())
-				->orderBy('s.display_order')
-				->orderBy('tasks.date')
-				->orderBy('tasks.type_id')
-			;
-			$query2 = clone $query1;
 
-			$dates[0]['tasks'] = $query1
-				->where([
-					'status_id' => $status->id,
-					'date' => $date,
+		$dates = [
+			[
+				'date' => date('Y-m-d', strtotime($date . ' -1 days')),
+				'date_label' => date('d D', strtotime($date . ' -1 days')),
+			],
+			[
+				'date' => date('Y-m-d', strtotime($date)),
+				'date_label' => date('d D', strtotime($date)),
+			],
+			[
+				'date' => date('Y-m-d', strtotime($date . ' +1 days')),
+				'date_label' => date('d D', strtotime($date . ' +1 days')),
+			],
+		];
+		foreach ($statuses as $status) {
+			// $dates = [];
+			// $dates[0] = [
+			// 	'date' => $date,
+			// 	'date_label' => $date_label,
+			// ];
+			foreach ($dates as $date) {
+				$query1 = Task::with([
+					'module',
+					'module.projectVersion',
+					'module.projectVersion.project',
+					'status',
+					'type',
+					'assignedTo',
+					'assignedTo.profileImage',
 				])
-				->get();
+					->join('statuses as s', 's.id', 'tasks.status_id')
+					->where('assigned_to_id', Auth::id())
+					->orderBy('s.display_order')
+					->orderBy('tasks.date')
+					->orderBy('tasks.type_id')
+				;
+				$query2 = clone $query1;
+
+				$dates[0]['tasks'] = $query1
+					->where([
+						'status_id' => $status->id,
+						'date' => $date['date'],
+					])
+					->get();
+			}
 
 			$status->dates = $dates;
 

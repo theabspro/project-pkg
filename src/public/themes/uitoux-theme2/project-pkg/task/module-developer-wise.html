@@ -125,8 +125,7 @@
                             </div>
                         </div>
                         <!-- UNASSIGNED TASKS OF MODULES -->
-                        <div class="col-md-12" style="background-color: white">
-                            <br />
+                        <div class="panel-body">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
@@ -145,9 +144,7 @@
                                     Tasks : 8 / EH : 8 / AH : 8.5
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12" ng-repeat="(key, developer) in module.developers" style="background-color: white">
-                            <div class="panel panel-info">
+                            <div class="panel panel-info" ng-repeat="(key, developer) in module.developers">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <img ng-if="developer.profile_image" ng-src="./storage/app/public/user-profile-images/<% developer.profile_image.name %>" title="{{developer.first_name}}" class="img-circle" style="width: 50px; height: 50px; " />
