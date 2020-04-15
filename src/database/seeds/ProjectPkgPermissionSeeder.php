@@ -89,6 +89,18 @@ class ProjectPkgPermissionSeeder extends Seeder {
 				'name' => 'delete-task',
 				'display_name' => 'Delete',
 			],
+			[
+				'display_order' => 4,
+				'parent' => 'tasks',
+				'name' => 'view-all-tasks',
+				'display_name' => 'View All',
+			],
+			[
+				'display_order' => 5,
+				'parent' => 'tasks',
+				'name' => 'view-own-tasks',
+				'display_name' => 'View Own Only',
+			],
 
 			//PHASES
 			[
@@ -141,6 +153,7 @@ class ProjectPkgPermissionSeeder extends Seeder {
 				'name' => 'delete-review',
 				'display_name' => 'Delete',
 			],
+
 			//TASK TYPES
 			[
 				'display_order' => 10,
