@@ -215,15 +215,12 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Filter Presets</label>
-                            <!-- <md-select ng-model="">
-                                <md-select-label>Select a Member</md-select-label>
-                                <md-option ng-value="opt" ng-repeat="opt in options">
-                                    {{ opt }}
-                                </md-option>
-                            </md-select> -->
                         </div><!-- Field -->
                     </div><!-- Column -->
                     <form id="new-preset-form">
+                        <input type="hidden" name="user_id" value="{{user_id}}">
+                        <input type="hidden" name="page_id" value="220">
+                        <input type="hidden" name="value" id="filter_value" value="">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Filter Preset Name</label>
@@ -231,8 +228,8 @@
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-4">
-                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">
-                                Save New Preset Filter
+                            <button type="submit" class="btn btn-rose" ng-click1="reset_filter()">
+                                Save Filter Preset
                             </button>
                         </div>
                     </form>
@@ -245,9 +242,8 @@
                             <div class="separate-form-group">
                                 <label>
                                     Task Status
-                                    <sup class="mandatory">*</sup>
                                 </label>
-                                <ui-select ng-model="$ctrl.task_status" theme="select2">
+                                <ui-select ng-model="$ctrl.filter.task_status" theme="select2">
                                     <ui-select-match placeholder="Select Task Status">
                                         {{$select.selected.name || $select.selected}}
                                     </ui-select-match>
@@ -258,24 +254,6 @@
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Project Name</label>
-                                <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Mobile Number</label>
-                                <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="Enter Mobile Number" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
                             <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
                         </div>
                     </div><!-- Row -->
@@ -284,24 +262,6 @@
         </div><!-- Modal Content -->
     </div><!-- Modal Dialog -->
 </div><!-- Modal -->
-<!-- Modal -->
-<div class="modal fade alert-modal failure" id="delete_project" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
-            </div>
-            <div class="modal-body">
-                <h5>Delete</h5>
-                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
-                <input type="hidden" name="project_id" id="project_id" value="">
-                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
 <!-- Modal -->
 <div class="modal fade alert-modal failure" id="delete_task" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">

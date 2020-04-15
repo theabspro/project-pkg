@@ -9,10 +9,14 @@ app.component('moduleDeveloperWiseTasks', {
             window.location = "#!/page-permission-denied";
             return false;
         }
+        self.theme = theme;
+        $scope.user_id = user_id;
+
+
+        self.filter = {};
         self.add_permission = self.hasPermission('add-task');
         self.delete_task_permission = self.hasPermission('delete-task');
         self.delete_module_permission = self.hasPermission('delete-module');
-        self.theme = theme;
 
         $scope.module_modal_form_template_url = module_modal_form_template_url;
         $scope.task_modal_form_template_url = task_modal_form_template_url;
@@ -356,6 +360,56 @@ app.component('moduleDeveloperWiseTasks', {
                 });
             }
         }
+
+
+        var new_preset_form = '#new-preset-form';
+        var v = jQuery(new_preset_form).validate({
+            ignore: '',
+            rules: {
+                'user_id': {
+                    required: true,
+                    number: true,
+                },
+                'page_id': {
+                    required: true,
+                    number: true,
+                },
+                'name': {
+                    required: true,
+                },
+                'value': {
+                    // required: true,
+                },
+            },
+            invalidHandler: function(event, validator) {
+                console.log(validator.errorList);
+            },
+            submitHandler: function(form) {
+                self.filter_value = angular.toJson(self.filter);
+                $('#filter_value').val(angular.toJson(self.filter));
+                let formData = new FormData($(new_preset_form)[0]);
+                $('#submit').button('loading');
+                $.ajax({
+                        url: laravel_routes['saveFilterPreset'],
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                    })
+                    .done(function(res) {
+                        $('#submit').button('reset');
+                        if (!res.success) {
+                            showErrorNoty(res);
+                            return;
+                        }
+                        custom_noty('success', res.message);
+                    })
+                    .fail(function(xhr) {
+                        $('#submit').button('reset');
+                        custom_noty('error', 'Something went wrong at server');
+                    });
+            }
+        });
         $("input:text:visible:first").focus();
 
         $rootScope.loading = false;
