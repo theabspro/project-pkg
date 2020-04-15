@@ -55,6 +55,9 @@ app.component('moduleDeveloperWiseTasks', {
                     }
                 }
             }
+
+            $scope.hide_empty_panels = true;
+            $scope.toggleEmptyPanels();
         });
 
         $scope.showModuleForm = function(module) {
@@ -316,6 +319,32 @@ app.component('moduleDeveloperWiseTasks', {
             });
 
             return module;
+        }
+
+        $scope.toggleEmptyPanels = function() {
+            if ($scope.hide_empty_panels) {
+                angular.forEach(self.modules, function(module, key1) {
+                    if (module.unassigned_tasks.length == 0) {
+                        module.show_unassigned = false;
+                    } else {
+                        module.show_unassigned = true;
+                    }
+                    angular.forEach(module.developers, function(developer, key2) {
+                        if (developer.tasks.length == 0) {
+                            developer.show = false;
+                        } else {
+                            developer.show = true;
+                        }
+                    });
+                });
+            } else {
+                angular.forEach(self.modules, function(module, key1) {
+                    module.show_unassigned = true;
+                    angular.forEach(module.developers, function(developer, key2) {
+                        developer.show = true;
+                    });
+                });
+            }
         }
         $("input:text:visible:first").focus();
 

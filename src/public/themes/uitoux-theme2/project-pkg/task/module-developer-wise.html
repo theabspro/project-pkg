@@ -13,15 +13,22 @@
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
                 <div class="page-header-content indicator-block">
-                    <ul class="indicator-list">
-                        <li class="green">Active</li>
-                        <li class="red">Inactive</li>
-                    </ul>
+                    <div class="tab-switch1">
+                        <md-tooltip md-direction="top">
+                            Hide Empty Panels
+                        </md-tooltip>
+                        <md-switch ng-model="hide_empty_panels" aria-label="Switch 1" class="md-warn" ng-click="toggleEmptyPanels()">
+                        </md-switch>
+                        <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
+                    </div>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content reset-block">
                     <div class="reset-wrap">
-                        <button class="btn-reset reset-tooltip refresh_table my-tooltip" ng-shortcut="'meta+shift+r'" ng-shortcut-click data-title="ctrl+shift+r">
-                            <img class="img-responsive" src="./public/theme/img/content/reset.svg" alt="Reset" />
+                        <button ng-shortcut="'meta+shift+r'" ng-shortcut-click class="btn btn-default">
+                            <md-tooltip md-direction="top">
+                                Reload Data (ctrl+shift+r)
+                            </md-tooltip>
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div><!-- Page Header Content -->
@@ -124,9 +131,9 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- UNASSIGNED TASKS OF MODULES -->
                         <div class="panel-body" style1="height: 200px;overflow: hidden;overflow-y: scroll;">
-                            <div class="panel panel-default">
+                            <!-- UNASSIGNED TASKS OF MODULES -->
+                            <div class="panel panel-default" ng-show="module.show_unassigned">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <span class="glyphicon glyphicon-user" aria-hidden="true">
@@ -144,7 +151,7 @@
                                     Tasks : 8 / EH : 8 / AH : 8.5
                                 </div>
                             </div>
-                            <div class="panel panel-info" ng-repeat="(key, developer) in module.developers">
+                            <div class="panel panel-info" ng-repeat="(key, developer) in module.developers" ng-show="developer.show">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <img ng-if="developer.profile_image" ng-src="./storage/app/public/user-profile-images/<% developer.profile_image.name %>" title="{{developer.first_name}}" class="img-circle" style="width: 50px; height: 50px; " />
