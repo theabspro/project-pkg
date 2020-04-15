@@ -238,37 +238,37 @@ class TaskController extends Controller {
 				'date_label' => date('d D', strtotime($date . ' +1 days')),
 			],
 		];
-		foreach ($statuses as $status) {
-			foreach ($dates as $date) {
-				$query1 = Task::with([
-					'module',
-					'module.projectVersion',
-					'module.projectVersion.project',
-					'status',
-					'type',
-					'assignedTo',
-					'assignedTo.profileImage',
-				])
-					->join('statuses as s', 's.id', 'tasks.status_id')
-					->where(function ($q) {
-						if (!Entrust::can('view-all-tasks')) {
-							$q->where('tasks.assigned_to_id', Auth::id());
-						}
-					})
-					->orderBy('s.display_order')
-					->orderBy('tasks.date')
-					->orderBy('tasks.type_id')
-				;
-				$query2 = clone $query1;
 
-				$dates[0]['tasks'] = $query1
+		$query1 = Task::with([
+			'module',
+			'module.projectVersion',
+			'module.projectVersion.project',
+			'status',
+			'type',
+			'assignedTo',
+			'assignedTo.profileImage',
+		])
+			->join('statuses as s', 's.id', 'tasks.status_id')
+			->where(function ($q) {
+				if (!Entrust::can('view-all-tasks')) {
+					$q->where('tasks.assigned_to_id', Auth::id());
+				}
+			})
+			->orderBy('s.display_order')
+			->orderBy('tasks.date')
+			->orderBy('tasks.type_id')
+		;
+		$query2 = clone $query1;
+
+		foreach ($statuses as $status) {
+			foreach ($dates as $key => $date) {
+				$dates[$key]['tasks'] = $query1
 					->where([
 						'status_id' => $status->id,
 						'date' => $date['date'],
 					])
 					->get();
 			}
-
 			$status->dates = $dates;
 
 			$status->unplanned_tasks = $query2
@@ -276,7 +276,7 @@ class TaskController extends Controller {
 				->whereNull('date')
 				->get();
 		}
-		$all_statuses = collect($this->getAllStatusTasksByDate($date, $date_label));
+		$all_statuses = collect($this->getAllStatusTasksByDate($dates));
 		$statuses = collect($statuses)->prepend($all_statuses);
 		return response()->json([
 			'success' => true,
@@ -284,14 +284,10 @@ class TaskController extends Controller {
 		]);
 	}
 
-	public function getAllStatusTasksByDate($date, $date_label) {
+	public function getAllStatusTasksByDate($dates) {
 		$status = new Status;
 		$status->name = "All Tasks";
-		$dates = [];
-		$dates[0] = [
-			'date' => $date,
-			'date_label' => $date_label,
-		];
+
 		$query1 = Task::with([
 			'module',
 			'module.projectVersion',
@@ -309,12 +305,14 @@ class TaskController extends Controller {
 		;
 		$query2 = clone $query1;
 
-		$dates[0]['tasks'] = $query1
-			->where([
-				'date' => $date,
-			])
-			->get();
+		foreach ($dates as $key => $date) {
 
+			$dates[$key]['tasks'] = $query1
+				->where([
+					'date' => $date['date'],
+				])
+				->get();
+		}
 		$status->dates = $dates;
 
 		$status->unplanned_tasks = $query2

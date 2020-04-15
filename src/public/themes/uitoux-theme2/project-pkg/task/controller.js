@@ -10,7 +10,8 @@ app.component('moduleDeveloperWiseTasks', {
             return false;
         }
         self.add_permission = self.hasPermission('add-task');
-        self.delete_permission = self.hasPermission('delete-task');
+        self.delete_task_permission = self.hasPermission('delete-task');
+        self.delete_module_permission = self.hasPermission('delete-module');
         self.theme = theme;
 
         $scope.module_modal_form_template_url = module_modal_form_template_url;
@@ -86,9 +87,9 @@ app.component('moduleDeveloperWiseTasks', {
             $('#task-subject').focus();
             self.task = task;
 
-            if(!task_type || task_type == ''){
-                self.task.task_type = 0;                
-            }else{
+            if (!task_type || task_type == '') {
+                self.task.task_type = 0;
+            } else {
                 self.task.task_type = task_type;
             }
             console.log(self.task);
@@ -135,9 +136,9 @@ app.component('moduleDeveloperWiseTasks', {
             self.module_status_list = response.data.module_status_list;
         });
 
-        $scope.taskColor = function(color){
+        $scope.taskColor = function(color) {
             return {
-                "background-color" : color
+                "background-color": color
             };
         };
 
@@ -239,7 +240,7 @@ app.component('moduleDeveloperWiseTasks', {
             $('#delete_task').modal('show');
             $('#task_id').val($id);
         }
-        $scope.deleteConfirm = function() {
+        $scope.deleteTaskConfirm = function() {
             id = $('#task_id').val();
             $http.get(
                 laravel_routes['deleteTask'], {
@@ -251,6 +252,31 @@ app.component('moduleDeveloperWiseTasks', {
                 if (response.data.success) {
                     custom_noty('success', 'Task Deleted Successfully');
                     $('#delete_task').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
+        //DELETE
+        $scope.deleteModule = function($id, $event) {
+            $event.stopPropagation();
+            $('#delete_module').modal('show');
+            $('#module_id').val($id);
+        }
+        $scope.deleteModuleConfirm = function() {
+            id = $('#module_id').val();
+            $http.get(
+                laravel_routes['deleteModule'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Module Deleted Successfully');
+                    $('#delete_module').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                     $route.reload();
@@ -365,6 +391,7 @@ app.component('statusDateWiseTasks', {
         }
         self.add_permission = self.hasPermission('add-task');
         self.theme = theme;
+        $scope.task_card_list_template_url = task_card_list_template_url;
 
         $http.get(
             laravel_routes['getStatusDateWiseTasks'], {
