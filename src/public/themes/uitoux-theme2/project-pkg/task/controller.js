@@ -85,9 +85,9 @@ app.component('moduleDeveloperWiseTasks', {
             $('#task-subject').focus();
             self.task = task;
 
-            if(!task_type || task_type == ''){
-                self.task.task_type = 0;                
-            }else{
+            if (!task_type || task_type == '') {
+                self.task.task_type = 0;
+            } else {
                 self.task.task_type = task_type;
             }
             console.log(self.task);
@@ -134,12 +134,12 @@ app.component('moduleDeveloperWiseTasks', {
             self.module_status_list = response.data.module_status_list;
         });
 
-        $scope.taskColor = function(color){
+        $scope.taskColor = function(color) {
             return {
-                "background-color" : color
+                "background-color": color
             };
         };
-        
+
         //SAVE TASK
         $scope.saveTask = function() {
             var task_form = '#task_form';
@@ -337,6 +337,7 @@ app.component('statusDateWiseTasks', {
         }
         self.add_permission = self.hasPermission('add-task');
         self.theme = theme;
+        $scope.task_card_list_template_url = task_card_list_template_url;
 
         $http.get(
             laravel_routes['getStatusDateWiseTasks'], {
