@@ -36,7 +36,7 @@ class ProjectVersion extends Model {
 	}
 
 	public function members() {
-		return $this->belongsToMany('App\User', 'project_version_member', 'project_version_id', 'member_id');
+		return $this->belongsToMany('App\User', 'project_version_member', 'project_version_id', 'member_id')->withPivot(['type_id', 'role_id']);
 	}
 
 	public function status() {
