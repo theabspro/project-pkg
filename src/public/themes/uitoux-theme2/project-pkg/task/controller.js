@@ -134,6 +134,12 @@ app.component('moduleDeveloperWiseTasks', {
             self.module_status_list = response.data.module_status_list;
         });
 
+        $scope.taskColor = function(color){
+            return {
+                "background-color" : color
+            };
+        };
+        
         //SAVE TASK
         $scope.saveTask = function() {
             var task_form = '#task_form';
