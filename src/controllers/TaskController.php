@@ -239,11 +239,6 @@ class TaskController extends Controller {
 			],
 		];
 		foreach ($statuses as $status) {
-			// $dates = [];
-			// $dates[0] = [
-			// 	'date' => $date,
-			// 	'date_label' => $date_label,
-			// ];
 			foreach ($dates as $date) {
 				$query1 = Task::with([
 					'module',
