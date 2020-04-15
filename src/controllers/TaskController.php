@@ -61,9 +61,9 @@ class TaskController extends Controller {
 				->where(function ($q) use ($project_version) {
 					if (Entrust::can('view-all-tasks')) {
 						$member_ids = $project_version->members()->pluck('id');
-						$q->whereIn('id', $member_ids);
+						$q->whereIn('users.id', $member_ids);
 					} else {
-						$q->where('id', Auth::id());
+						$q->where('users.id', Auth::id());
 					}
 				})
 
@@ -81,6 +81,7 @@ class TaskController extends Controller {
 				])
 					->with([
 						'module',
+						'project',
 						'status',
 						'type',
 						'assignedTo',
@@ -238,11 +239,6 @@ class TaskController extends Controller {
 			],
 		];
 		foreach ($statuses as $status) {
-			// $dates = [];
-			// $dates[0] = [
-			// 	'date' => $date,
-			// 	'date_label' => $date_label,
-			// ];
 			foreach ($dates as $date) {
 				$query1 = Task::with([
 					'module',
