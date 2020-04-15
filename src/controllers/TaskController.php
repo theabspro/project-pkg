@@ -13,6 +13,7 @@ use App\User;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use Entrust;
 use Illuminate\Http\Request;
 use Validator;
 use Yajra\Datatables\Datatables;
@@ -55,10 +56,17 @@ class TaskController extends Controller {
 			$project_version_list = null;
 		}
 
-		$member_ids = $project_version->members()->pluck('id');
 		foreach ($modules as $module) {
 			$module->developers = User::where('user_type_id', 1)
-				->whereIn('id', $member_ids)
+				->where(function ($q) use ($project_version) {
+					if (Entrust::can('view-all-tasks')) {
+						$member_ids = $project_version->members()->pluck('id');
+						$q->whereIn('id', $member_ids);
+					} else {
+						$q->where('id', Auth::id());
+					}
+				})
+
 				->company()
 				->with([
 					'profileImage',
@@ -136,6 +144,11 @@ class TaskController extends Controller {
 			->where([
 				'user_type_id' => 1,
 			])
+			->where(function ($q) {
+				if (!Entrust::can('view-all-tasks')) {
+					$q->where('users.id', Auth::id());
+				}
+			})
 			->company()
 			->orderBy('first_name')
 			->get();
@@ -241,7 +254,11 @@ class TaskController extends Controller {
 					'assignedTo.profileImage',
 				])
 					->join('statuses as s', 's.id', 'tasks.status_id')
-					->where('assigned_to_id', Auth::id())
+					->where(function ($q) {
+						if (!Entrust::can('view-all-tasks')) {
+							$q->where('tasks.assigned_to_id', Auth::id());
+						}
+					})
 					->orderBy('s.display_order')
 					->orderBy('tasks.date')
 					->orderBy('tasks.type_id')
@@ -288,6 +305,11 @@ class TaskController extends Controller {
 			'assignedTo',
 			'assignedTo.profileImage',
 		])
+			->where(function ($q) {
+				if (!Entrust::can('view-all-tasks')) {
+					$q->where('tasks.assigned_to_id', Auth::id());
+				}
+			})
 		;
 		$query2 = clone $query1;
 

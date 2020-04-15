@@ -8,7 +8,10 @@
                     </h1>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
-                    <button class="btn btn-bordered" data-toggle="modal" data-target="#project-filter-modal"><i class="icon ion-md-funnel"></i>Filter</button>
+                    <button class="btn btn-bordered" data-toggle="modal" data-target="#task-filter-modal">
+                        <i class="icon ion-md-funnel"></i>
+                        Filter
+                    </button>
                 </div><!-- Page Header Content -->
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
@@ -42,6 +45,9 @@
                             <div>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.module=module;showTaskForm({},0,$event)" title="Add Task">
+                                        <md-tooltip md-direction="top">
+                                            Add Task
+                                        </md-tooltip>
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                     </button>
                                 </div>
@@ -49,7 +55,6 @@
                         </div>
                         <!-- UNASSIGNED TASKS OF MODULES -->
                         <div class="panel-body">
-                            <br />
                             <div class="panel panel-info" ng-repeat="(key, date) in status.dates">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
@@ -102,42 +107,89 @@
 </div><!-- Content Wrap -->
 <task-modal-form task="$ctrl.task"></task-modal-form>
 <!-- Filter Modal -->
-<div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade filter" id="task-filter-modal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
-                <h5 class="modal-title" id="myModalLabel">Project Filter</h5>
+                <h5 class="modal-title" id="myModalLabel">Task Filter</h5>
+                <hr />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Filter Presets</label>
+                            <md-select ng-model="" multiple="true">
+                                <md-select-label>Select a Member</md-select-label>
+                                <md-option ng-value="opt" ng-repeat="opt in options">
+                                    {{ opt }}
+                                </md-option>
+                            </md-select>
+                        </div><!-- Field -->
+                    </div><!-- Column -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Filter Preset Name</label>
+                            <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
+                        </div><!-- Field -->
+                    </div><!-- Column -->
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-rose" ng-click="reset_filter()">
+                            Save New Preset Filter
+                        </button>
+                    </div>
+                </div>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Project Code</label>
-                                <input type="text" class="form-control" id="project_code" name="project_code" placeholder="Enter Project Code" autocomplete="off">
+                                <label>Project</label>
+                                <md-select ng-model="" multiple="true">
+                                    <md-select-label>Select a Project</md-select-label>
+                                    <md-option ng-value="opt" ng-repeat="opt in options">
+                                        {{ opt }}
+                                    </md-option>
+                                </md-select>
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Project Name</label>
-                                <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
+                                <label>Member</label>
+                                <md-select ng-model="" multiple="true">
+                                    <md-select-label>Select a Member</md-select-label>
+                                    <md-option ng-value="opt" ng-repeat="opt in options">
+                                        {{ opt }}
+                                    </md-option>
+                                </md-select>
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Mobile Number</label>
-                                <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="Enter Mobile Number" autocomplete="off">
+                                <label>Task Date</label>
+                                <md-select ng-model="" multiple="true">
+                                    <md-select-label>Select a Member</md-select-label>
+                                    <md-option ng-value="opt" ng-repeat="opt in options">
+                                        {{ opt }}
+                                    </md-option>
+                                </md-select>
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
+                                <label>Task Type</label>
+                                <md-select ng-model="" multiple="true">
+                                    <md-select-label>Select a Member</md-select-label>
+                                    <md-option ng-value="opt" ng-repeat="opt in options">
+                                        {{ opt }}
+                                    </md-option>
+                                </md-select>
                             </div><!-- Field -->
                         </div><!-- Column -->
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
+                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">
+                                Reset Filter
+                            </button>
                         </div>
                     </div><!-- Row -->
                 </div><!-- Modal Form -->
