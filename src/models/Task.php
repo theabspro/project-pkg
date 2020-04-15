@@ -7,6 +7,7 @@ use Abs\ModulePkg\Module;
 use Abs\ProjectPkg\ProjectVersion;
 use App\Company;
 use App\Config;
+use App\Project;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -52,6 +53,15 @@ class Task extends Model {
 	public function tl() {
 		return $this->belongsTo('App\User', 'tl_id');
 	}
+
+	public function pm() {
+		return $this->belongsTo('App\User', 'pm_id');
+	}
+
+	public function project() {
+		return $this->belongsTo('App\Project', 'project_id');
+	}
+
 	public function setDateAttribute($value) {
 		return $this->attributes['date'] = !empty($value) ? date('Y-m-d', strtotime($value)) : date('Y-m-d');
 	}
