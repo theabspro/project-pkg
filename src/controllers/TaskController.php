@@ -534,9 +534,17 @@ class TaskController extends Controller {
 		}
 	}
 	public function deleteTask(Request $r) {
-		$delete_status = Task::withTrashed()->where('id', $r->id)->forceDelete();
-		if ($delete_status) {
-			return response()->json(['success' => true]);
+		DB::beginTransaction();
+		try {
+			$delete_task = Task::withTrashed()->where('id', $r->id)->forceDelete();
+			DB::commit();
+			if ($delete_task) {
+				return response()->json(['success' => true]);
+			}
+
+		} catch (Exception $e) {
+			DB::rollBack();
+			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
 }
