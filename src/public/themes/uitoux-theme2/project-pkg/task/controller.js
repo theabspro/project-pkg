@@ -240,8 +240,10 @@ app.component('moduleDeveloperWiseTasks', {
         }
 
         //DELETE
-        $scope.deleteTask = function($id, $event) {
+        $scope.deleteTask = function($id, $event, tasks, index) {
             $event.stopPropagation();
+            $scope.tasks = tasks;
+            $scope.index = index;
             $('#delete_task').modal('show');
             $('#task_id').val($id);
         }
@@ -259,14 +261,18 @@ app.component('moduleDeveloperWiseTasks', {
                     $('#delete_task').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
-                    $route.reload();
+                    $scope.tasks.splice($scope.index, 1);
+                    // $route.reload();
                 }
             });
         }
 
         //DELETE
-        $scope.deleteModule = function($id, $event) {
+        $scope.deleteModule = function($id, $event, modules, index) {
             $event.stopPropagation();
+            $scope.modules = modules;
+            $scope.index = index;
+
             $('#delete_module').modal('show');
             $('#module_id').val($id);
         }
@@ -324,6 +330,8 @@ app.component('moduleDeveloperWiseTasks', {
         }
 
         $scope.toggleEmptyPanels = function() {
+
+            console.log($scope.hide_empty_panels);
             if ($scope.hide_empty_panels) {
                 angular.forEach(self.modules, function(module, key1) {
                     if (module.unassigned_tasks.length == 0) {

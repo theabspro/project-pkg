@@ -58,14 +58,13 @@
         <br />
         <% task.number %> :
         <% task.subject %>
-        <a href="javascript:;" ng-click="deleteTask(task.id,$event)" ng-if="$ctrl.delete_task_permission">
+        <a href="javascript:;" ng-click="deleteTask(task.id,$event,tasks,key2)" ng-if="$ctrl.delete_task_permission">
             <md-tooltip md-direction="top">
                 Delete Task
             </md-tooltip>
             <span class="glyphicon glyphicon-trash pull-right" aria-hidden="true">
             </span>
         </a>
-        <!-- <a href="javascript:;" ng-click="duplicateTask(task,$event,tasks,key2)"> -->
         <a href="javascript:;" ng-click="showTaskForm(task,1,$event,tasks,key2)">
             <md-tooltip md-direction="top">
                 Clone Task

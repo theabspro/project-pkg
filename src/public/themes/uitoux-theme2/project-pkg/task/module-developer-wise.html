@@ -17,7 +17,7 @@
                         <md-tooltip md-direction="top">
                             Hide Empty Panels
                         </md-tooltip>
-                        <md-switch ng-model="hide_empty_panels" aria-label="Switch 1" class="md-warn" ng-click="toggleEmptyPanels()">
+                        <md-switch ng-model="hide_empty_panels" aria-label="Switch 1" class="md-warn" ng-change="toggleEmptyPanels()">
                         </md-switch>
                         <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
                     </div>
