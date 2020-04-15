@@ -69,7 +69,8 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <task-card-list tasks="date.tasks"></task-card-list>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = date.tasks"></ng-include>
+                                <!-- <task-card-list tasks="date.tasks"></task-card-list> -->
                                 <div class="panel-footer">
                                     Tasks : {{date.tasks.length}} /
                                     EH : {{date.total_estimated_hour}} /
@@ -88,7 +89,8 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <task-card-list tasks="status.unplanned_tasks"></task-card-list>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = status.unplanned_tasks"></ng-include>
+                                <!-- <task-card-list tasks="status.unplanned_tasks"></task-card-list> -->
                                 <div class="panel-footer">
                                     Tasks : {{status.unplanned_tasks.length}} /
                                     EH : 8 /

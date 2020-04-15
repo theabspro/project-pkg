@@ -19,14 +19,14 @@
                                 <div class="separate-form-group">
                                     <label>Project
                                         <sup class="mandatory">*</sup></label>
-                                <ui-select ng-model="$ctrl.project_version.project_id" theme="select2">
-                                    <ui-select-match placeholder="Select Project Version">
-                                        <% $select.selected.short_name || $select.selected %>
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.projects | propsFilter: {short_name: $select.search}">
-                                        <div ng-bind-html="i.short_name | highlight: $select.search"></div>
-                                    </ui-select-choices>
-                                </ui-select>
+                                    <ui-select ng-model="$ctrl.project_version.project_id" theme="select2">
+                                        <ui-select-match placeholder="Select Project Version">
+                                            <% $select.selected.short_name || $select.selected %>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.projects | propsFilter: {short_name: $select.search}">
+                                            <div ng-bind-html="i.short_name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
                                     <input type="hidden" name="project_id" value='<% $ctrl.project_version.project_id %>' id="project_id" class="required">
                                 </div><!-- Feild -->
                             </div><!-- Column -->
@@ -97,14 +97,14 @@
                                 <div class="input-text form-group">
                                     <label>Status
                                         <sup class="mandatory">*</sup></label>
-                                        <ui-select ng-model="$ctrl.project_version.status_id" theme="select2">
-                                    <ui-select-match placeholder="Select Project Version">
-                                        <% $select.selected.name || $select.selected %>
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="i.id as i in $ctrl.extras.project_statuses | propsFilter: {name: $select.search}">
-                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
-                                    </ui-select-choices>
-                                </ui-select>
+                                    <ui-select ng-model="$ctrl.project_version.status_id" theme="select2">
+                                        <ui-select-match placeholder="Select Project Version">
+                                            <% $select.selected.name || $select.selected %>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.project_statuses | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
                                     <input type="hidden" name="status_id" value='<% $ctrl.project_version.status_id %>' class="required">
                                 </div><!-- Feild -->
                             </div><!-- Column -->
@@ -131,6 +131,67 @@
                                         <input type="hidden" name="status" value="<% $ctrl.switch_value %>">
                                     </div>
                                 </div><!-- Form Group -->
+                            </div><!-- Column -->
+                        </div>
+                        <hr>
+                        <!-- PROJECT MEMBER ADDED -->
+                        <div class="row">
+                            <h5 class="modal-title">Add Project Members</h5>
+                        </div>
+                        <hr>
+                        <div class="row" ng-repeat="(index,project) in $ctrl.project_version.members">
+                            <div class="col-md-3">
+                                <div class="input-text form-group">
+                                    <label>Project Member 
+                                        <sup class="mandatory">*</sup></label>
+                                    <ui-select ng-model="project.pivot.member_id" theme="select2">
+                                        <ui-select-match placeholder="Select Project Member">
+                                            <% $select.selected.first_name|| $select.selected %>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.members_list | propsFilter: {first_name: $select.search}">
+                                            <div ng-bind-html="i.first_name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="project_members[<% index %>][member_id]" value='<% project.pivot.member_id %>' class="required">
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-3">
+                                <div class="input-text form-group">
+                                    <label>Type
+                                        <sup class="mandatory">*</sup></label>
+                                    <ui-select ng-model="project.pivot.type_id" theme="select2">
+                                        <ui-select-match placeholder="Select Project Member Type">
+                                            <% $select.selected.name || $select.selected %>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.project_member_type_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="project_members[<% index %>][type_id]" value='<% project.pivot.type_id %>' class="required">
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-3">
+                                <div class="input-text form-group">
+                                    <label>Role
+                                        <sup class="mandatory">*</sup></label>
+                                    <ui-select ng-model="project.pivot.role_id" theme="select2">
+                                        <ui-select-match placeholder="Select Role">
+                                            <% $select.selected.name || $select.selected %>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.project_member_role_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="project_members[<% index %>][role_id]" value='<% project.pivot.role_id %>' class="required">
+                                </div><!-- Feild -->
+                            </div><!-- Column -->
+                            <div class="col-md-3">
+                                <a href="javascript:;" ng-click="removeProjectMember(index)"><img src="./public/themes/{{$ctrl.theme}}/img/content/modal/close-circle-active.svg" class="img-fluid" alt="Delete"></a>
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary-light btn-square" ng-click="add_members()">+ Add Project Members</button>
                             </div><!-- Column -->
                         </div>
                         <!--row-->

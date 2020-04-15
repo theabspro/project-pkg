@@ -1,6 +1,6 @@
 app.component('projectVersionCardList', {
     templateUrl: project_version_card_list_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $timeout) {
         $scope.loading = true;
         var self = this;
         $('#search_project_version').focus();
@@ -20,6 +20,7 @@ app.component('projectVersionCardList', {
                 }
             }
         ).then(function(response) {
+            console.log(response.data);
             if (!response.data.success) {
                 showErrorNoty(response.data);
                 return;
@@ -49,48 +50,57 @@ app.component('projectVersionCardList', {
         }
 
         $scope.showProjectVersionForm = function(project_version) {
-            console.log(project_version);
+            // console.log(project_version);
             $('#project-version-form-modal').modal('show');
             $('#project_id').focus();
 
-            self.project_version = project_version;
-        }
-
-        //SAVE PROJECT VERSION
-        $http.get(
-            laravel_routes['getProjectVerisonFormData'], {
-                params: {
-                    id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
+            //GET FORM DATA
+            $http.get(
+                laravel_routes['getProjectVerisonFormData'], {
+                    params: {
+                        id: project_version ? project_version.id : null,
+                    }
                 }
-            }
-        ).then(function(response) {
-            console.log(response.data);
-            self.project_version = response.data.project_version;
-            self.extras = response.data.extras;
-            self.action = response.data.action;
-            $rootScope.loading = false;
-            if (self.action == 'Edit') {
-                if (self.project_version.deleted_at) {
-                    self.switch_value = 'Inactive';
+            ).then(function(response) {
+                console.log(response.data);
+                self.project_version = response.data.project_version;
+                self.extras = response.data.extras;
+                self.action = response.data.action;
+                if (self.action == 'Edit') {
+                    if (self.project_version.deleted_at) {
+                        self.switch_value = 'Inactive';
+                    } else {
+                        self.switch_value = 'Active';
+                    }
                 } else {
                     self.switch_value = 'Active';
                 }
-            } else {
-                self.switch_value = 'Active';
-            }
-        });
+            });
+        }
 
-        // $("input:text:visible:first").focus();
+        //ADD PROJECT MEMBERS
+        $scope.add_members = function() {
+            self.project_version.members.push({});
+        }
+        //REMOVE PROJECT MEMBERS
+        $scope.removeProjectMember = function(index) {
+            self.project_version.members.splice(index, 1);
+        }
+
         /* Project-Version DatePicker*/
-        $('.projectVersionPicker').bootstrapDP({
-            format: "dd-mm-yyyy",
-            autoclose: "true",
-            todayHighlight: true,
-            // startDate: min_offset,
-            // endDate: max_offset
-        });
+        $timeout(function() {
+            $('.projectVersionPicker').bootstrapDP({
+                format: "dd-mm-yyyy",
+                autoclose: "true",
+                todayHighlight: true,
+                // startDate: min_offset,
+                // endDate: max_offset
+            });
+        }, 1000);
 
-         $scope.saveProjectVerison = function() {
+
+        //SAVE PROJECT VERSION
+        $scope.saveProjectVerison = function() {
             var project_version_form_id = '#project_version_form';
             var v = jQuery(project_version_form_id).validate({
                 ignore: '',
