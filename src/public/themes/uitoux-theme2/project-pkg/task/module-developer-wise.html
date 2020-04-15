@@ -179,23 +179,16 @@
                                     </h3>
                                 </div>
                                 <ng-include src="task_card_list_template_url" ng-init="tasks = developer.tasks"></ng-include>
-                                <!--                                 <ul class="list-group" dnd-list="developer.tasks" dnd-allowed-types="['task']">
-                                    <li ng-if="developer.tasks.length != 0" ng-repeat="(key2, task) in developer.tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task, 0, $event)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="developer.tasks.splice(key2, 1)">
-                                        <div ng-include="task_card_list_template_url"></div>
-                                    </li>
-                                    <li ng-if="developer.tasks.length == 0" class="alert alert-warning">
-                                        No Tasks
-                                    </li>
-                                    <li class="dndPlaceholder">
-                                        Drop any <strong>Task</strong> here
-                                    </li>
-                                </ul>
- -->
-                                <!-- <task-card-list tasks="developer.tasks" task="$ctrl.task" showTaskForm="showTaskForm(task, 0, $event)"></task-card-list> -->
                                 <div class="panel-footer">
-                                    Tasks : {{developer.tasks.length}} /
-                                    EH : {{developer.total_estimated_hour}} /
-                                    AH : {{developer.total_actual_hour}}
+                                    <span class="label label-success">
+                                        Tasks : {{developer.tasks.length}}
+                                    </span>
+                                    <span class="label label-warning">
+                                        EH : {{developer.total_estimated_hour}}
+                                    </span>
+                                    <span class="label label-info">
+                                        AH : {{developer.total_actual_hour}}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -217,16 +210,53 @@
             <div class="modal-header">
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
                 <h5 class="modal-title" id="myModalLabel">Project Filter</h5>
+                <hr />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Filter Presets</label>
+                            <!-- <md-select ng-model="">
+                                <md-select-label>Select a Member</md-select-label>
+                                <md-option ng-value="opt" ng-repeat="opt in options">
+                                    {{ opt }}
+                                </md-option>
+                            </md-select> -->
+                        </div><!-- Field -->
+                    </div><!-- Column -->
+                    <form id="new-preset-form">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Filter Preset Name</label>
+                                <input type="text" class="form-control" name="name" autocomplete="off">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">
+                                Save New Preset Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Project Code</label>
-                                <input type="text" class="form-control" id="project_code" name="project_code" placeholder="Enter Project Code" autocomplete="off">
+                        <div class="col-sm-6">
+                            <div class="separate-form-group">
+                                <label>
+                                    Task Status
+                                    <sup class="mandatory">*</sup>
+                                </label>
+                                <ui-select ng-model="$ctrl.task_status" theme="select2">
+                                    <ui-select-match placeholder="Select Task Status">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
                             </div><!-- Field -->
-                        </div><!-- Column -->
+                        </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Project Name</label>
