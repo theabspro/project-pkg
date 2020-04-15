@@ -206,7 +206,9 @@ app.component('moduleDeveloperWiseTasks', {
                             $('body').removeClass('modal-open');
                             $('.modal-backdrop').remove();
 
-                            $route.reload();
+                            if (!self.task.id) {
+                                $route.reload();
+                            }
 
                             //ISSUE : SARAVANAN
                             // if (res.success == true) {
