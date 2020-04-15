@@ -10,6 +10,7 @@ app.component('moduleDeveloperWiseTasks', {
             return false;
         }
         self.add_permission = self.hasPermission('add-task');
+        self.delete_permission = self.hasPermission('delete-task');
         self.theme = theme;
 
         $scope.module_modal_form_template_url = module_modal_form_template_url;
@@ -196,6 +197,7 @@ app.component('moduleDeveloperWiseTasks', {
                                 showErrorNoty(res);
                                 return;
                             }
+                            custom_noty('success', res.message);
                             $('#task-form-modal').modal('hide');
                             $('body').removeClass('modal-open');
                             $('.modal-backdrop').remove();
@@ -230,6 +232,32 @@ app.component('moduleDeveloperWiseTasks', {
                 }
             });
         }
+
+        //DELETE
+        $scope.deleteTask = function($id, $event) {
+            $event.stopPropagation();
+            $('#delete_task').modal('show');
+            $('#task_id').val($id);
+        }
+        $scope.deleteConfirm = function() {
+            id = $('#task_id').val();
+            $http.get(
+                laravel_routes['deleteTask'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Task Deleted Successfully');
+                    $('#delete_task').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
         $scope.onSelectedProject = function(id) {
             $http.post(
                 laravel_routes['getProjectVersionList'], {
