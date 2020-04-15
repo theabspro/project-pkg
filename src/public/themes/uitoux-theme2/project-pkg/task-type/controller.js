@@ -241,3 +241,33 @@ app.component('taskTypeForm', {
         });
     }
 });
+//------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------
+app.component('taskTypeCardList', {
+    templateUrl: task_type_card_list_template_url,
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope) {
+        $scope.loading = true;
+        var self = this;
+        // console.log(' ======= ');
+        // self.hasPermission = HelperService.hasPermission;
+        // if (!self.hasPermission('task_types')) {
+        //     window.location = "#!/page-permission-denied";
+        //     return false;
+        // }
+        // self.add_permission = self.hasPermission('add-task-type');
+
+        $http.get(
+            laravel_routes['getTaskTypes']
+        ).then(function(response) {
+            if (!response.data.success) {
+                console(response);
+                showErrorNoty(response.data);
+                return;
+            }
+            $scope.task_types = response.data.task_types;
+        });
+
+
+
+    }
+});

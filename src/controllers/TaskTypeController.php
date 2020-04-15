@@ -177,4 +177,23 @@ class TaskTypeController extends Controller {
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
+
+	public function getTaskTypes(Request $request) {
+		$task_types = TaskType::withTrashed()
+			->select([
+				'task_types.id',
+				'task_types.name',
+				'task_types.color',
+				'task_types.display_order',
+				DB::raw('IF(task_types.deleted_at IS NULL, "Active","Inactive") as status'),
+			])
+			->where('task_types.company_id', Auth::user()->company_id)
+		
+			->get();
+
+		return response()->json([
+			'success' => true,
+			'task_types' => $task_types,
+		]);		
+	}
 }

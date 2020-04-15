@@ -52,5 +52,6 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::get('/task-type/get-form-data', 'TaskTypeController@getTaskTypeFormData')->name('getTaskTypeFormData');
 	Route::post('/task-type/save', 'TaskTypeController@saveTaskType')->name('saveTaskType');
 	Route::get('/task-type/delete/', 'TaskTypeController@deleteTaskType')->name('deleteTaskType');
+	Route::get('/task-type/card-list', 'TaskTypeController@getTaskTypes')->name('getTaskTypes');
 
 });

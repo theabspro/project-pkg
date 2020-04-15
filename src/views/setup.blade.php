@@ -119,6 +119,10 @@
 	    when('/project-pkg/task-type/edit/:id', {
 	        template: '<task-type-form></task-type-form>',
 	        title: 'Edit Task Type',
+	    }).
+	    when('/project-pkg/task-type/card-list', {
+	        template: '<task-type-card-list></task-type-card-list>',
+	        title: 'Task Card List',
 	    });
 	}]);
 
@@ -156,6 +160,7 @@
 
     var task_type_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/list.html')}}";
     var task_type_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/form.html')}}";
+    var task_type_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/card-list.html')}}";
 
     //PARTIALS
     var module_modal_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/module-modal-form.html')}}";
