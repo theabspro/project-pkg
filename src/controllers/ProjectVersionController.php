@@ -4,6 +4,7 @@ namespace Abs\ProjectPkg;
 use Abs\BasicPkg\Config;
 use Abs\StatusPkg\Status;
 use App\Http\Controllers\Controller;
+use App\User;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -151,13 +152,17 @@ class ProjectVersionController extends Controller {
 	}
 
 	public function getProjectVerisonFormData(Request $r) {
+		// dd($r->all());
 		if (!$r->id) {
 			$project_version = new ProjectVersion;
+			$project_version->members = [];
 			$action = 'Add';
 		} else {
 			$project_version = ProjectVersion::withTrashed()->where('id', $r->id)->with([
 				'project',
-				'projectStatus',
+				'status',
+				// 'projectStatus',
+				'members',
 			])
 				->first();
 			$action = 'Edit';
@@ -166,6 +171,9 @@ class ProjectVersionController extends Controller {
 		$this->data['extras'] = [
 			'project_statuses' => collect(Status::where('type_id', 160)->select('id', 'name')->get())->prepend(['name' => 'Select Status']),
 			'projects' => collect(Project::where('company_id', Auth::user()->company_id)->select('id', 'code', 'short_name')->get())->prepend(['short_name' => 'Select Project']),
+			'members_list' => collect(User::where('company_id', Auth::user()->company_id)->select('id', 'first_name', 'last_name')->get())->prepend(['first_name' => 'Select Project Member']),
+			'project_member_type_list' => collect(Config::where('config_type_id', 21)->select('id', 'name')->get())->prepend(['name' => 'Select Project Member Type']),
+			'project_member_role_list' => collect(Config::where('config_type_id', 22)->select('id', 'name')->get())->prepend(['name' => 'Select Project Member Role']),
 		];
 		$this->data['action'] = $action;
 
@@ -204,18 +212,40 @@ class ProjectVersionController extends Controller {
 					'max:255',
 					'string',
 				],
-				// 'discussion_started_date' => [
-				// 	'date_format:"d-m-Y',
-				// 	'before_or_equal:' . date('Y-m-d'),
-				// ],
-				// 'development_started_date' => [
-				// 	// 'date_format:"d-m-Y',
-				// 	// 'before_or_equal:' . date('Y-m-d'),
-				// ],
-				// 'estimated_end_date' => [
-				// 	// 'date_format:"d-m-Y',
-				// 	// 'before_or_equal:' . date('Y-m-d'),
-				// ],
+				'discussion_started_date' => [
+					'nullable',
+					'date_format:"d-m-Y',
+					// 	'before_or_equal:' . date('Y-m-d'),
+				],
+				'development_started_date' => [
+					'nullable',
+					'date_format:"d-m-Y',
+					// 	// 'before_or_equal:' . date('Y-m-d'),
+				],
+				'estimated_end_date' => [
+					'nullable',
+					'date_format:"d-m-Y',
+					// 	// 'before_or_equal:' . date('Y-m-d'),
+				],
+				'project_members' => [
+					'required:true',
+					'array',
+				],
+				'project_members.*.member_id' => [
+					'integer',
+					// 'exists:receipts,id',
+					'distinct',
+				],
+				'project_members.*.type_id' => [
+					'required:true',
+					'integer',
+					// 'exists:receipts,id',
+				],
+				'project_members.*.role_id' => [
+					'required:true',
+					'integer',
+					// 'exists:receipts,id',
+				],
 				'status_id' => [
 					'required:true',
 					'exists:statuses,id',
@@ -250,6 +280,10 @@ class ProjectVersionController extends Controller {
 				$project_version->display_order = 999;
 			}
 			$project_version->save();
+			// dd($request->project_members, $project_version->id);
+			$project_version->members()->sync([]);
+			$project_version->members()->sync($request->project_members);
+
 			DB::commit();
 			if (!($request->id)) {
 				return response()->json(['success' => true, 'message' => ['Project Verison Added Successfully']]);
@@ -279,7 +313,7 @@ class ProjectVersionController extends Controller {
 	}
 
 	public function getProjectVersions(Request $r) {
-		//dd($r->all());
+		// dd($r->all());
 		$this->data['success'] = true;
 		$this->data['project_versions'] =
 		collect(ProjectVersion::where('project_id', $r->project_id)->select('id', 'number as name')->get())->prepend(['id' => '', 'name' => 'Select Project Version'])
