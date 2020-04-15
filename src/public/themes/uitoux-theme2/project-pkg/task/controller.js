@@ -78,15 +78,17 @@ app.component('moduleDeveloperWiseTasks', {
             $route.reload();
         });
 
-        $scope.showTaskForm = function(task, type_id) {
-            // console.log(' == type_id ===='+type_id);
+        $scope.showTaskForm = function(task, task_type, $event) {
+            $event.stopPropagation();
+            // console.log(' == task_type_id ===='+task_type_id);
             $('#task-form-modal').modal('show');
             $('#task-subject').focus();
             self.task = task;
-            if(!type_id || type_id == ''){
-                self.task.type_id = 0;                
+
+            if(!task_type || task_type == ''){
+                self.task.task_type = 0;                
             }else{
-                self.task.type_id = type_id;
+                self.task.task_type = task_type;
             }
             console.log(self.task);
             if (self.project_version) {

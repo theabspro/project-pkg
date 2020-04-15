@@ -412,6 +412,7 @@ class TaskController extends Controller {
 	}
 
 	public function saveTask(Request $request) {
+		// dd($request->all());
 		try {
 			$error_messages = [
 				'assigned_to_id.required' => 'Assigned To is Required',
@@ -469,7 +470,7 @@ class TaskController extends Controller {
 
 			DB::beginTransaction();
 			//ADD & EDIT TYPE
-			if (!$request->type_id) {
+			if (!$request->task_type) {
 				if (!$request->id) {
 					$task = new Task;
 					$task->created_by_id = Auth::user()->id;
@@ -502,7 +503,7 @@ class TaskController extends Controller {
 			$task->save();
 			DB::commit();
 			//ADD & EDIT TYPE
-			if (!$request->type_id) {
+			if (!$request->task_type) {
 				if (!($request->id)) {
 					return response()->json([
 						'success' => true,
