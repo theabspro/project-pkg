@@ -115,7 +115,7 @@
                                         </md-tooltip>
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-default" ng-click="deleteModule(task,$event)">
+                                    <button type="button" class="btn btn-sm btn-default" ng-click="deleteModule(module.id,$event)" ng-if="$ctrl.delete_module_permission">
                                         <md-tooltip md-direction="top">
                                             Delete Module
                                         </md-tooltip>
@@ -277,7 +277,25 @@
                 <p>You can’t retrive the data again, Are you sure you want to delete? </p>
                 <input type="hidden" name="task_id" id="task_id" value="">
                 <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+                <button class="btn btn-rose" ng-click="deleteTaskConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_module" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="module_id" id="module_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteModuleConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
             </div>
         </div>
     </div>

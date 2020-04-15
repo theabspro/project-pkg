@@ -10,7 +10,8 @@ app.component('moduleDeveloperWiseTasks', {
             return false;
         }
         self.add_permission = self.hasPermission('add-task');
-        self.delete_permission = self.hasPermission('delete-task');
+        self.delete_task_permission = self.hasPermission('delete-task');
+        self.delete_module_permission = self.hasPermission('delete-module');
         self.theme = theme;
 
         $scope.module_modal_form_template_url = module_modal_form_template_url;
@@ -239,7 +240,7 @@ app.component('moduleDeveloperWiseTasks', {
             $('#delete_task').modal('show');
             $('#task_id').val($id);
         }
-        $scope.deleteConfirm = function() {
+        $scope.deleteTaskConfirm = function() {
             id = $('#task_id').val();
             $http.get(
                 laravel_routes['deleteTask'], {
@@ -251,6 +252,31 @@ app.component('moduleDeveloperWiseTasks', {
                 if (response.data.success) {
                     custom_noty('success', 'Task Deleted Successfully');
                     $('#delete_task').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
+        //DELETE
+        $scope.deleteModule = function($id, $event) {
+            $event.stopPropagation();
+            $('#delete_module').modal('show');
+            $('#module_id').val($id);
+        }
+        $scope.deleteModuleConfirm = function() {
+            id = $('#module_id').val();
+            $http.get(
+                laravel_routes['deleteModule'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Module Deleted Successfully');
+                    $('#delete_module').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                     $route.reload();
