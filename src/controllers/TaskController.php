@@ -630,7 +630,7 @@ class TaskController extends Controller {
 	public function deleteTask(Request $r) {
 		DB::beginTransaction();
 		try {
-			$delete_task = Task::withTrashed()->where('id', $r->id)->forceDelete();
+			$delete_task = Task::where('id', $r->id)->delete();
 			DB::commit();
 			if ($delete_task) {
 				return response()->json(['success' => true]);
