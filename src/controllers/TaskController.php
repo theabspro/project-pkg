@@ -264,7 +264,8 @@ class TaskController extends Controller {
 		]);
 	}
 
-	public function getAllStatusTasksByDate($dates) {
+	//issue : ram : code optimization & reusability
+	private function getAllStatusTasksByDate($dates) {
 		$status = new Status;
 		$status->name = "All Tasks";
 
@@ -281,7 +282,8 @@ class TaskController extends Controller {
 		return $status;
 	}
 
-	public function getTasksByStatusDate($date, $status_id, $is_all_status, $is_unplanned) {
+	//issue : ram : code optimization & reusability
+	private function getTasksByStatusDate($date, $status_id, $is_all_status, $is_unplanned) {
 		$tasks = Task::with([
 			'module',
 			'module.projectVersion',
