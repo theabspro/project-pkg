@@ -222,7 +222,6 @@ class TaskController extends Controller {
 			->orderBy('display_order')
 			->get();
 
-		// $request->date = '2020-04-10';
 		if ($request->date) {
 			$date = date('Y-m-d', strtotime($request->date));
 			$date_label = date('d D', strtotime($date));
@@ -246,42 +245,16 @@ class TaskController extends Controller {
 			],
 		];
 
-		$query1 = Task::with([
-			'module',
-			'module.projectVersion',
-			'module.projectVersion.project',
-			'status',
-			'type',
-			'assignedTo',
-			'assignedTo.profileImage',
-		])
-			->join('statuses as s', 's.id', 'tasks.status_id')
-			->where(function ($q) {
-				if (!Entrust::can('view-all-tasks')) {
-					$q->where('tasks.assigned_to_id', Auth::id());
-				}
-			})
-			->orderBy('s.display_order')
-			->orderBy('tasks.date')
-			->orderBy('tasks.type_id')
-		;
-		$query2 = clone $query1;
-
 		foreach ($statuses as $status) {
+			$dates_wise = [];
 			foreach ($dates as $key => $date) {
-				$dates[$key]['tasks'] = $query1
-					->where([
-						'status_id' => $status->id,
-						'date' => $date['date'],
-					])
-					->get();
+				$dates_wise[$key]['date'] = $date['date'];
+				$dates_wise[$key]['date_label'] = $date['date_label'];
+				$dates_wise[$key]['tasks'] = $this->getTasksByStatusDate($date['date'], $status->id, false, false);
 			}
-			$status->dates = $dates;
+			$status->dates = $dates_wise;
 
-			$status->unplanned_tasks = $query2
-				->where('status_id', $status->id)
-				->whereNull('date')
-				->get();
+			$status->unplanned_tasks = $this->getTasksByStatusDate($date['date'], $status->id, false, true);
 		}
 		$all_statuses = collect($this->getAllStatusTasksByDate($dates));
 		$statuses = collect($statuses)->prepend($all_statuses);
@@ -295,7 +268,21 @@ class TaskController extends Controller {
 		$status = new Status;
 		$status->name = "All Tasks";
 
-		$query1 = Task::with([
+		$dates_wise = [];
+		foreach ($dates as $key => $date) {
+			$dates_wise[$key]['date'] = $date['date'];
+			$dates_wise[$key]['date_label'] = $date['date_label'];
+			$dates_wise[$key]['tasks'] = $this->getTasksByStatusDate($date['date'], $status->id, true, false);
+		}
+		$status->dates = $dates_wise;
+
+		$status->unplanned_tasks = $this->getTasksByStatusDate($date['date'], $status->id, true, true);
+
+		return $status;
+	}
+
+	public function getTasksByStatusDate($date, $status_id, $is_all_status, $is_unplanned) {
+		$tasks = Task::with([
 			'module',
 			'module.projectVersion',
 			'module.projectVersion.project',
@@ -309,24 +296,22 @@ class TaskController extends Controller {
 					$q->where('tasks.assigned_to_id', Auth::id());
 				}
 			})
-		;
-		$query2 = clone $query1;
-
-		foreach ($dates as $key => $date) {
-
-			$dates[$key]['tasks'] = $query1
-				->where([
-					'date' => $date['date'],
-				])
-				->get();
+			->where(function ($q) use ($is_unplanned, $date) {
+				if (!$is_unplanned) {
+					$q->where('tasks.date', $date);
+				} else {
+					$q->whereNull('tasks.date');
+				}
+			});
+		if (!$is_all_status) {
+			$tasks->join('statuses as s', 's.id', 'tasks.status_id')
+				->where('tasks.status_id', $status_id)
+				->orderBy('s.display_order')
+				->orderBy('tasks.date')
+				->orderBy('tasks.type_id');
 		}
-		$status->dates = $dates;
-
-		$status->unplanned_tasks = $query2
-			->whereNull('date')
-			->get();
-
-		return $status;
+		$tasks = $tasks->get();
+		return $tasks;
 	}
 
 	public function getTaskList(Request $request) {
