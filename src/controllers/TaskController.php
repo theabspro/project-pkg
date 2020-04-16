@@ -513,9 +513,15 @@ class TaskController extends Controller {
 				if (!empty($request->noty)) {
 					$assigned_by = User::find(Auth::user()->id);
 					$assigned_to = User::find($request->assigned_to_id);
-					$tl = User::find($request->noty['tl']['id']);
-					$pm = User::find($request->noty['pm']['id']);
-					$qa = User::find($request->noty['qa']['id']);
+					if (isset($request->noty['tl'])) {
+						$tl = User::find($request->noty['tl']['id']);
+					}
+					if (isset($request->noty['pm'])) {
+						$pm = User::find($request->noty['pm']['id']);
+					}
+					if (isset($request->noty['qa'])) {
+						$qa = User::find($request->noty['qa']['id']);
+					}
 					//ASSIGNED
 					if ($task_assign_type == 1) {
 						$data['title'] = 'Task Assigned';
