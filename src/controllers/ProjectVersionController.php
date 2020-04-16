@@ -283,7 +283,7 @@ class ProjectVersionController extends Controller {
 			$project_version->save();
 			// dd($request->project_members, $project_version->id);
 			//isse : vijay : query optimization
-			// $project_version->members()->sync([]);
+			$project_version->members()->sync([]);
 			$project_version->members()->sync($request->project_members);
 
 			DB::commit();
