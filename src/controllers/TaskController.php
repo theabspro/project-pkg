@@ -170,6 +170,7 @@ class TaskController extends Controller {
 		;
 
 		$users = User::with([
+			'profileImage',
 			'employee',
 			'employee.designation',
 		])
