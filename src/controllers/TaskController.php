@@ -86,8 +86,8 @@ class TaskController extends Controller {
 				])
 					->with([
 						'module',
-						'project',
 						'module.projectVersion',
+						'module.projectVersion.project',
 						'status',
 						'type',
 						'assignedTo',
