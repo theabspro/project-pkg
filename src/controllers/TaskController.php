@@ -129,8 +129,27 @@ class TaskController extends Controller {
 		]);
 	}
 
+	//todo : need to move this function to date helper
+	private function getDateRange($date) {
+		return $dates = [
+			[
+				'date' => date('Y-m-d', strtotime($date . ' -1 days')),
+				'date_label' => date('d D', strtotime($date . ' -1 days')),
+			],
+			[
+				'date' => date('Y-m-d', strtotime($date)),
+				'date_label' => date('d D', strtotime($date)),
+			],
+			[
+				'date' => date('Y-m-d', strtotime($date . ' +1 days')),
+				'date_label' => date('d D', strtotime($date . ' +1 days')),
+			],
+		];
+
+	}
 	public function getUserDateWiseTasks(Request $request) {
-		$unassigned_tasks = Task::with([
+
+		$base_query = Task::with([
 			'module',
 			'module.projectVersion',
 			'module.projectVersion.project',
@@ -139,8 +158,14 @@ class TaskController extends Controller {
 			'assignedTo',
 			'assignedTo.profileImage',
 		])
+			->orderBy('date')
+			->orderBy('type_id')
+			->orderBy('status_id')
+		;
+
+		$q1 = clone $base_query;
+		$unassigned_tasks = $q1
 			->whereNull('assigned_to_id')
-		// ->whereNull('date')
 			->get()
 		;
 
@@ -161,43 +186,23 @@ class TaskController extends Controller {
 			->get();
 
 		// $request->date = '2020-04-10';
-		if ($request->date) {
-			$date = date('Y-m-d', strtotime($request->date));
-			$date_label = date('d D', strtotime($date));
-		} else {
-			$date = date('Y-m-d');
-			$date_label = date('d D');
-		}
+		$date = $request->date ? date('Y-m-d', strtotime($request->date)) : $date = date('Y-m-d');
+		$dates = $this->getDateRange($date);
 
 		foreach ($users as $user) {
-			$dates = [];
-			$dates[0] = [
-				'date' => $date,
-				'date_label' => $date_label,
-			];
-			$query1 = Task::with([
-				'module',
-				'module.projectVersion',
-				'module.projectVersion.project',
-				'status',
-				'type',
-			])
-				->orderBy('date')
-				->orderBy('type_id')
-				->orderBy('status_id')
-			;
-			$query2 = clone $query1;
-
-			$dates[0]['tasks'] = $query1
-				->where([
-					'assigned_to_id' => $user->id,
-					'date' => $date,
-				])
-				->get();
-
+			foreach ($dates as &$date) {
+				$q2 = clone $base_query;
+				$date['tasks'] = $q2
+					->where([
+						'assigned_to_id' => $user->id,
+						'date' => $date['date'],
+					])
+					->get();
+			}
 			$user->dates = $dates;
 
-			$user->unplanned_tasks = $query2->where([
+			$q3 = clone $base_query;
+			$user->unplanned_tasks = $q3->where([
 				'assigned_to_id' => $user->id,
 			])
 				->whereNull('date')

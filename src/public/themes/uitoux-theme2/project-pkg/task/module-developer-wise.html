@@ -181,12 +181,21 @@
                                 <ng-include src="task_card_list_template_url" ng-init="tasks = developer.tasks"></ng-include>
                                 <div class="panel-footer">
                                     <span class="label label-success">
+                                        <md-tooltip md-direction="top">
+                                            Total Tasks
+                                        </md-tooltip>
                                         Tasks : {{developer.tasks.length}}
                                     </span>
                                     <span class="label label-warning">
+                                        <md-tooltip md-direction="top">
+                                            Estimated Hours
+                                        </md-tooltip>
                                         EH : {{developer.total_estimated_hour}}
                                     </span>
                                     <span class="label label-info">
+                                        <md-tooltip md-direction="top">
+                                            Actual Hours
+                                        </md-tooltip>
                                         AH : {{developer.total_actual_hour}}
                                     </span>
                                 </div>

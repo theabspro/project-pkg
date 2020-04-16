@@ -54,8 +54,8 @@ app.component('moduleDeveloperWiseTasks', {
                     self.modules[i].developers[j].total_estimated_hour = 0;
                     self.modules[i].developers[j].total_actual_hour = 0;
                     for (var k in self.modules[i].developers[j].tasks) {
-                        self.modules[i].developers[j].total_estimated_hour += parseFloat(self.modules[i].developers[j].tasks[k].estimated_hours);
-                        self.modules[i].developers[j].total_actual_hour += parseFloat(self.modules[i].developers[j].tasks[k].actual_hours);
+                        self.modules[i].developers[j].total_estimated_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].estimated_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].estimated_hours) : 0);
+                        self.modules[i].developers[j].total_actual_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].actual_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].actual_hours) : 0);
                     }
                 }
             }
@@ -432,6 +432,9 @@ app.component('userDateWiseTasks', {
         self.add_permission = self.hasPermission('add-task');
         self.theme = theme;
 
+        $scope.task_modal_form_template_url = task_modal_form_template_url;
+        $scope.task_card_list_template_url = task_card_list_template_url;
+
         $http.get(
             laravel_routes['getUserDateWiseTasks'], {
                 params: {
@@ -445,6 +448,17 @@ app.component('userDateWiseTasks', {
             }
             self.users = response.data.users;
             self.unassigned_tasks = response.data.unassigned_tasks;
+
+            for (var i in self.users) {
+                for (var j in self.users[i].dates) {
+                    self.users[i].dates[j].total_estimated_hour = 0;
+                    self.users[i].dates[j].total_actual_hour = 0;
+                    for (var k in self.users[i].dates[j].tasks) {
+                        self.users[i].dates[j].total_estimated_hour += ($.isNumeric(self.users[i].dates[j].tasks[k].estimated_hours) ? parseFloat(self.users[i].dates[j].tasks[k].estimated_hours) : 0);
+                        self.users[i].dates[j].total_actual_hour += ($.isNumeric(self.users[i].dates[j].tasks[k].actual_hours) ? parseFloat(self.users[i].dates[j].tasks[k].actual_hours) : 0);
+                    }
+                }
+            }
 
         });
 
@@ -484,6 +498,8 @@ app.component('statusDateWiseTasks', {
         }
         self.add_permission = self.hasPermission('add-task');
         self.theme = theme;
+
+        $scope.task_modal_form_template_url = task_modal_form_template_url;
         $scope.task_card_list_template_url = task_card_list_template_url;
 
         $http.get(
