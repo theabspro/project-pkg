@@ -63,7 +63,7 @@ class Task extends Model {
 	}
 
 	public function setDateAttribute($value) {
-		return $this->attributes['date'] = !empty($value) ? date('Y-m-d', strtotime($value)) : date('Y-m-d');
+		return $this->attributes['date'] = !empty($value) ? date('Y-m-d', strtotime($value)) : NULL;
 	}
 
 	public function getDateAttribute($value) {
