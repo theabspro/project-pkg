@@ -249,12 +249,13 @@ app.component('taskTypeCardList', {
         $scope.loading = true;
         var self = this;
         // console.log(' ======= ');
-        // self.hasPermission = HelperService.hasPermission;
+        self.hasPermission = HelperService.hasPermission;
         // if (!self.hasPermission('task_types')) {
         //     window.location = "#!/page-permission-denied";
         //     return false;
         // }
-        // self.add_permission = self.hasPermission('add-task-type');
+        self.add_permission = self.hasPermission('add-task-type');
+        $scope.task_type_modal_form_template_url = task_type_modal_form_template_url;
 
         $http.get(
             laravel_routes['getTaskTypes']
@@ -267,7 +268,81 @@ app.component('taskTypeCardList', {
             $scope.task_types = response.data.task_types;
         });
 
+        $scope.showTaskTypeForm = function(task_type) {
+            $('#task-type-form-modal').modal('show');
+            $('#task-type-name').focus();
+            self.task_type = task_type;
+        }
 
+        $scope.saveTaskType = function() {
+            var task_type_form = '#task_type_form';
+            var v = jQuery(task_type_form).validate({
+                ignore: '',
+                rules: {
+                    'name': {
+                        required: true,
+                    },
+                    'color': {
+                        required: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(task_type_form)[0]);
+                    $('#submit').button('loading');
+                    $.ajax({
+                            url: laravel_routes['saveTaskType'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('#submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+
+                            $('#task-type-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+
+                            $route.reload();
+                        })
+                        .fail(function(xhr) {
+                            $('#submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+        }
+
+        //DELETE
+        $scope.deleteTaskType = function($id) {
+            console.log("====");
+            $('#task-types-delete-modal').modal('show');
+            $('#task_type_id').val($id);
+        }
+        $scope.deleteConfirm = function() {
+            $id = $('#task_type_id').val();
+            $http.get(
+                laravel_routes['deleteTaskType'], {
+                    params: {
+                        id: $id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Task Types Deleted Successfully');
+                    $('#task_types_list').DataTable().ajax.reload(function(json) {});
+                    $location.path('/project-pkg/task-type/card-list');
+                }
+            });
+        }
 
     }
 });

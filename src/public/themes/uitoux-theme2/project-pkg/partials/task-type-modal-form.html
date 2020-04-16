@@ -1,0 +1,75 @@
+<div class="modal fade filter" id="task-type-form-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <h5 class="modal-title" id="myModalLabel">
+                    <% $ctrl.task_type.id ? 'Edit' : 'Add' %> Task types
+                    <!-- <% $ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+')' : '' %> -->
+                </h5>
+            </div><!-- Modal Header -->
+            <form id="task_type_form">
+                <input type="hidden" name="id" value="<% $ctrl.task_type.id %>">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Name
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control" name="name" autocomplete="off" ng-model="$ctrl.task_type.name" id="task-type-name">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>
+                                        Color
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <color-picker options="color_picker_options" ng-model="$ctrl.task_type.color"></color-picker>
+                                    <input type="text" ng-model="$ctrl.task_type.color" name="color" />
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Display Order
+                                    </label>
+                                    <input type="text" class="form-control" ng-model="$ctrl.task_type.display_order" name="display_order" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" />
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Active Status
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <div class="tab-switch">
+                                        <md-switch ng-model="$ctrl.task_type.status" aria-label="Switch 1" ng-true-value="'Inactive'" ng-false-value="'Active'" class="md-warn">
+                                            <% $ctrl.task_type.status %>
+                                        </md-switch>
+                                        <input type="hidden" name="status" ng-model="$ctrl.task_type.status">
+                                    </div>
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            {{$ctrl.task_type|json}}
+                            <% $ctrl.task_type|json %>
+                        </div>
+                        <!--row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose" ng-click="saveTaskType()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->

@@ -52,6 +52,7 @@ class TaskTypeController extends Controller {
 					$query->whereNotNull('task_types.deleted_at');
 				}
 			})
+			->orderBy('display_order','asc')
 		;
 
 		return Datatables::of($task_types)
@@ -179,6 +180,7 @@ class TaskTypeController extends Controller {
 	}
 
 	public function getTaskTypes(Request $request) {
+
 		$task_types = TaskType::withTrashed()
 			->select([
 				'task_types.id',
@@ -188,7 +190,7 @@ class TaskTypeController extends Controller {
 				DB::raw('IF(task_types.deleted_at IS NULL, "Active","Inactive") as status'),
 			])
 			->where('task_types.company_id', Auth::user()->company_id)
-		
+			->orderBy('display_order','asc')
 			->get();
 
 		return response()->json([
