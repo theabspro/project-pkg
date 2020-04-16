@@ -13,15 +13,22 @@
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
                 <div class="page-header-content indicator-block">
-                    <ul class="indicator-list">
-                        <li class="green">Active</li>
-                        <li class="red">Inactive</li>
-                    </ul>
+                    <div class="tab-switch1">
+                        <md-tooltip md-direction="top">
+                            Hide Empty Panels
+                        </md-tooltip>
+                        <md-switch ng-model="hide_empty_panels" aria-label="Switch 1" class="md-warn" ng-change="toggleEmptyPanels()">
+                        </md-switch>
+                        <input type="hidden" name="status" value="{{$ctrl.switch_value}}">
+                    </div>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content reset-block">
                     <div class="reset-wrap">
-                        <button class="btn-reset reset-tooltip refresh_table my-tooltip" ng-shortcut="'meta+shift+r'" ng-shortcut-click data-title="ctrl+shift+r">
-                            <img class="img-responsive" src="./public/theme/img/content/reset.svg" alt="Reset" />
+                        <button ng-shortcut="'meta+shift+r'" ng-shortcut-click class="btn btn-default">
+                            <md-tooltip md-direction="top">
+                                Reload Data (ctrl+shift+r)
+                            </md-tooltip>
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div><!-- Page Header Content -->
@@ -124,9 +131,9 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- UNASSIGNED TASKS OF MODULES -->
                         <div class="panel-body" style1="height: 200px;overflow: hidden;overflow-y: scroll;">
-                            <div class="panel panel-default">
+                            <!-- UNASSIGNED TASKS OF MODULES -->
+                            <div class="panel panel-default" ng-show="module.show_unassigned">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <span class="glyphicon glyphicon-user" aria-hidden="true">
@@ -144,7 +151,7 @@
                                     Tasks : 8 / EH : 8 / AH : 8.5
                                 </div>
                             </div>
-                            <div class="panel panel-info" ng-repeat="(key, developer) in module.developers">
+                            <div class="panel panel-info" ng-repeat="(key, developer) in module.developers" ng-show="developer.show">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <img ng-if="developer.profile_image" ng-src="./storage/app/public/user-profile-images/<% developer.profile_image.name %>" title="{{developer.first_name}}" class="img-circle" style="width: 50px; height: 50px; " />
@@ -172,23 +179,16 @@
                                     </h3>
                                 </div>
                                 <ng-include src="task_card_list_template_url" ng-init="tasks = developer.tasks"></ng-include>
-                                <!--                                 <ul class="list-group" dnd-list="developer.tasks" dnd-allowed-types="['task']">
-                                    <li ng-if="developer.tasks.length != 0" ng-repeat="(key2, task) in developer.tasks" class="list-group-item list-group-item-success" ng-click="showTaskForm(task, 0, $event)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="developer.tasks.splice(key2, 1)">
-                                        <div ng-include="task_card_list_template_url"></div>
-                                    </li>
-                                    <li ng-if="developer.tasks.length == 0" class="alert alert-warning">
-                                        No Tasks
-                                    </li>
-                                    <li class="dndPlaceholder">
-                                        Drop any <strong>Task</strong> here
-                                    </li>
-                                </ul>
- -->
-                                <!-- <task-card-list tasks="developer.tasks" task="$ctrl.task" showTaskForm="showTaskForm(task, 0, $event)"></task-card-list> -->
                                 <div class="panel-footer">
-                                    Tasks : {{developer.tasks.length}} /
-                                    EH : {{developer.total_estimated_hour}} /
-                                    AH : {{developer.total_actual_hour}}
+                                    <span class="label label-success">
+                                        Tasks : {{developer.tasks.length}}
+                                    </span>
+                                    <span class="label label-warning">
+                                        EH : {{developer.total_estimated_hour}}
+                                    </span>
+                                    <span class="label label-info">
+                                        AH : {{developer.total_actual_hour}}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -210,34 +210,49 @@
             <div class="modal-header">
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
                 <h5 class="modal-title" id="myModalLabel">Project Filter</h5>
+                <hr />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Filter Presets</label>
+                        </div><!-- Field -->
+                    </div><!-- Column -->
+                    <form id="new-preset-form">
+                        <input type="hidden" name="user_id" value="{{user_id}}">
+                        <input type="hidden" name="page_id" value="220">
+                        <input type="hidden" name="value" id="filter_value" value="">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Filter Preset Name</label>
+                                <input type="text" class="form-control" name="name" autocomplete="off">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-rose" ng-click1="reset_filter()">
+                                Save Filter Preset
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Project Code</label>
-                                <input type="text" class="form-control" id="project_code" name="project_code" placeholder="Enter Project Code" autocomplete="off">
+                        <div class="col-sm-6">
+                            <div class="separate-form-group">
+                                <label>
+                                    Task Status
+                                </label>
+                                <ui-select ng-model="$ctrl.filter.task_status" theme="select2">
+                                    <ui-select-match placeholder="Select Task Status">
+                                        {{$select.selected.name || $select.selected}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
                             </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Project Name</label>
-                                <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Mobile Number</label>
-                                <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="Enter Mobile Number" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
+                        </div><!-- Column -->
                         <div class="col-md-6">
                             <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
                         </div>
@@ -247,24 +262,6 @@
         </div><!-- Modal Content -->
     </div><!-- Modal Dialog -->
 </div><!-- Modal -->
-<!-- Modal -->
-<div class="modal fade alert-modal failure" id="delete_project" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
-            </div>
-            <div class="modal-body">
-                <h5>Delete</h5>
-                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
-                <input type="hidden" name="project_id" id="project_id" value="">
-                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
 <!-- Modal -->
 <div class="modal fade alert-modal failure" id="delete_task" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">

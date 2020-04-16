@@ -228,7 +228,6 @@ class ProjectVersionController extends Controller {
 					// 	// 'before_or_equal:' . date('Y-m-d'),
 				],
 				'project_members' => [
-					'required:true',
 					'array',
 				],
 				'project_members.*.member_id' => [
@@ -260,12 +259,14 @@ class ProjectVersionController extends Controller {
 			if (!$request->id) {
 				$project_version = new ProjectVersion;
 				$project_version->created_by_id = Auth::user()->id;
-				$project_version->created_at = Carbon::now();
-				$project_version->updated_at = NULL;
+				//issue : vijay : code optimization
+				// $project_version->created_at = Carbon::now();
+				// $project_version->updated_at = NULL;
 			} else {
 				$project_version = ProjectVersion::withTrashed()->find($request->id);
 				$project_version->updated_by_id = Auth::user()->id;
-				$project_version->updated_at = Carbon::now();
+				//issue : vijay : code optimization
+				// $project_version->updated_at = Carbon::now();
 			}
 			$project_version->fill($request->all());
 			$project_version->company_id = Auth::user()->company_id;
@@ -281,7 +282,8 @@ class ProjectVersionController extends Controller {
 			}
 			$project_version->save();
 			// dd($request->project_members, $project_version->id);
-			$project_version->members()->sync([]);
+			//isse : vijay : query optimization
+			// $project_version->members()->sync([]);
 			$project_version->members()->sync($request->project_members);
 
 			DB::commit();

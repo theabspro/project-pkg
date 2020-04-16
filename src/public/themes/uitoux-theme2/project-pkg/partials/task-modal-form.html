@@ -179,6 +179,70 @@
                             </div><!-- Column -->
                         </div><!-- Row -->
                         <div class="row">
+                            <div class="col-md-12">
+                                <label>Notifications</label>
+                                <table class="table table-bordered">
+                                        <thead>
+                                          <tr>
+                                            <th>Roles</th>
+                                            <th>Slack</th>
+                                            <th>Email</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-if="$ctrl.task.assigned_to">
+                                                <td>
+                                                    Assignee (<% $ctrl.task.assigned_to.first_name %>) 
+                                                    <input type="hidden" name="noty[assignee][id]" value="<% $ctrl.task.assigned_to.id  %>">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[assignee][slack]" value="1">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[assignee][email]" value="1">
+                                                </td>
+                                            </tr>
+                                            <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.tl">
+                                               <td>
+                                                    TL (<% $ctrl.task.project_version.tl.first_name %>) 
+                                                    <input type="hidden" name="noty[tl][id]" value="<% $ctrl.task.project_version.tl.id  %>">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[tl][slack]" value="1">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[tl][email]" value="1">
+                                                </td>
+                                            </tr>
+                                            <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.pm">
+                                               <td>
+                                                   PM (<% $ctrl.task.project_version.pm.first_name %>) 
+                                                    <input type="hidden" name="noty[pm][id]" value="<% $ctrl.task.project_version.pm.id  %>">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[pm][slack]" value="1">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[pm][email]" value="1">
+                                                </td>
+                                            </tr>
+                                            <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.qa">
+                                               <td>
+                                                   PM (<% $ctrl.task.project_version.qa.first_name %>) 
+                                                    <input type="hidden" name="noty[qa][id]" value="<% $ctrl.task.project_version.qa.id  %>">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[qa][slack]" value="1">
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" name="noty[qa][email]" value="1">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                </table>
+                            </div><!-- Column -->
+                        </div><!-- Row -->
+                        <div class="row">
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-rose" ng-click="saveTask()">
                                     Submit
