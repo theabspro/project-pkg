@@ -8,6 +8,7 @@ use Abs\ProjectPkg\Project;
 use Abs\ProjectPkg\Task;
 use Abs\ProjectPkg\TaskType;
 use App\Http\Controllers\Controller;
+use App\Mail\TaskMail;
 use App\Status;
 use App\User;
 use Auth;
@@ -15,6 +16,7 @@ use Carbon\Carbon;
 use DB;
 use Entrust;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Validator;
 use Yajra\Datatables\Datatables;
 
@@ -50,6 +52,9 @@ class TaskController extends Controller {
 					'error' => 'Project Version not found',
 				]);
 			}
+			$project_version->tl = $project_version->members()->where('type_id', 180)->where('role_id', 201)->first();
+			$project_version->pm = $project_version->members()->where('type_id', 180)->where('role_id', 200)->first();
+			$project_version->qa = $project_version->members()->where('type_id', 180)->where('role_id', 204)->first();
 			$project_version_list = Collect(ProjectVersion::select('id', 'number')->where('project_id', $project_version->id)->get())->prepend(['id' => '', 'number' => 'Select Project Version']);
 		} else {
 			$project_version = null;
@@ -85,6 +90,8 @@ class TaskController extends Controller {
 						'status',
 						'type',
 						'assignedTo',
+						'tl',
+						'pm',
 						'assignedTo.profileImage',
 					])
 					->orderBy('date')
@@ -470,10 +477,19 @@ class TaskController extends Controller {
 					$task->created_by_id = Auth::user()->id;
 					$task->created_at = Carbon::now();
 					$task->updated_at = NULL;
+					$task_assign_type = 1;
+					$send_noty = true;
 				} else {
 					$task = Task::withTrashed()->find($request->id);
 					$task->updated_by_id = Auth::user()->id;
 					$task->updated_at = Carbon::now();
+					if ($task->assigned_to_id == $request->assigned_to_id) {
+						$task_assign_type = 1;
+						$send_noty = true;
+					} else {
+						$task_assign_type = 2;
+						$send_noty = true;
+					}
 				}
 			} else {
 				//DUPLICATE TYPE
@@ -481,6 +497,8 @@ class TaskController extends Controller {
 				$task->created_by_id = Auth::user()->id;
 				$task->created_at = Carbon::now();
 				$task->updated_at = NULL;
+				$task_assign_type = 1;
+				$send_noty = true;
 			}
 			$task->number = rand(1, 100000);
 			$task->fill($request->all());
@@ -496,6 +514,89 @@ class TaskController extends Controller {
 			$task->number = 'TSK-' . $task->id;
 			$task->save();
 			DB::commit();
+
+			//NOTY
+			if ($send_noty) {
+				$data = array();
+				if (!empty($request->noty)) {
+					$assigned_by = User::find(Auth::user()->id);
+					$assigned_to = User::find($request->assigned_to_id);
+					$tl = User::find($request->noty['tl']['id']);
+					$pm = User::find($request->noty['pm']['id']);
+					$qa = User::find($request->noty['qa']['id']);
+					//ASSIGNED
+					if ($task_assign_type == 1) {
+						$data['title'] = 'Task Assigned';
+						$data['subject'] = 'Re: Task Assigned';
+						$data['message'] = 'Task ' . $task->subject . ' has been assigned to ' . $assigned_to->first_name . ' in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+					} else {
+						//RE-ASSIGNED
+						$data['title'] = 'Task Re-assigned';
+						$data['subject'] = 'Re: Task Re-assigned';
+						$data['message'] = 'Task ' . $task->subject . ' has been re-assigned to ' . $assigned_to->first_name . ' in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+					}
+
+					//SLACK NOTY
+					if (isset($request->noty['assignee']['slack'])) {
+						if (!empty($assigned_to->slack_api_url)) {
+							$data['send_to'] = $assigned_to->slack_api_url;
+							$data['action_from'] = "Task";
+							$data['url'] = url('/login');
+							$assigned_to->notify(new \App\Notifications\Slack($data));
+						}
+					}
+					if (isset($request->noty['tl']['slack'])) {
+						if (!empty($tl->slack_api_url)) {
+							$data['send_to'] = $tl->slack_api_url;
+							$data['action_from'] = "Task";
+							$data['url'] = url('/login');
+							$tl->notify(new \App\Notifications\Slack($data));
+						}
+					}
+					if (isset($request->noty['pm']['slack'])) {
+						if (!empty($pm->slack_api_url)) {
+							$data['send_to'] = $pm->slack_api_url;
+							$data['action_from'] = "Task";
+							$data['url'] = url('/login');
+							$pm->notify(new \App\Notifications\Slack($data));
+						}
+					}
+					if (isset($request->noty['qa']['slack'])) {
+						if (!empty($qa->slack_api_url)) {
+							$data['send_to'] = $qa->slack_api_url;
+							$data['action_from'] = "Task";
+							$data['url'] = url('/login');
+							$qa->notify(new \App\Notifications\Slack($data));
+						}
+					}
+
+					//EMAIL NOTY
+					$data['cc_email_ids'] = [];
+					if (isset($request->noty['assignee']['email'])) {
+						if (!empty($assigned_to->email)) {
+							array_push($data['cc_email_ids'], $assigned_to->email);
+						}
+					}
+					if (isset($request->noty['tl']['email'])) {
+						if (!empty($tl->email)) {
+							array_push($data['cc_email_ids'], $tl->email);
+						}
+					}
+					if (isset($request->noty['pm']['email'])) {
+						if (!empty($pm->email)) {
+							array_push($data['cc_email_ids'], $pm->email);
+						}
+					}
+					if (isset($request->noty['qa']['email'])) {
+						if (!empty($qa->email)) {
+							array_push($data['cc_email_ids'], $qa->email);
+						}
+					}
+					$Mail = new TaskMail($data);
+					$Mail = Mail::send($Mail);
+				}
+			}
+
 			//ADD & EDIT TYPE
 			if (!$request->task_type) {
 				if (!($request->id)) {
