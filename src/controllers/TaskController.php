@@ -87,11 +87,10 @@ class TaskController extends Controller {
 					->with([
 						'module',
 						'project',
+						'module.projectVersion',
 						'status',
 						'type',
 						'assignedTo',
-						'tl',
-						'pm',
 						'assignedTo.profileImage',
 					])
 					->orderBy('date')
