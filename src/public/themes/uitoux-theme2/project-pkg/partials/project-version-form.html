@@ -142,7 +142,7 @@
                         <div class="row" ng-repeat="(index,project) in $ctrl.project_version.members">
                             <div class="col-md-3">
                                 <div class="input-text form-group">
-                                    <label>Project Member 
+                                    <label>Project Member
                                         <sup class="mandatory">*</sup></label>
                                     <ui-select ng-model="project.pivot.member_id" theme="select2">
                                         <ui-select-match placeholder="Select Project Member">
@@ -186,7 +186,12 @@
                                 </div><!-- Feild -->
                             </div><!-- Column -->
                             <div class="col-md-3">
-                                <a href="javascript:;" ng-click="removeProjectMember(index)"><img src="./public/themes/{{$ctrl.theme}}/img/content/modal/close-circle-active.svg" class="img-fluid" alt="Delete"></a>
+                                <a href="javascript:;" ng-click="removeProjectMember(index)">
+                                    <md-tooltip md-direction="top">
+                                        Remove
+                                    </md-tooltip>
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
                             </div><!-- Column -->
                         </div>
                         <div class="row">
