@@ -333,6 +333,14 @@ app.component('moduleDeveloperWiseTasks', {
             return module;
         }
 
+        $scope.checkboxChecked = function(type){
+            if($('.parent_'+type).is(":checked")){
+                $("."+type).prop("checked",true);
+            }else if($('.parent_'+type).is(":not(:checked)")){
+                $("."+type).prop("checked",false);
+            }
+        }
+
         $scope.toggleEmptyPanels = function() {
 
             console.log($scope.hide_empty_panels);
