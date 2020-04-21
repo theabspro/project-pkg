@@ -55,12 +55,12 @@
                         </div>
                         <!-- UNASSIGNED TASKS OF MODULES -->
                         <div class="panel-body">
-                            <div class="panel panel-info" ng-repeat="(key, date) in status.dates">
+                            <div class="panel panel-info" ng-repeat="(key, date_val) in status.dates">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">
                                         <span class="glyphicon glyphicon-calendar" aria-hidden="true">
                                         </span>
-                                        {{date.date_label}}
+                                        {{date_val.date_label}}
                                         <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showTaskForm({},0,$event)" class="pull-right">
                                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                         </a>
@@ -69,12 +69,12 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <ng-include src="task_card_list_template_url" ng-init="tasks = date.tasks"></ng-include>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = date_val.tasks;status_id = status.id;date = date_val.date"></ng-include>
                                 <!-- <task-card-list tasks="date.tasks"></task-card-list> -->
                                 <div class="panel-footer">
-                                    Tasks : {{date.tasks.length}} /
-                                    EH : {{date.total_estimated_hour}} /
-                                    AH : {{date.total_actual_hour}}
+                                    Tasks : {{date_val.tasks.length}} /
+                                    EH : {{date_val.total_estimated_hour}} /
+                                    AH : {{date_val.total_actual_hour}}
                                 </div>
                             </div>
                             <div class="panel panel-default">
@@ -89,7 +89,7 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <ng-include src="task_card_list_template_url" ng-init="tasks = status.unplanned_tasks"></ng-include>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = status.unplanned_tasks;date = '';status_id = status.id"></ng-include>
                                 <!-- <task-card-list tasks="status.unplanned_tasks"></task-card-list> -->
                                 <div class="panel-footer">
                                     Tasks : {{status.unplanned_tasks.length}} /

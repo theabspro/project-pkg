@@ -259,7 +259,7 @@ class TaskController extends Controller {
 			}
 			$status->dates = $dates_wise;
 
-			$status->unplanned_tasks = $this->getTasksByStatusDate($date['date'], $status->id, false, true);
+			$status->unplanned_tasks = $this->getTasksByStatusDate(null, $status->id, false, true);
 		}
 		$all_statuses = collect($this->getAllStatusTasksByDate($dates));
 		$statuses = collect($statuses)->prepend($all_statuses);
@@ -272,6 +272,7 @@ class TaskController extends Controller {
 	//issue : ram : code optimization & reusability
 	private function getAllStatusTasksByDate($dates) {
 		$status = new Status;
+		$status->id = 0;
 		$status->name = "All Tasks";
 
 		$dates_wise = [];
@@ -282,7 +283,7 @@ class TaskController extends Controller {
 		}
 		$status->dates = $dates_wise;
 
-		$status->unplanned_tasks = $this->getTasksByStatusDate($date['date'], $status->id, true, true);
+		$status->unplanned_tasks = $this->getTasksByStatusDate(null, $status->id, true, true);
 
 		return $status;
 	}
@@ -293,29 +294,31 @@ class TaskController extends Controller {
 			'module',
 			'module.projectVersion',
 			'module.projectVersion.project',
-			'status',
+			'status' => function ($query) use ($is_all_status) {
+				if (!$is_all_status) {
+					$query->orderBy('display_order');
+				}
+			},
 			'type',
 			'assignedTo',
 			'assignedTo.profileImage',
 		])
 			->where(function ($q) {
 				if (!Entrust::can('view-all-tasks')) {
-					$q->where('tasks.assigned_to_id', Auth::id());
+					$q->where('assigned_to_id', Auth::id());
 				}
 			})
 			->where(function ($q) use ($is_unplanned, $date) {
 				if (!$is_unplanned) {
-					$q->where('tasks.date', $date);
+					$q->where('date', $date);
 				} else {
-					$q->whereNull('tasks.date');
+					$q->whereNull('date');
 				}
 			});
 		if (!$is_all_status) {
-			$tasks->join('statuses as s', 's.id', 'tasks.status_id')
-				->where('tasks.status_id', $status_id)
-				->orderBy('s.display_order')
-				->orderBy('tasks.date')
-				->orderBy('tasks.type_id');
+			$tasks->where('status_id', $status_id)
+				->orderBy('date')
+				->orderBy('type_id');
 		}
 		$tasks = $tasks->get();
 		return $tasks;
@@ -512,7 +515,12 @@ class TaskController extends Controller {
 				$data = array();
 				if (!empty($request->noty)) {
 					$assigned_by = User::find(Auth::user()->id);
-					$assigned_to = User::find($request->assigned_to_id);
+					if (isset($request->noty['assignee'])) {
+						$assigned_to = User::find($request->assigned_to_id);
+						$assigned_to_name = $assigned_to->first_name;
+					} else {
+						$assigned_to_name = '';
+					}
 					if (isset($request->noty['tl'])) {
 						$tl = User::find($request->noty['tl']['id']);
 					}
@@ -526,12 +534,20 @@ class TaskController extends Controller {
 					if ($task_assign_type == 1) {
 						$data['title'] = 'Task Assigned';
 						$data['subject'] = 'Re: Task Assigned';
-						$data['message'] = 'Task ' . $task->subject . ' has been assigned to ' . $assigned_to->first_name . ' in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+						if (!empty($assigned_to_name)) {
+							$data['message'] = 'Task ' . $task->subject . ' has been assigned to ' . $assigned_to_name . ' in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+						} else {
+							$data['message'] = 'Task ' . $task->subject . ' has been assigned in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+						}
 					} else {
 						//RE-ASSIGNED
 						$data['title'] = 'Task Re-assigned';
 						$data['subject'] = 'Re: Task Re-assigned';
-						$data['message'] = 'Task ' . $task->subject . ' has been re-assigned to ' . $assigned_to->first_name . ' in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+						if (!empty($assigned_to_name)) {
+							$data['message'] = 'Task ' . $task->subject . ' has been re-assigned to ' . $assigned_to_name . ' in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+						} else {
+							$data['message'] = 'Task ' . $task->subject . ' has been re-assigned in project (' . $task->project->short_name . ') by ' . $assigned_by->first_name;
+						}
 					}
 
 					//SLACK NOTY
@@ -625,6 +641,42 @@ class TaskController extends Controller {
 			]);
 		}
 	}
+	public function updateTask(Request $r) {
+		// dd($r->all());
+		try {
+			DB::beginTransaction();
+
+			$task = Task::find($r->id);
+			if (!$task) {
+				return response()->json([
+					'success' => false,
+					'errors' => [
+						'Task not found',
+					],
+				]);
+			}
+			if (!empty($r->status_id)) {
+				$task->status_id = $r->status_id;
+			}
+			if (!empty($r->date)) {
+				$task->date = $r->date;
+			} else {
+				$task->date = null;
+			}
+			$task->save();
+
+			DB::commit();
+			return response()->json([
+				'success' => true,
+				'message' => 'Task updated successfully',
+			]);
+
+		} catch (Exception $e) {
+			DB::rollBack();
+			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
+		}
+	}
+
 	public function deleteTask(Request $r) {
 		DB::beginTransaction();
 		try {

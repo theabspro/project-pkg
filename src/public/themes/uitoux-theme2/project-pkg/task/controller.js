@@ -495,7 +495,7 @@ app.component('userDateWiseTasks', {
 
 app.component('statusDateWiseTasks', {
     templateUrl: status_date_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -545,6 +545,32 @@ app.component('statusDateWiseTasks', {
             ).then(function(response) {
                 // console.log(response);
                 self.project_version_list = response.data.project_version_list;
+            });
+        }
+        $scope.dragstartCallback = function(event){
+            return true;
+        }
+
+        $scope.dropCallback = function (event, key, item, status_id, date) {
+            $scope.updateTask(item, status_id, date);
+            return item;
+        }
+
+        $scope.updateTask = function (item, status_id, date){
+            $http.post(
+                laravel_routes['updateTask'], {
+                    id: item.id,
+                    status_id: status_id,
+                    date: date,
+                }
+            ).then(function(res) {
+                console.log(res);
+                if (!res.data.success) {
+                    showErrorNoty(res);
+                    return;
+                }
+                custom_noty('success', res.data.message);
+                $route.reload();
             });
         }
 
