@@ -19,7 +19,7 @@ class TasksC extends Migration {
 				$table->unsignedInteger('assigned_to_id')->nullable();
 				$table->unsignedInteger('tl_id')->nullable();
 				$table->unsignedInteger('pm_id')->nullable();
-				$table->date('date');
+				$table->date('date')->nullable();
 				$table->unsignedInteger('module_id')->nullable();
 				$table->unsignedInteger('project_id')->nullable();
 				$table->string('subject', 255);
