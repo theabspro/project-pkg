@@ -242,17 +242,51 @@ app.directive('taskCardList', function() {
         scope: {
             task: '=',
             tasks: '=',
+            type: '=',
             showTaskForm: '&',
         },
         templateUrl: task_card_list_template_url,
         link: function(scope, element, attrs, tabsCtrl) {
-
             // console.log(scope, element, attrs, tabsCtrl);
             // tabsCtrl.showTaskForm(scope);
         },
-        controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope) {
+        controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = {};
+            $scope.dragstartCallback = function(event){
+                return true;
+            }
+
+            $scope.dropCallback = function (event, key, item, status_id, date, assigned_to_id) {
+                console.log(item, status_id, date, assigned_to_id);
+                $scope.updateTask(item, status_id, date, assigned_to_id);
+                return item;
+            }
+
+            $scope.updateTask = function (item, status_id, date, assigned_to_id){
+                if($scope.type == 1){
+                    var type = 'status';
+                }else{
+                    var type = 'user';
+                }
+                $http.post(
+                    laravel_routes['updateTask'], {
+                        id: item.id,
+                        status_id: status_id,
+                        date: date,
+                        assigned_to_id: assigned_to_id,
+                        type: type,
+                    }
+                ).then(function(res) {
+                    console.log(res);
+                    if (!res.data.success) {
+                        showErrorNoty(res);
+                        return;
+                    }
+                    custom_noty('success', res.data.message);
+                    $route.reload();
+                });
+            }
 
             // console.log(self.task);
             // $scope.showTaskForm = function(task, $event) {

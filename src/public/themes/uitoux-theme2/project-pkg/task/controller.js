@@ -428,7 +428,7 @@ app.component('moduleDeveloperWiseTasks', {
 
 app.component('userDateWiseTasks', {
     templateUrl: user_date_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -455,8 +455,8 @@ app.component('userDateWiseTasks', {
                 return;
             }
             self.users = response.data.users;
-            self.unassigned_tasks = response.data.unassigned_tasks;
-
+            $scope.unassigned_tasks = self.unassigned_tasks = response.data.unassigned_tasks;
+console.log(self.unassigned_tasks);
             for (var i in self.users) {
                 for (var j in self.users[i].dates) {
                     self.users[i].dates[j].total_estimated_hour = 0;
@@ -477,12 +477,42 @@ app.component('userDateWiseTasks', {
                 alert(response.data.users_list);
                 return;
             }
-            console.log(response.data.users_list);
+            // console.log(response.data.users_list);
             self.task = response.data.task;
             self.users_list = response.data.users_list;
             self.project_list = response.data.project_list;
             self.task_type_list = response.data.task_type_list;
         });
+
+        $scope.dragstartCallback = function(event){
+            return true;
+        }
+
+        $scope.dropCallback = function (event, key, item, status_id, date, assigned_to_id) {
+            console.log(item, status_id, date, assigned_to_id);
+            $scope.updateTask(item, status_id, date, assigned_to_id);
+            return item;
+        }
+
+        $scope.updateTask = function (item, status_id, date, assigned_to_id){
+            $http.post(
+                laravel_routes['updateTask'], {
+                    id: item.id,
+                    status_id: status_id,
+                    date: date,
+                    assigned_to_id: assigned_to_id,
+                    type: 'user',
+                }
+            ).then(function(res) {
+                console.log(res);
+                if (!res.data.success) {
+                    showErrorNoty(res);
+                    return;
+                }
+                custom_noty('success', res.data.message);
+                $route.reload();
+            });
+        }
 
 
         $("input:text:visible:first").focus();
@@ -551,17 +581,20 @@ app.component('statusDateWiseTasks', {
             return true;
         }
 
-        $scope.dropCallback = function (event, key, item, status_id, date) {
-            $scope.updateTask(item, status_id, date);
+        $scope.dropCallback = function (event, key, item, status_id, date, assigned_to_id) {
+            console.log(item, status_id, date, assigned_to_id);
+            $scope.updateTask(item, status_id, date, assigned_to_id);
             return item;
         }
 
-        $scope.updateTask = function (item, status_id, date){
+        $scope.updateTask = function (item, status_id, date, assigned_to_id){
             $http.post(
                 laravel_routes['updateTask'], {
                     id: item.id,
                     status_id: status_id,
                     date: date,
+                    assigned_to_id: assigned_to_id,
+                    type: 'status',
                 }
             ).then(function(res) {
                 console.log(res);

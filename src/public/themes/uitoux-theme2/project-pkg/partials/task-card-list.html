@@ -2,7 +2,7 @@
 dnd-list="tasks"
 dnd-allowed-types="['task']"
 dnd-external-sources="true"
-dnd-drop="dropCallback(event,index, item, status_id, date)"
+dnd-drop="dropCallback(event,index, item, status_id, date, assigned_to_id)"
 dnd-dragover="true"
 dnd-droppable="true">
     <li ng-repeat="task in tasks"
@@ -12,7 +12,7 @@ dnd-droppable="true">
     dnd-draggable="task" 
     dnd-effect-allowed="move" 
     dnd-type="'task'" 
-    dnd-moved="tasks.splice($index, 1)" id="task_<%task.id%>_<%status_id%>">
+    dnd-moved="tasks.splice($index, 1)" id="task_<%task.id%>">
         <img ng-if="task.assigned_to.profile_image" ng-src="./storage/app/public/user-profile-images/<% task.assigned_to.profile_image.name %>" title="<% task.assigned_to.first_name %>" class="img-circle pull-left" style="width: 50px; height: 50px;" />
         <span ng-if="!task.assigned_to.profile_image" class="glyphicon1 glyphicon-user1" aria-hidden="true" style1="width: 50px; height: 50px">
             <% task.assigned_to.first_name %>

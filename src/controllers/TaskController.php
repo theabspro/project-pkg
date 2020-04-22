@@ -655,14 +655,28 @@ class TaskController extends Controller {
 					],
 				]);
 			}
-			if (!empty($r->status_id)) {
-				$task->status_id = $r->status_id;
+			if ($r->type == 'status') {
+				if (!empty($r->status_id)) {
+					$task->status_id = $r->status_id;
+				}
+				if (!empty($r->date)) {
+					$task->date = $r->date;
+				} else {
+					$task->date = null;
+				}
+			} elseif ($r->type == 'user') {
+				if (isset($r->assigned_to_id) && !empty($r->assigned_to_id)) {
+					if (!empty($r->date)) {
+						$task->date = $r->date;
+					} else {
+						$task->date = null;
+					}
+					$task->assigned_to_id = $r->assigned_to_id;
+				} else {
+					$task->assigned_to_id = null;
+				}
 			}
-			if (!empty($r->date)) {
-				$task->date = $r->date;
-			} else {
-				$task->date = null;
-			}
+
 			$task->save();
 
 			DB::commit();
