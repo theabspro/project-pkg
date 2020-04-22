@@ -517,7 +517,7 @@ class TaskController extends Controller {
 					$assigned_by = User::find(Auth::user()->id);
 					if (isset($request->noty['assignee'])) {
 						$assigned_to = User::find($request->assigned_to_id);
-						$assigned_to_name = $assigned_to->first_name;
+						$assigned_to_name = $assigned_to ? $assigned_to->first_name : '';
 					} else {
 						$assigned_to_name = '';
 					}
