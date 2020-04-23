@@ -655,6 +655,7 @@ class TaskController extends Controller {
 					],
 				]);
 			}
+			//STATUS DATE WISE
 			if ($r->type == 'status') {
 				if (!empty($r->status_id)) {
 					$task->status_id = $r->status_id;
@@ -665,6 +666,7 @@ class TaskController extends Controller {
 					$task->date = null;
 				}
 			} elseif ($r->type == 'user') {
+				//USER DATE WISE
 				if (isset($r->assigned_to_id) && !empty($r->assigned_to_id)) {
 					if (!empty($r->date)) {
 						$task->date = $r->date;
@@ -674,6 +676,16 @@ class TaskController extends Controller {
 					$task->assigned_to_id = $r->assigned_to_id;
 				} else {
 					$task->assigned_to_id = null;
+				}
+			} elseif ($r->type == 'module') {
+				//MODULE WISE
+				if (isset($r->assigned_to_id) && !empty($r->assigned_to_id)) {
+					$task->assigned_to_id = $r->assigned_to_id;
+				} else {
+					$task->assigned_to_id = null;
+				}
+				if (!empty($r->module_id)) {
+					$task->module_id = $r->module_id;
 				}
 			}
 
