@@ -21,13 +21,16 @@ app.component('moduleModalForm', {
             self.task_type_list = response.data.task_type_list;
             self.task_status_list = response.data.task_status_list;
             self.module_status_list = response.data.module_status_list;
+            self.platform_list = response.data.platform_list;
         });
 
         //SAVE MODULE
         $scope.saveModule = function() {
             var module_form = '#module_form';
+            // console.log('===');
             var v = jQuery(module_form).validate({
                 ignore: '',
+                // ignore: [],
                 rules: {
                     'name': {
                         required: true,
@@ -37,11 +40,11 @@ app.component('moduleModalForm', {
                         number: true,
                     },
                     'project_id': {
-                        required: true,
+                        // required: true,
                         number: true,
                     },
                     'project_version_id': {
-                        required: true,
+                        // required: true,
                         number: true,
                     },
                     'duration': {
@@ -57,6 +60,9 @@ app.component('moduleModalForm', {
                         required: true,
                         number: true,
                     },
+                    'platform_id': {
+                        required: true,
+                    },
                     'remarks': {},
                 },
                 invalidHandler: function(event, validator) {
@@ -65,6 +71,7 @@ app.component('moduleModalForm', {
                 submitHandler: function(form) {
                     let formData = new FormData($(module_form)[0]);
                     $('#submit').button('loading');
+                    // console.log("===");
                     $.ajax({
                             url: laravel_routes['saveModule'],
                             method: "POST",
@@ -145,18 +152,18 @@ app.directive('taskCardList', function() {
                 return true;
             }
 
-            $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
+            $scope.dropTaskCallback = function(event, key, item, status_id, date, assigned_to_id, module_id) {
                 // console.log(item, status_id, date, assigned_to_id,module_id);
-                $scope.updateTask(item, status_id, date, assigned_to_id,module_id);
+                $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
                 return item;
             }
 
-            $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
-                if($scope.type == 1){
+            $scope.updateTask = function(item, status_id, date, assigned_to_id, module_id) {
+                if ($scope.type == 1) {
                     var type = 'status';
-                }else if($scope.type == 2){
+                } else if ($scope.type == 2) {
                     var type = 'user';
-                }else{
+                } else {
                     var type = 'module';
                 }
                 $http.post(
@@ -315,7 +322,7 @@ app.component('projectVersionModalForm', {
 
         $http.get(
             laravel_routes['getProjectFormData']
-            ).then(function(response) {
+        ).then(function(response) {
             if (!response.data.success) {
                 return;
             }
@@ -325,7 +332,7 @@ app.component('projectVersionModalForm', {
             // self.action = response.data.action;
         });
 
-            console.log(self.project_version);
+        console.log(self.project_version);
 
         // $("input:text:visible:first").focus();
         /* Project-Version DatePicker*/

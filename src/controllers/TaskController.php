@@ -4,6 +4,7 @@ namespace Abs\ProjectPkg;
 use Abs\BasicPkg\Config;
 use Abs\CompanyPkg\Company;
 use Abs\ModulePkg\Module;
+use Abs\ModulePkg\Platform;
 use Abs\ProjectPkg\Project;
 use Abs\ProjectPkg\Task;
 use Abs\ProjectPkg\TaskType;
@@ -389,6 +390,14 @@ class TaskController extends Controller {
 		$this->data['task_type_list'] = TaskType::getList();
 		$this->data['task_status_list'] = Status::getTaskStatusList();
 		$this->data['module_status_list'] = Status::getModuleStatusList();
+		$this->data['platform_list'] = Collect(
+			Platform::select([
+				'id',
+				'name',
+			])
+				->where('company_id', 1)
+				->get())->prepend(['name' => 'Select Platform'])
+		;
 		$this->data['task'] = $task;
 		$this->data['action'] = $action;
 		$this->data['success'] = true;
@@ -472,6 +481,10 @@ class TaskController extends Controller {
 					'required:true',
 					'nullable',
 					'exists:statuses,id',
+				],
+				'platform_id' => [
+					'nullable',
+					'exists:config,id',
 				],
 				'subject' => [
 					'required:true',
