@@ -260,21 +260,24 @@ app.directive('taskCardList', function() {
         controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = {};
-            $scope.dragstartCallback = function(event) {
+
+            $scope.dragTaskstartCallback = function(event) {
                 return true;
             }
 
-            $scope.dropCallback = function(event, key, item, status_id, date, assigned_to_id) {
-                console.log(item, status_id, date, assigned_to_id);
-                $scope.updateTask(item, status_id, date, assigned_to_id);
+            $scope.dropTaskCallback = function(event, key, item, status_id, date, assigned_to_id, module_id) {
+                // console.log(item, status_id, date, assigned_to_id,module_id);
+                $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
                 return item;
             }
 
-            $scope.updateTask = function(item, status_id, date, assigned_to_id) {
+            $scope.updateTask = function(item, status_id, date, assigned_to_id, module_id) {
                 if ($scope.type == 1) {
                     var type = 'status';
-                } else {
+                } else if ($scope.type == 2) {
                     var type = 'user';
+                } else {
+                    var type = 'module';
                 }
                 $http.post(
                     laravel_routes['updateTask'], {
@@ -282,10 +285,11 @@ app.directive('taskCardList', function() {
                         status_id: status_id,
                         date: date,
                         assigned_to_id: assigned_to_id,
+                        module_id: module_id,
                         type: type,
                     }
                 ).then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (!res.data.success) {
                         showErrorNoty(res);
                         return;

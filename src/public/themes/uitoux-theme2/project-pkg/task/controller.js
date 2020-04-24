@@ -320,17 +320,70 @@ app.component('moduleDeveloperWiseTasks', {
                 self.module_list = response.data.module_list;
             });
         }
-        $scope.updateModulePriority = function(module, index) {
+
+        $scope.dropModuleCallback = function (event, module, index) {
+            setTimeout(function(){
+                var drop_module_index = index;
+                var modules_length = self.modules.length;
+                var drop_module_index_plus = drop_module_index + 1;
+                // console.log(module, drop_module_index, drop_module_index_plus);
+
+                //UPDATE DOWN MODULES
+                for (var i = drop_module_index_plus; i < modules_length; i++) {
+                    var module_id = $(".module_parent").find(".module_child").eq(i).attr('data-module_id');
+                    $scope.updateModulePriority(module_id, i + 1);
+                }
+                //UPDATE UP MODULES
+                for (var i = 0; i < drop_module_index; i++) {
+                    var module_id = $(".module_parent").find(".module_child").eq(i).attr('data-module_id');
+                    $scope.updateModulePriority(module_id, i + 1);
+                }
+                //UPDATE CURRENT MODULE
+                $scope.updateModulePriority(module.id, drop_module_index + 1);
+            }, 1000);
+
+            return module;
+        }
+
+        $scope.updateModulePriority = function(id, index) {
             $http.post(
                 laravel_routes['updateModulePriority'], {
-                    id: module.id,
+                    id: id,
                     priority: index,
                 }
             ).then(function(response) {
-                self.project_version_list = response.data.project_version_list;
             });
+        }
 
-            return module;
+        $scope.dragTaskstartCallback = function(event){
+            return true;
+        }
+
+        $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
+            console.log(item, status_id, date, assigned_to_id,module_id);
+            $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
+            return item;
+        }
+
+        $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
+            $http.post(
+                laravel_routes['updateTask'], {
+                    id: item.id,
+                    status_id: status_id,
+                    date: date,
+                    assigned_to_id: assigned_to_id,
+                    module_id: module_id,
+                    type: 'module',
+                }
+            ).then(function(res) {
+                console.log(res);
+                if (!res.data.success) {
+                    showErrorNoty(res);
+                    return;
+                }
+                custom_noty('success', res.data.message);
+                $route.reload();
+            });
         }
 
         $scope.checkboxChecked = function(type){
@@ -484,27 +537,28 @@ console.log(self.unassigned_tasks);
             self.task_type_list = response.data.task_type_list;
         });
 
-        $scope.dragstartCallback = function(event){
+        $scope.dragTaskstartCallback = function(event){
             return true;
         }
 
-        $scope.dropCallback = function (event, key, item, status_id, date, assigned_to_id) {
-            console.log(item, status_id, date, assigned_to_id);
-            $scope.updateTask(item, status_id, date, assigned_to_id);
+        $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
+            // console.log(item, status_id, date, assigned_to_id,module_id);
+            $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
             return item;
         }
 
-        $scope.updateTask = function (item, status_id, date, assigned_to_id){
+        $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
             $http.post(
                 laravel_routes['updateTask'], {
                     id: item.id,
                     status_id: status_id,
                     date: date,
                     assigned_to_id: assigned_to_id,
+                    module_id: module_id,
                     type: 'user',
                 }
             ).then(function(res) {
-                console.log(res);
+                // console.log(res);
                 if (!res.data.success) {
                     showErrorNoty(res);
                     return;
@@ -513,7 +567,6 @@ console.log(self.unassigned_tasks);
                 $route.reload();
             });
         }
-
 
         $("input:text:visible:first").focus();
 
@@ -577,27 +630,28 @@ app.component('statusDateWiseTasks', {
                 self.project_version_list = response.data.project_version_list;
             });
         }
-        $scope.dragstartCallback = function(event){
+        $scope.dragTaskstartCallback = function(event){
             return true;
         }
 
-        $scope.dropCallback = function (event, key, item, status_id, date, assigned_to_id) {
-            console.log(item, status_id, date, assigned_to_id);
-            $scope.updateTask(item, status_id, date, assigned_to_id);
+        $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
+            // console.log(item, status_id, date, assigned_to_id,module_id);
+            $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
             return item;
         }
 
-        $scope.updateTask = function (item, status_id, date, assigned_to_id){
+        $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
             $http.post(
                 laravel_routes['updateTask'], {
                     id: item.id,
                     status_id: status_id,
                     date: date,
                     assigned_to_id: assigned_to_id,
+                    module_id: module_id,
                     type: 'status',
                 }
             ).then(function(res) {
-                console.log(res);
+                // console.log(res);
                 if (!res.data.success) {
                     showErrorNoty(res);
                     return;
@@ -606,7 +660,6 @@ app.component('statusDateWiseTasks', {
                 $route.reload();
             });
         }
-
         $scope.onSelectedProjectVersion = function(id) {
             $http.post(
                 laravel_routes['getProjectModuleList'], {

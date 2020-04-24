@@ -149,7 +149,7 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <ng-include src="task_card_list_template_url" ng-init="tasks = user.unplanned_tasks;date = '';assigned_to_id = user.id;status_id=''"></ng-include>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = user.unplanned_tasks;date = '';assigned_to_id = user.id;status_id='';module_id=''"></ng-include>
                                 <!-- <task-card-list tasks="user.unplanned_tasks"></task-card-list> -->
                                 <div class="panel-footer">
                                     Tasks : {{user.unplanned_tasks.length}} /
@@ -173,7 +173,7 @@
                                         <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                     </h3>
                                 </div>
-                                <ng-include src="task_card_list_template_url" ng-init="tasks = date_val.tasks;date = date_val.date;assigned_to_id = user.id;status_id=''"></ng-include>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = date_val.tasks;date = date_val.date;assigned_to_id = user.id;status_id='';module_id=''"></ng-include>
                                 <div class="panel-footer">
                                     <span class="label label-success">
                                         <md-tooltip md-direction="top">
