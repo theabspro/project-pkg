@@ -21,13 +21,16 @@ app.component('moduleModalForm', {
             self.task_type_list = response.data.task_type_list;
             self.task_status_list = response.data.task_status_list;
             self.module_status_list = response.data.module_status_list;
+            self.platform_list = response.data.platform_list;
         });
 
         //SAVE MODULE
         $scope.saveModule = function() {
             var module_form = '#module_form';
+            // console.log('===');
             var v = jQuery(module_form).validate({
                 ignore: '',
+                // ignore: [],
                 rules: {
                     'name': {
                         required: true,
@@ -37,11 +40,11 @@ app.component('moduleModalForm', {
                         number: true,
                     },
                     'project_id': {
-                        required: true,
+                        // required: true,
                         number: true,
                     },
                     'project_version_id': {
-                        required: true,
+                        // required: true,
                         number: true,
                     },
                     'duration': {
@@ -57,6 +60,9 @@ app.component('moduleModalForm', {
                         required: true,
                         number: true,
                     },
+                    'platform_id': {
+                        required: true,
+                    },
                     'remarks': {},
                 },
                 invalidHandler: function(event, validator) {
@@ -65,6 +71,7 @@ app.component('moduleModalForm', {
                 submitHandler: function(form) {
                     let formData = new FormData($(module_form)[0]);
                     $('#submit').button('loading');
+                    // console.log("===");
                     $.ajax({
                             url: laravel_routes['saveModule'],
                             method: "POST",
@@ -103,11 +110,11 @@ app.directive('taskModalForm', function() {
         controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = theme;
-// console.log(' ==== task modal ===');
+            // console.log(' ==== task modal ===');
             $http.get(
                 laravel_routes['getTaskFormData']
             ).then(function(response) {
-// console.log(' ==== response ==='+response);
+                // console.log(' ==== response ==='+response);
                 if (!response.data.success) {
                     alert(response.data.users_list);
                     return;
@@ -253,20 +260,20 @@ app.directive('taskCardList', function() {
         controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = {};
-            $scope.dragstartCallback = function(event){
+            $scope.dragstartCallback = function(event) {
                 return true;
             }
 
-            $scope.dropCallback = function (event, key, item, status_id, date, assigned_to_id) {
+            $scope.dropCallback = function(event, key, item, status_id, date, assigned_to_id) {
                 console.log(item, status_id, date, assigned_to_id);
                 $scope.updateTask(item, status_id, date, assigned_to_id);
                 return item;
             }
 
-            $scope.updateTask = function (item, status_id, date, assigned_to_id){
-                if($scope.type == 1){
+            $scope.updateTask = function(item, status_id, date, assigned_to_id) {
+                if ($scope.type == 1) {
                     var type = 'status';
-                }else{
+                } else {
                     var type = 'user';
                 }
                 $http.post(
@@ -389,7 +396,7 @@ app.component('projectVersionModalForm', {
 
         $http.get(
             laravel_routes['getProjectFormData']
-            ).then(function(response) {
+        ).then(function(response) {
             if (!response.data.success) {
                 return;
             }
@@ -399,7 +406,7 @@ app.component('projectVersionModalForm', {
             // self.action = response.data.action;
         });
 
-            console.log(self.project_version);
+        console.log(self.project_version);
 
         // $("input:text:visible:first").focus();
         /* Project-Version DatePicker*/

@@ -62,6 +62,15 @@ class Task extends Model {
 		return $this->belongsTo('App\Project', 'project_id');
 	}
 
+	public function platform() {
+		return $this->belongsTo('App\Config', 'platform_id');
+	}
+
+	// public function platform()
+	// {
+	// 	return $this->belongsTo('Abs\ModulePkg\Platform','platform_id');
+	// }
+
 	public function setDateAttribute($value) {
 		return $this->attributes['date'] = !empty($value) ? date('Y-m-d', strtotime($value)) : NULL;
 	}
