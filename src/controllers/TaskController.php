@@ -55,7 +55,7 @@ class TaskController extends Controller {
 			$project_version->tl = $project_version->members()->where('type_id', 180)->where('role_id', 201)->first();
 			$project_version->pm = $project_version->members()->where('type_id', 180)->where('role_id', 200)->first();
 			$project_version->qa = $project_version->members()->where('type_id', 180)->where('role_id', 204)->first();
-			$project_version_list = Collect(ProjectVersion::select('id', 'number')->where('project_id', $project_version->id)->get())->prepend(['id' => '', 'number' => 'Select Project Version']);
+			$project_version_list = Collect(ProjectVersion::select('id', 'number as name')->where('project_id', $project_version->id)->get())->prepend(['id' => '', 'name' => 'Select Project Version']);
 		} else {
 			$project_version = null;
 			$project_version_list = null;
@@ -397,14 +397,40 @@ class TaskController extends Controller {
 
 	//issue : saravanan : not reusable
 	public function getProjectVersionList(Request $request) {
-		$this->data = Task::getProjectVersion($request->project_id);
-		return response()->json($this->data);
+		$project = Project::find($request->project_id);
+		if (!$project) {
+			return response()->json([
+				'success' => false,
+				'error' => 'Project not found',
+			]);
+		}
+		// $this->data = Task::getProjectVersion($request->project_id);
+		$project_version_list = collect(ProjectVersion::select('id', 'number as name')->where('project_id', $project->id)->get())->prepend(['id' => '', 'name' => 'Select Project']);
+		return response()->json(['success' => true, 'project_version_list' => $project_version_list]);
 	}
 
 	//issue : saravanan : not reusable
 	public function getProjectModuleList(Request $request) {
-		$this->data = Task::getProjectModule($request->version_id);
-		return response()->json($this->data);
+		$project_version = ProjectVersion::with([
+			'project',
+		])->find($request->version_id);
+		if (!$project_version) {
+			return response()->json([
+				'success' => false,
+				'error' => 'Project Version not found',
+			]);
+		}
+		$project_version->tl = $project_version->members()->where('type_id', 180)->where('role_id', 201)->first();
+		$project_version->pm = $project_version->members()->where('type_id', 180)->where('role_id', 200)->first();
+		$project_version->qa = $project_version->members()->where('type_id', 180)->where('role_id', 204)->first();
+
+		$module_list = collect(Module::select('name', 'id')->where('project_version_id', $project_version->id)->orderby('name', 'asc')->get())->prepend(['id' => '', 'name' => 'Select Module']);
+
+		return response()->json([
+			'success' => true,
+			'module_list' => $module_list,
+			'project_version' => $project_version,
+		]);
 	}
 
 	public function saveTask(Request $request) {
@@ -487,7 +513,7 @@ class TaskController extends Controller {
 					}
 				}
 			} else {
-				//DUPLICATE TYPE
+				//CLONE TYPE
 				$task = new Task;
 				$task->created_by_id = Auth::user()->id;
 				$task->created_at = Carbon::now();
@@ -626,10 +652,10 @@ class TaskController extends Controller {
 					]);
 				}
 			} else {
-				//DUPLICATE TYPE
+				//CLONE TYPE
 				return response()->json([
 					'success' => true,
-					'message' => 'Duplicate Task Details created Successfully',
+					'message' => 'Clone Task Details created Successfully',
 					'task' => $task,
 				]);
 			}

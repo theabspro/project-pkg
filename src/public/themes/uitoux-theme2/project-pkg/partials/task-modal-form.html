@@ -124,15 +124,15 @@
                             <div class="col-sm-6" ng-show="$ctrl.show_project">
                                 <div class="separate-form-group">
                                     <label>Project <sup class="mandatory">*</sup> </label>
-                                    <ui-select ng-model="$ctrl.task.project" theme="select2" ng-change="onSelectedProject($ctrl.task.project.id);$ctrl.task.project_version='';$ctrl.task.module=''" ng-model-options="{trackBy: '$value.id' }">
+                                    <ui-select ng-model="$ctrl.task.project_id" theme="select2" ng-change="onSelectedProject($ctrl.task.project_id);$ctrl.task.project_version_id='';$ctrl.task.module_id='';$ctrl.task.project_version={}" ng-model-options="{trackBy: '$value.id' }">
                                         <ui-select-match placeholder="Select Project">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="project in $ctrl.project_list | propsFilter: {name: $select.search}">
+                                        <ui-select-choices repeat="project.id as project in $ctrl.project_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="project.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="project_id" id="project_id" value="{{$ctrl.task.project.id}}">
+                                    <input type="hidden" name="project_id" id="project_id" value="{{$ctrl.task.project_id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-sm-6" ng-show="$ctrl.show_project_version">
@@ -141,32 +141,34 @@
                                         Project Version
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <ui-select ng-model="$ctrl.task.project_version" theme="select2" ng-change="onSelectedProjectVersion($ctrl.task.project_version.id);$ctrl.task.module=''" ng-model-options="{trackBy: '$value.id' }">
+                                    <ui-select ng-model="$ctrl.task.project_version_id" theme="select2" ng-change="onSelectedProjectVersion($ctrl.task.project_version_id);$ctrl.task.module_id=''" ng-model-options="{trackBy: '$value.id' }">
                                         <ui-select-match placeholder="Select Project Version">
-                                            {{$select.selected.number || $select.selected}}
+                                            {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="project_version in $ctrl.extras.project_version_list | propsFilter: {number: $select.search}">
-                                            <div ng-bind-html="project_version.number | highlight: $select.search"></div>
+                                        <ui-select-choices repeat="project_version.id as project_version in $ctrl.project_version_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="project_version.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="project_version_id" id="project_version_id" value="{{$ctrl.task.project_version.id}}">
+                                    <input type="hidden" name="project_version_id" id="project_version_id" value="{{$ctrl.task.project_version_id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6" ng-show="$ctrl.show_module">
                                 <div class="separate-form-group">
                                     <label>
                                         Module
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <ui-select ng-model="$ctrl.task.module" theme="select2">
+                                    <ui-select ng-model="$ctrl.task.module_id" theme="select2">
                                         <ui-select-match placeholder="Select Module">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="module in $ctrl.module_list | propsFilter: {name: $select.search}">
+                                        <ui-select-choices repeat="module.id as module in $ctrl.module_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="module.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="module_id" id="module_id" value="{{$ctrl.task.module.id}}">
+                                    <input type="hidden" name="module_id" id="module_id" value="{{$ctrl.task.module_id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                         </div>

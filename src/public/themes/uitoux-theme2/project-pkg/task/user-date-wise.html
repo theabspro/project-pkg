@@ -206,6 +206,7 @@
     </div><!-- Page Main Content -->
 </div><!-- Content Wrap -->
 <task-modal-form task="$ctrl.task"></task-modal-form>
+<!-- <ng-include src="task_modal_form_template_url" task="$ctrl.task"></ng-include> -->
 <!-- Filter Modal -->
 <div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -263,6 +264,24 @@
                 <input type="hidden" name="project_id" id="project_id" value="">
                 <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
                 <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_task" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="task_id" id="task_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteTaskConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
             </div>
         </div>
     </div>
