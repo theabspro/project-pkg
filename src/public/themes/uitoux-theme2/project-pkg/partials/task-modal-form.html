@@ -26,7 +26,7 @@
                                         Subject
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off" id="task-subject">
+                                    <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off" ng-focus="focus_task_subject" id="task-subject">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                         </div>
@@ -181,11 +181,18 @@
                             </div><!-- Column -->
                         </div><!-- Row -->
                         <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose" ng-click="saveTask()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                        <div class="row">
                             <div class="col-md-12">
                                 <label>Notifications</label>
                                 <table class="table table-bordered">
-                                        <thead>
-                                          <tr>
+                                    <thead>
+                                        <tr>
                                             <th>
                                                 <input type="checkbox" ng-click="checkboxChecked('all')" class="parent_all">
                                                 <label>
@@ -204,79 +211,76 @@
                                                     Email
                                                 </label>
                                             </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-if="$ctrl.task.assigned_to">
-                                                <td>
-                                                    <input type="checkbox" class="all row_1 col_1 parent_row_1" ng-click="checkboxChecked('row_1')">
-                                                    <label>
-                                                        Assignee (<% $ctrl.task.assigned_to.first_name %>) 
-                                                    </label>
-                                                    <input type="hidden" name="noty[assignee][id]" value="<% $ctrl.task.assigned_to.id  %>">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_1 col_2" name="noty[assignee][slack]" value="1">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_1 col_3" name="noty[assignee][email]" value="1">
-                                                </td>
-                                            </tr>
-                                            <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.tl">
-                                               <td>
-                                                    <input type="checkbox" class="all row_2 col_1 parent_row_2" ng-click="checkboxChecked('row_2')">
-                                                    <label>
-                                                        TL (<% $ctrl.task.project_version.tl.first_name %>) 
-                                                    </label>
-                                                    <input type="hidden" name="noty[tl][id]" value="<% $ctrl.task.project_version.tl.id  %>">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_2 col_2" name="noty[tl][slack]" value="1">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_2 col_3" name="noty[tl][email]" value="1">
-                                                </td>
-                                            </tr>
-                                            <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.pm">
-                                               <td>
-                                                    <input type="checkbox" class="all row_3 col_1 parent_row_3" ng-click="checkboxChecked('row_3')">
-                                                    <label>
-                                                       PM (<% $ctrl.task.project_version.pm.first_name %>) 
-                                                    </label>
-                                                    <input type="hidden" name="noty[pm][id]" value="<% $ctrl.task.project_version.pm.id  %>">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_3 col_2" name="noty[pm][slack]" value="1">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_3 col_3" name="noty[pm][email]" value="1">
-                                                </td>
-                                            </tr>
-                                            <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.qa">
-                                               <td>
-                                                    <input type="checkbox" class="all row_4 col_1 parent_row_4" ng-click="checkboxChecked('row_4')">
-                                                    <label>
-                                                       QA (<% $ctrl.task.project_version.qa.first_name %>) 
-                                                    </label>
-                                                    <input type="hidden" name="noty[qa][id]" value="<% $ctrl.task.project_version.qa.id  %>">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_4 col_2" name="noty[qa][slack]" value="1">
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" class="all row_4 col_3" name="noty[qa][email]" value="1">
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-if="$ctrl.task.assigned_to">
+                                            <td>
+                                                <input type="checkbox" class="all row_1 col_1 parent_row_1" ng-click="checkboxChecked('row_1')">
+                                                <label>
+                                                    Assignee (
+                                                    <% $ctrl.task.assigned_to.first_name %>)
+                                                </label>
+                                                <input type="hidden" name="noty[assignee][id]" value="<% $ctrl.task.assigned_to.id  %>">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_1 col_2" name="noty[assignee][slack]" value="1">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_1 col_3" name="noty[assignee][email]" value="1">
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.tl">
+                                            <td>
+                                                <input type="checkbox" class="all row_2 col_1 parent_row_2" ng-click="checkboxChecked('row_2')">
+                                                <label>
+                                                    TL (
+                                                    <% $ctrl.task.project_version.tl.first_name %>)
+                                                </label>
+                                                <input type="hidden" name="noty[tl][id]" value="<% $ctrl.task.project_version.tl.id  %>">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_2 col_2" name="noty[tl][slack]" value="1">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_2 col_3" name="noty[tl][email]" value="1">
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.pm">
+                                            <td>
+                                                <input type="checkbox" class="all row_3 col_1 parent_row_3" ng-click="checkboxChecked('row_3')">
+                                                <label>
+                                                    PM (
+                                                    <% $ctrl.task.project_version.pm.first_name %>)
+                                                </label>
+                                                <input type="hidden" name="noty[pm][id]" value="<% $ctrl.task.project_version.pm.id  %>">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_3 col_2" name="noty[pm][slack]" value="1">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_3 col_3" name="noty[pm][email]" value="1">
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="$ctrl.task.project_version && $ctrl.task.project_version.qa">
+                                            <td>
+                                                <input type="checkbox" class="all row_4 col_1 parent_row_4" ng-click="checkboxChecked('row_4')">
+                                                <label>
+                                                    QA (
+                                                    <% $ctrl.task.project_version.qa.first_name %>)
+                                                </label>
+                                                <input type="hidden" name="noty[qa][id]" value="<% $ctrl.task.project_version.qa.id  %>">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_4 col_2" name="noty[qa][slack]" value="1">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="all row_4 col_3" name="noty[qa][email]" value="1">
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div><!-- Column -->
-                        </div><!-- Row -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-rose" ng-click="saveTask()">
-                                    Submit
-                                </button>
-                            </div>
                         </div><!-- Row -->
                     </div><!-- Modal Form -->
                 </div><!-- Modal Body -->

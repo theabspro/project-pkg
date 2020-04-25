@@ -61,7 +61,7 @@ app.component('moduleModalForm', {
                         number: true,
                     },
                     'platform_id': {
-                        required: true,
+                        // required: true,
                     },
                     'remarks': {},
                 },

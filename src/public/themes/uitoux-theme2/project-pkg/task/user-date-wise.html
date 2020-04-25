@@ -134,30 +134,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- UNASSIGNED TASKS OF MODULES -->
-                        <div class="col-md-12" style="background-color: white">
-                            <br />
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        UNPLANNED TASKS
-                                        <a href="javascript:;" ng-click="$ctrl.module=module;showTaskForm({},0,$event)" class="pull-right">
-                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                        </a>
-                                        <br />
-                                        <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
-                                        <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
-                                    </h3>
-                                </div>
-                                <ng-include src="task_card_list_template_url" ng-init="tasks = user.unplanned_tasks;date = '';assigned_to_id = user.id;status_id='';module_id=''"></ng-include>
-                                <!-- <task-card-list tasks="user.unplanned_tasks"></task-card-list> -->
-                                <div class="panel-footer">
-                                    Tasks : {{user.unplanned_tasks.length}} /
-                                    EH : 8 /
-                                    AH : 8.5
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-md-12" ng-repeat="(key, date_val) in user.dates" style="background-color: white">
                             <div class="panel panel-info">
                                 <div class="panel-heading">
@@ -193,6 +169,30 @@
                                         </md-tooltip>
                                         AH : {{date_val.total_actual_hour}}
                                     </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- UNASSIGNED TASKS OF USER -->
+                        <div class="col-md-12" style="background-color: white">
+                            <br />
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        UNPLANNED TASKS
+                                        <a href="javascript:;" ng-click="$ctrl.module=module;showTaskForm({},0,$event)" class="pull-right">
+                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        </a>
+                                        <br />
+                                        <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
+                                        <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
+                                    </h3>
+                                </div>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = user.unplanned_tasks;date = '';assigned_to_id = user.id;status_id='';module_id=''"></ng-include>
+                                <!-- <task-card-list tasks="user.unplanned_tasks"></task-card-list> -->
+                                <div class="panel-footer">
+                                    Tasks : {{user.unplanned_tasks.length}} /
+                                    EH : 8 /
+                                    AH : 8.5
                                 </div>
                             </div>
                         </div>

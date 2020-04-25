@@ -48,7 +48,6 @@ app.component('moduleDeveloperWiseTasks', {
             self.modules = response.data.modules;
             self.project_version_list = response.data.extras.project_version_list;
             self.project_version = response.data.project_version;
-console.log(self.project_version);
             for (var i in self.modules) {
                 for (var j in self.modules[i].developers) {
                     self.modules[i].developers[j].total_estimated_hour = 0;
@@ -285,7 +284,7 @@ console.log(self.project_version);
                     // self.show_project_version = true;
                     // self.show_project = true;
                 }
-            }else{
+            } else {
                 self.project_version_list = [];
             }
 
@@ -354,8 +353,8 @@ console.log(self.project_version);
             });
         }
 
-        $scope.dropModuleCallback = function (event, module, index) {
-            setTimeout(function(){
+        $scope.dropModuleCallback = function(event, module, index) {
+            setTimeout(function() {
                 var drop_module_index = index;
                 var modules_length = self.modules.length;
                 var drop_module_index_plus = drop_module_index + 1;
@@ -384,21 +383,20 @@ console.log(self.project_version);
                     id: id,
                     priority: index,
                 }
-            ).then(function(response) {
-            });
+            ).then(function(response) {});
         }
 
-        $scope.dragTaskstartCallback = function(event){
+        $scope.dragTaskstartCallback = function(event) {
             return true;
         }
 
-        $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
-            console.log(item, status_id, date, assigned_to_id,module_id);
+        $scope.dropTaskCallback = function(event, key, item, status_id, date, assigned_to_id, module_id) {
+            console.log(item, status_id, date, assigned_to_id, module_id);
             $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
             return item;
         }
 
-        $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
+        $scope.updateTask = function(item, status_id, date, assigned_to_id, module_id) {
             $http.post(
                 laravel_routes['updateTask'], {
                     id: item.id,
@@ -419,11 +417,11 @@ console.log(self.project_version);
             });
         }
 
-        $scope.checkboxChecked = function(type){
-            if($('.parent_'+type).is(":checked")){
-                $("."+type).prop("checked",true);
-            }else if($('.parent_'+type).is(":not(:checked)")){
-                $("."+type).prop("checked",false);
+        $scope.checkboxChecked = function(type) {
+            if ($('.parent_' + type).is(":checked")) {
+                $("." + type).prop("checked", true);
+            } else if ($('.parent_' + type).is(":not(:checked)")) {
+                $("." + type).prop("checked", false);
             }
         }
 
@@ -550,7 +548,7 @@ app.component('userDateWiseTasks', {
             }
             self.users = response.data.users;
             $scope.unassigned_tasks = self.unassigned_tasks = response.data.unassigned_tasks;
-// console.log(self.unassigned_tasks);
+            // console.log(self.unassigned_tasks);
             for (var i in self.users) {
                 for (var j in self.users[i].dates) {
                     self.users[i].dates[j].total_estimated_hour = 0;
@@ -598,7 +596,7 @@ app.component('userDateWiseTasks', {
                 self.project_version = self.task.module.project_version;
                 $scope.onSelectedProject(self.project_version.project.id);
                 $scope.onSelectedProjectVersion(self.project_version.id);
-            }else{
+            } else {
                 self.project_version = false;
                 self.project_version_list = [];
             }
@@ -647,7 +645,7 @@ app.component('userDateWiseTasks', {
                     showErrorNoty(response.data);
                     self.module_list = [];
                 }
-               // console.log(self.task);
+                // console.log(self.task);
                 self.module_list = response.data.module_list;
                 self.project_version = response.data.project_version;
                 self.task.project_version = self.project_version;
@@ -757,17 +755,17 @@ app.component('userDateWiseTasks', {
             });
         }
 
-        $scope.dragTaskstartCallback = function(event){
+        $scope.dragTaskstartCallback = function(event) {
             return true;
         }
 
-        $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
+        $scope.dropTaskCallback = function(event, key, item, status_id, date, assigned_to_id, module_id) {
             // console.log(item, status_id, date, assigned_to_id,module_id);
             $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
             return item;
         }
 
-        $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
+        $scope.updateTask = function(item, status_id, date, assigned_to_id, module_id) {
             $http.post(
                 laravel_routes['updateTask'], {
                     id: item.id,
@@ -841,17 +839,17 @@ app.component('statusDateWiseTasks', {
             self.task_type_list = response.data.task_type_list;
         });
 
-        $scope.dragTaskstartCallback = function(event){
+        $scope.dragTaskstartCallback = function(event) {
             return true;
         }
 
-        $scope.dropTaskCallback = function (event, key, item, status_id, date, assigned_to_id, module_id) {
+        $scope.dropTaskCallback = function(event, key, item, status_id, date, assigned_to_id, module_id) {
             // console.log(item, status_id, date, assigned_to_id,module_id);
             $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
             return item;
         }
 
-        $scope.updateTask = function (item, status_id, date, assigned_to_id, module_id){
+        $scope.updateTask = function(item, status_id, date, assigned_to_id, module_id) {
             $http.post(
                 laravel_routes['updateTask'], {
                     id: item.id,
