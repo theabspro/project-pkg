@@ -189,12 +189,13 @@ class TaskController extends Controller {
 
 		// $request->date = '2020-04-10';
 		$date = $request->date ? date('Y-m-d', strtotime($request->date)) : $date = date('Y-m-d');
-		$dates = $this->getDateRange($date);
+		$date_ranges = $this->getDateRange($date);
 
 		foreach ($users as $user) {
-			foreach ($dates as &$date) {
+			$dates = $date_ranges;
+			foreach ($dates as $key => $date) {
 				$q2 = clone $base_query;
-				$date['tasks'] = $q2
+				$dates[$key]['tasks'] = $q2
 					->where([
 						'assigned_to_id' => $user->id,
 						'date' => $date['date'],
