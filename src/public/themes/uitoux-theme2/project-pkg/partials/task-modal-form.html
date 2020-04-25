@@ -121,6 +121,13 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose" ng-click="saveTask()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                        <div class="row">
                             <div class="col-sm-6" ng-show="$ctrl.show_project">
                                 <div class="separate-form-group">
                                     <label>Project <sup class="mandatory">*</sup> </label>
@@ -179,13 +186,6 @@
                                     <textarea class="form-control" ng-model="$ctrl.task.remarks" name="remarks" autocomplete="off"></textarea>
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                        </div><!-- Row -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-rose" ng-click="saveTask()">
-                                    Submit
-                                </button>
-                            </div>
                         </div><!-- Row -->
                         <div class="row">
                             <div class="col-md-12">
