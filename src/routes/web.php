@@ -26,9 +26,16 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::get('/project-version/get-form-data', 'ProjectVersionController@getProjectVerisonFormData')->name('getProjectVerisonFormData');
 	Route::get('/project-version/view', 'ProjectVersionController@viewProjectVerison')->name('viewProjectVerison');
 	Route::post('/project-version/save', 'ProjectVersionController@saveProjectVerison')->name('saveProjectVerison');
+	
 	Route::get('/project-version/delete', 'ProjectVersionController@deleteProjectVerison')->name('deleteProjectVerison');
+	
 	Route::get('project-version/filter', 'ProjectVersionController@getProjectVersionFilter')->name('getProjectVersionFilter');
 	Route::post('project-version/get', 'ProjectVersionController@getProjectVersions')->name('getProjectVersions');
+	//Docs
+	Route::get('project-requirement/docs/get-form-data', 'ProjectVersionController@getProjectVerisonDocsFormData')->name('getProjectVerisonDocsFormData');
+	Route::get('project-requirement/docs/get-list', 'ProjectVersionController@getProjectVerisonDocsList')->name('getProjectVerisonDocsList');
+	Route::post('/project-requirement/docs/save', 'ProjectVersionController@saveProjectVerisonDocs')->name('saveProjectVerisonDocs');
+	Route::get('/project-requirement/docs/delete', 'ProjectVersionController@deleteProjectDocs')->name('deleteProjectDocs');
 	//Project-Version//
 
 	Route::get('/task/module-developer-wise', 'TaskController@getModuleDeveloperWiseTasks')->name('getModuleDeveloperWiseTasks');

@@ -470,3 +470,156 @@ app.component('projectVersionForm', {
         });
     }
 });
+app.component('projectVersionDocs', {
+    templateUrl: project_version_docs_list_template_url,
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
+        $scope.loading = true;
+        var self = this;
+        console.log($routeParams.id);
+        $('#search_project_version').focus();
+        self.hasPermission = HelperService.hasPermission;
+        if (!self.hasPermission('project-versions')) {
+            window.location = "#!/page-permission-denied";
+            return false;
+        }
+        self.add_permission = self.hasPermission('add-project-version');
+        $scope.theme = theme;
+        $scope.docs_modal_form_template_url = docs_modal_form_template_url;
+        $scope.project_docs_attchment_url = project_docs_attchment_url;
+        console.log('url ==' + $scope.project_docs_attchment_url);
+        $http.get(
+            laravel_routes['getProjectVerisonDocsList'], {
+                params: {
+                    id: typeof($routeParams.id) == 'undefined' ? null : $routeParams.id,
+                }
+            }
+        ).then(function(response) {
+            //console.log('res=====' + response.data.project_version);
+            self.project_version = response.data.project_version;
+            self.document_attachments = response.data.document_attachments;
+            self.document_links = response.data.document_links;
+            $rootScope.loading = false;
+            console.log(self.document_attachments);
+        });
+
+
+
+        $scope.showDocsForm = function() {
+            $('#docs-form-modal').modal('show');
+            $http.get(
+                laravel_routes['getProjectVerisonDocsFormData'], {}
+            ).then(function(response) {
+                // console.log('res=====' + response.data);
+                self.docs = response.data.document;
+                self.extras = response.data.extras;
+                $rootScope.loading = false;
+                console.log(response.data);
+            });
+        }
+        $scope.onSelectType = function(id) {
+            console.log('id==' + id)
+            if (id == 240) {
+                self.link = false;
+                self.attachment = true;
+            } else {
+                self.link = true;
+                self.attachment = false;
+            }
+        }
+
+        $scope.deleteDocs = function(id) {
+            $('#delete_docs').modal('show');
+            $('#docs_id').val(id);
+        }
+
+        $scope.deleteDocsConfirm = function() {
+            id = $('#docs_id').val();
+            project_requirement_id = $('#project_requirement_id').val();
+            $http.get(
+                laravel_routes['deleteProjectDocs'], {
+                    params: {
+                        id: id,
+                        project_requirement_id: project_requirement_id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Docs Deleted Successfully');
+                    $('#docs_id').val('');
+                    $('#delete_docs').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                } else {
+                    custom_noty('error', response.errors);
+                }
+            });
+        }
+
+
+        //SAVE PROJECT VERSION
+        $scope.saveDocs = function() {
+            var docs_form = '#docs_form';
+            var v = jQuery(docs_form).validate({
+                ignore: '',
+                rules: {
+                    'name': {
+                        required: true,
+                        minlength: 3,
+                        maxlength: 255,
+                    },
+                    'type_id': {
+                        required: true,
+                    },
+                    'link': {
+                        required: function(element) {
+                            if ($("#type_id").val() == 241) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        },
+                        url: true,
+                    },
+                    'attachment': {
+                        required: function(element) {
+                            if ($("#type_id").val() == 240) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        },
+                    },
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(docs_form)[0]);
+                    $('#submit').button('loading');
+                    $.ajax({
+                            url: laravel_routes['saveProjectVerisonDocs'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('#submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#project-version-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            $route.reload();
+                        })
+                        .fail(function(xhr) {
+                            $('#submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+        }
+
+    }
+});

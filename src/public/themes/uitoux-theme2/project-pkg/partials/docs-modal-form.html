@@ -1,0 +1,79 @@
+<div class="modal fade filter" id="docs-form-modal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <h5 class="modal-title" id="myModalLabel">
+                    <% $ctrl.docs.id ? 'Edit' : 'Add' %> Docs
+                    <% $ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+')' : '' %>
+                </h5>
+            </div><!-- Modal Header -->
+            <form id="docs_form" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<%$ctrl.docs.id%>">
+                <input type="hidden" name="project_requirement_id" value="<%$ctrl.project_version.id %>">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Name
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control" name="name" autocomplete="off" ng-model="$ctrl.docs.name" id="docs-name">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Type
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select ng-model="$ctrl.docs.type_id" theme="select2" ng-change="onSelectType($ctrl.docs.type_id)">
+                                        <ui-select-match>
+                                            <% $select.selected.name || $select.selected %>
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.doucment_type_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="type_id" id="type_id" value="<% $ctrl.docs.type_id %>">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" ng-if="$ctrl.attachment">
+                                <div class="form-group">
+                                    <label>
+                                        Attachment
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="file" name="attachment" required>
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6 " ng-if="$ctrl.link">
+                                <div class="form-group">
+                                    <label>
+                                        Link
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control" name="link" autocomplete="off" ng-model="$ctrl.docs.value" required>
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                        <!--row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" id="submit" class="btn btn-rose" ng-click="saveDocs()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->

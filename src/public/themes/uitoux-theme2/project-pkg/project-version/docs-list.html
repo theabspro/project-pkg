@@ -1,0 +1,144 @@
+<!-- Content Wrap -->
+<div class="content-wrap cndn-wrap">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div class="page-header-content-left">
+                <div class="page-header-content button-block">
+                    <a href="#!/project-pkg/task/module-developer-wise/1" type="button" class="btn-back btn-img"><img class="img-responsive" src="./public/theme/img/content/previous.svg" alt="Back" /></a>
+                </div><!-- Page Header Content -->
+                <div class="page-header-content title-block">
+                    <h1 class="title"><b>{{$ctrl.action}} Project Version Docs</b></h1>
+                    <p class="subtitle"><a href="#!/project-pkg/task/module-developer-wise/1">Project Version List</a> / {{$ctrl.action}}</p>
+                </div><!-- Page Header Content -->
+            </div><!-- Page Header Content Left -->
+            <div class="page-header-content-right">
+                <a href="javascript:;" ng-click="showDocsForm({})" class="btn btn-primary">
+                    Add Docs
+                </a>
+            </div>
+        </div><!-- Page Header Inner -->
+    </div><!-- Page Header -->
+    <!-- Page Main Content -->
+    <div class="page-main-content form-content type2">
+        <!-- <form id="form" autocomplete="off"> -->
+        <input type="hidden" name="project_requirement_id" id="project_requirement_id" value="{{$ctrl.project_version.id}}">
+        <div class="page-tab-form pb-70">
+            <div class="tab-form-wrap">
+                <div class="tab-form-header">
+                    <div class="tab-header">
+                        <!-- Filters -->
+                        <div class="isotope-filters animated" data-animation="fadeInLeft" data-animation-delay="300">
+                            <ul class="nav nav-pills cndn-tabs">
+                                <li class="active"><a class="filter active" data-target="#general-information" data-toggle="tab" aria-expanded="true">Docs Details</a></li>
+                            </ul>
+                        </div><!-- Filters -->
+                    </div><!-- Tab Header -->
+                </div><!-- Tab Form Header -->
+                <div class="tab-form-body">
+                    <div class="tab-content">
+                        <!-- TAB PANEL -->
+                        <div class="tab-pane fade in active" id="general-information" data-animation="fadeInUp" data-animation-delay="300">
+                            <div class="tab-pane-wrap">
+                                <div class="title">
+                                    Links
+                                </div>
+                                <div class="row" ng-repeat="(key, document) in $ctrl.document_links" ng-if="document.type_id == 241">
+                                    <div class="col-md-3">
+                                        <div class="input-text form-group">
+                                            <label>Name</label>
+                                            <span class="subtitle">{{document.name}}</span>
+                                        </div><!-- Feild -->
+                                    </div><!-- Column -->
+                                    <div class="col-md-3">
+                                        <div class="input-text form-group">
+                                            <label>Links </label>
+                                            <a href="{{document.value}}" target="_blank">
+                                                {{document.value}}
+                                            </a>
+                                        </div><!-- Feild -->
+                                    </div><!-- Column -->
+                                    <div class="col-md-3">
+                                        <a href="javascript:;" ng-click="deleteDocs(document.id)">
+                                            <md-tooltip md-direction="top">
+                                                Remove
+                                            </md-tooltip>
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </a>
+                                    </div><!-- Column -->
+                                </div><!-- Row -->
+                                <br />
+                                <div class="col-md-12" ng-if="$ctrl.document_links.length == 0">
+                                    <div class="alert alert-info">
+                                        No Links found
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="title">
+                                    Attachments
+                                </div>
+                                <div class="row" ng-repeat="(key, document) in $ctrl.document_attachments" ng-if="document.type_id == 240">
+                                    <div class="col-md-3">
+                                        <div class="input-text form-group">
+                                            <label>Name</label>
+                                            <span class="subtitle">{{document.name}}</span>
+                                        </div><!-- Feild -->
+                                    </div><!-- Column -->
+                                    <div class="col-md-3">
+                                        <div class="input-text form-group">
+                                            <label>Attachment</label>
+                                            <a href="{{project_docs_attchment_url}}/{{$ctrl.project_version.id}}/{{document.document_attachment.name}}" download="{{document.value}}">
+                                                {{document.value}}
+                                            </a>
+                                        </div><!-- Feild -->
+                                    </div><!-- Column -->
+                                    <div class="col-md-3">
+                                        <a href="javascript:;" ng-click="deleteDocs(document.id)">
+                                            <md-tooltip md-direction="top">
+                                                Remove
+                                            </md-tooltip>
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </a>
+                                    </div><!-- Column -->
+                                </div><!-- Row -->
+                                <div class="col-md-12" ng-if="$ctrl.document_attachments.length == 0">
+                                    <div class="alert alert-info">
+                                        No Attachments found
+                                    </div>
+                                </div>
+                                <div class="tab-pane-footer">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!--  <a class="btn btn-primary btn-nxt">Next</a>
+                                        </div> -->
+                                        </div>
+                                    </div><!-- Tab Footer -->
+                                </div><!-- Tab Pane Wrap -->
+                            </div><!-- Tabe Pane -->
+                        </div><!-- Tabe Pane -->
+                    </div><!-- Tab Content -->
+                </div><!-- Tab Form Body -->
+            </div><!-- Tab Form Wrap -->
+        </div><!-- Page Form -->
+        <!-- </form> -->
+    </div><!-- Page Main Content -->
+</div><!-- Content Wrap -->
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_docs" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="docs_id" id="docs_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteDocsConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<ng-include src="docs_modal_form_template_url" ng-init="docs = $ctrl.docs"></ng-include>

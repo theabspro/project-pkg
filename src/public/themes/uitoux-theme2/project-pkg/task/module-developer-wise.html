@@ -42,6 +42,9 @@
                     <a href="javascript:;" ng-click="addPhase({})" class="btn btn-primary">
                         Create Phase
                     </a>
+                    <a href="#!/project-pkg/project-requirement/{{$ctrl.project_version.id}}/docs" class="btn btn-primary">
+                        View Docs
+                    </a>
                 </div><!-- Page Header Content -->
             </div><!-- Page Header Content Right -->
         </div><!-- Page Header Inner -->
@@ -53,20 +56,8 @@
     <div class="page-main-content">
         <br />
         <div class="container-fluid" style="overflow-x: scroll;">
-            <div style="width: 5000px;" class="row module_parent" 
-            dnd-list="$ctrl.modules" 
-            dnd-allowed-types="$ctrl.module_types" 
-            dnd-drop="dropModuleCallback(event,item,index)" 
-            dnd-dragover="true" 
-            dnd-droppable="true">
-                <div class="col-md-3 module_child" 
-                style="width: 100%; max-width: 350px; float: left;" dnd-draggable="module" 
-                dnd-effect-allowed="move" 
-                dnd-moved="$ctrl.modules.splice($index, 1)"
-                dnd-type="$ctrl.module_type"
-                ng-repeat="module in $ctrl.modules" 
-                data-module_id="<% module.id  %>" 
-                id="<% $index %>">
+            <div style="width: 5000px;" class="row module_parent" dnd-list="$ctrl.modules" dnd-allowed-types="$ctrl.module_types" dnd-drop="dropModuleCallback(event,item,index)" dnd-dragover="true" dnd-droppable="true">
+                <div class="col-md-3 module_child" style="width: 100%; max-width: 350px; float: left;" dnd-draggable="module" dnd-effect-allowed="move" dnd-moved="$ctrl.modules.splice($index, 1)" dnd-type="$ctrl.module_type" ng-repeat="module in $ctrl.modules" data-module_id="<% module.id  %>" id="<% $index %>">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title">

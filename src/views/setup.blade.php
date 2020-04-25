@@ -76,6 +76,10 @@
 	        template: '<project-version-view></project-version-view>',
 	        title: 'View Project Version',
 	    }).
+	    when('/project-pkg/project-requirement/:id/docs/', {
+	        template: '<project-version-docs></project-version-docs>',
+	        title: 'View Project Version Docs',
+	    }).
 
 	    //TASKS
 	    when('/project-pkg/task/module-developer-wise/:project_version_id?', {
@@ -143,6 +147,12 @@
     var project_version_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/list.html')}}";
     var project_version_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/form.html')}}";
     var project_version_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/view.html')}}";
+
+    //DOCS
+     var project_version_docs_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project-version/docs-list.html')}}";
+     var docs_modal_form_template_url= "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/docs-modal-form.html')}}";
+      var project_docs_attchment_url = "{{asset('/storage/app/public/project-requirement/docs')}}";
+     //alert(docs_modal_form_template_url);
 
     var module_card_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/card-list.html')}}";
     var module_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/list.html')}}";

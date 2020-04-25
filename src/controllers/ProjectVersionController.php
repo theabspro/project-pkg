@@ -3,11 +3,14 @@
 namespace Abs\ProjectPkg;
 use Abs\BasicPkg\Config;
 use Abs\StatusPkg\Status;
+use Abs\ProjectPkg\Document;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Attachment;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use File;
 use Illuminate\Http\Request;
 use Validator;
 use Yajra\Datatables\Datatables;
@@ -178,6 +181,175 @@ class ProjectVersionController extends Controller {
 		$this->data['action'] = $action;
 
 		return response()->json($this->data);
+	}
+	public function getProjectVerisonDocsFormData(Request $r) {
+		// dd($r->all());
+		if (!$r->id) {
+			$document = new Document;
+			$action = 'Add';
+		} else {
+			$action = 'Edit';
+		}
+		$this->data['document'] = $document;
+		$this->data['extras'] = [
+			'doucment_type_list' => collect(Config::where('config_type_id', 24)->select('id', 'name')->get())->prepend(['name' => 'Select Document Type']),
+		];
+		$this->data['action'] = $action;
+		//dd($this->data);
+		return response()->json($this->data);
+	}
+	public function getProjectVerisonDocsList(Request $r) {
+		//dd($r->id);
+		if ($r->id) {
+			$project_version=ProjectVersion::with('project')->find($r->id);
+			if($project_version){
+				$document_attachments =Document::with(['documentType','documentAttachment'])
+				->where('project_requirement_id',$project_version->id)
+				->where('type_id',240)
+				->get();
+				$document_links =Document::where('project_requirement_id',$project_version->id)
+				->where('type_id',241)
+				->get();
+				$action = 'List';
+			}
+		} 
+		$this->data['project_version'] = $project_version;
+		$this->data['document_attachments'] = $document_attachments;
+		$this->data['document_links'] = $document_links;
+		$this->data['action'] = $action;
+		//dd($this->data);
+		return response()->json($this->data);
+	}
+	public function deleteProjectDocs(Request $request) {
+		try {
+			$document = Document::withTrashed()->where('id', $request->id)->first();
+			if ($document) {
+				DB::beginTransaction();
+				if($document->type_id==240){ //ATTACHMENT OF PROJECT DOCS
+					$project_docs_des = storage_path('app/public/project-requirement/docs/'.$request->project_requirement_id.'/');
+					$remove_previous_attachment = Attachment::where([
+					'entity_id' => $document->id,
+					'attachment_of_id' => 121,//ATTACHMENT OF PROJECT DOCS
+					'attachment_type_id' => 141, //ATTACHMENT TYPE  PROJECT DOCS
+				])->first();
+					if (!empty($remove_previous_attachment)) {
+						$img_path = $project_docs_des . $remove_previous_attachment->name;
+						if (File::exists($img_path)) {
+							File::delete($img_path);
+						}
+						$remove = $remove_previous_attachment->forceDelete();
+					}
+				}
+				$document->forceDelete();
+				DB::commit();
+				return response()->json(['success' => true]);
+			} else {
+				return response()->json(['success' => false, 'errors' => 'Project Document ID not found']);
+			}
+		} catch (Exception $e) {
+			DB::rollBack();
+			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
+		}
+	}
+
+public function saveProjectVerisonDocs(Request $request) {
+		 //dd($request->all());
+		try {
+			$error_messages = [
+				'name.required' => 'Name is Required',
+				'name.max' => 'Name Maximum 191 Characters',
+				'name.min' => 'Name Minimum 3 Characters',
+				'name.unique' => 'Name is already taken',
+				'type_id.required' => 'Type is Required',
+				'type_id.unique' => 'Type is already taken',
+			];
+			$validator = Validator::make($request->all(), [
+				'name' => [
+					'required:true',
+					'max:255',
+					'min:3',
+					'unique:documents,name,' . $request->id . ',id,name,' . $request->name . ',type_id,' . $request->type_id.',project_requirement_id,'.$request->project_requirement_id,
+				],
+				'type_id' => [
+					'required:true',
+					'exists:configs,id',
+					'integer',
+					'unique:documents,type_id,' . $request->id . ',id,name,' . $request->name . ',type_id,' . $request->type_id.',project_requirement_id,'.$request->project_requirement_id,
+				],
+			], $error_messages);
+			if ($validator->fails()) {
+				return response()->json(['success' => false, 'errors' => $validator->errors()->all()]);
+			}
+
+			DB::beginTransaction();
+			if (!$request->id) {
+				$document = new Document;
+				$document->created_by_id = Auth::user()->id;
+				 $document->created_at = Carbon::now();
+				
+			} else {
+				$document = Document::withTrashed()->find($request->id);
+				$document->updated_by_id = Auth::user()->id;
+				$document->updated_at = Carbon::now();
+			}
+			$document->fill($request->all());
+			$document->save();
+			if(isset($request->link) && !empty($request->link))
+			{
+				$document->value=$request->link;
+			}
+
+			if(isset($request->attachment) && !empty($request->attachment))
+			{
+				$project_docs_des = storage_path('app/public/project-requirement/docs/'.$request->project_requirement_id.'/');
+				if (!File::exists($project_docs_des)) {
+					File::makeDirectory($project_docs_des, 0777, true);
+				}
+				$remove_previous_attachment = Attachment::where([
+					'entity_id' => $document->id,
+					'attachment_of_id' => 121,//ATTACHMENT OF PROJECT DOCS
+					'attachment_type_id' => 141, //ATTACHMENT TYPE  PROJECT DOCS
+				])->first();
+				if (!empty($remove_previous_attachment)) {
+					$img_path = $project_docs_des . $remove_previous_attachment->name;
+					if (File::exists($img_path)) {
+						File::delete($img_path);
+					}
+					$remove = $remove_previous_attachment->forceDelete();
+				}
+				$extension = $request['attachment']->getClientOriginalExtension();
+				$original_name = $request['attachment']->getClientOriginalName();
+				//dd($original_name);
+				$request['attachment']->move($project_docs_des, $document->id . '.' . $extension);
+				$document_attachement = new Attachment;
+				$document_attachement->company_id = Auth::user()->company_id;
+				$document_attachement->attachment_of_id = 121; //ATTACHMENT OF PROJECT DOCS
+				$document_attachement->attachment_type_id = 141; //ATTACHMENT TYPE  PROJECT DOCS
+				$document_attachement->entity_id = $document->id;
+				$document_attachement->name = $document->id . '.' . $extension;
+				$document_attachement->save();
+				$document->value=$original_name;
+				$document->save();
+			}
+
+			/*if ($request->status == 'Inactive') {
+				$document->deleted_at = Carbon::now();
+				$document->deleted_by_id = Auth::user()->id;
+			} else {
+				$document->deleted_by_id = NULL;
+				$document->deleted_at = NULL;
+			}*/
+			$document->save();
+			DB::commit();
+			if (!($request->id)) {
+				return response()->json(['success' => true, 'message' => ['Project Verison Docs Added Successfully']]);
+			} else {
+				return response()->json(['success' => true, 'message' => ['Project Verison Docs Updated Successfully']]);
+			}
+		} catch (Exceprion $e) {
+			DB::rollBack();
+			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
+		}
 	}
 
 	public function saveProjectVerison(Request $request) {
