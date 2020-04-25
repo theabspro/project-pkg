@@ -45,6 +45,7 @@ class ProjectVersionController extends Controller {
 			])
 			->join('projects as p', 'p.id', 'project_versions.project_id')
 			->leftJoin('project_version_member', 'project_version_member.project_version_id', 'project_versions.id')
+			->orderBy('project_versions.display_order')
 			->orderBy('p.short_name')
 			->get();
 		return response()->json([
