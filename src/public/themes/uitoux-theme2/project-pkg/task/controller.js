@@ -65,7 +65,10 @@ app.component('moduleDeveloperWiseTasks', {
 
         $scope.showModuleForm = function(module) {
             $('#module-form-modal').modal('show');
-            $('#module-name').focus();
+
+            $('#module-form-modal').on('shown.bs.modal', function(e) {
+                $('#module-name').focus();
+            })
 
             self.module = module;
             if (self.project_version) {
@@ -262,7 +265,6 @@ app.component('moduleDeveloperWiseTasks', {
             $('#task-form-modal').modal('show');
             $('#task-form-modal').on('shown.bs.modal', function(e) {
                 $scope.$broadcast('focus-task-platform');
-                // $('#task-subject').focus();
             })
             $scope.focus_task_subject = true;
             self.task = task;
