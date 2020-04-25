@@ -260,6 +260,7 @@ app.component('moduleDeveloperWiseTasks', {
             $event.stopPropagation();
             $('#task-form-modal').modal('show');
             $('#task-subject').focus();
+            $scope.focus_task_subject = true;
             self.task = task;
 
             if (!task_type || typeof task_type === 'undefined') {
