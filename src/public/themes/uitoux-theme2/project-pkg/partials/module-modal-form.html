@@ -89,20 +89,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6" ng-show="$ctrl.show_assigned_to">
-                                <div class="separate-form-group">
-                                    <label>Assigned To </label>
-                                    <ui-select ng-model="$ctrl.module.assigned_to" theme="select2" ng-model-options="{trackBy: '$value.id' }">
-                                        <ui-select-match>
-                                            {{$select.selected.first_name || $select.selected}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="assigned_to in $ctrl.users_list | propsFilter: {first_name: $select.search}">
-                                            <div ng-bind-html="assigned_to.first_name | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <input type="hidden" name="assigned_to_id" value="{{$ctrl.module.assigned_to.id}}">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
@@ -110,20 +96,6 @@
                                         <sup class="mandatory">*</sup>
                                     </label>
                                     <input type="text" class="form-control" name="completed_percentage" autocomplete="off" ng-model="$ctrl.module.completed_percentage">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Platform</label>
-                                    <ui-select ng-model="$ctrl.module.platform" theme="select2">
-                                        <ui-select-match>
-                                            {{$select.selected.name || $select.selected}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="i in $ctrl.platform_list | propsFilter: {name: $select.search}">
-                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                    <input type="hidden" name="platform_id" value='{{$ctrl.module.platform.id}}'>
                                 </div><!-- Field -->
                             </div><!-- Column -->
                         </div>
