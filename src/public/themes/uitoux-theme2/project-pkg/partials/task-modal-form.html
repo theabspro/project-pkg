@@ -42,6 +42,23 @@
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
+                                        Platform
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select ng-model="$ctrl.task.type_id" theme="select2">
+                                        <ui-select-match placeholder="Select Platform">
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.task_type_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="platform_id" value="{{$ctrl.task.platform_id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
                                         Type
                                         <sup class="mandatory">*</sup>
                                     </label>
