@@ -260,6 +260,9 @@ app.component('moduleDeveloperWiseTasks', {
             $event.stopPropagation();
             $('#task-form-modal').modal('show');
             $('#task-subject').focus();
+            $('#task-form-modal').on('shown.bs.modal', function(e) {
+                $('#task-subject').focus();
+            })
             $scope.focus_task_subject = true;
             self.task = task;
 
