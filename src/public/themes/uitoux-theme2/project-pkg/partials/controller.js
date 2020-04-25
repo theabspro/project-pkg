@@ -8,21 +8,21 @@ app.component('moduleModalForm', {
         self.theme = theme;
         // self.module = $element.attr("module");
 
-        $http.get(
-            laravel_routes['getTaskFormData']
-        ).then(function(response) {
-            if (!response.data.success) {
-                alert(response.data.users_list);
-                return;
-            }
-            self.task = response.data.task;
-            self.users_list = response.data.users_list;
-            self.project_list = response.data.project_list;
-            self.task_type_list = response.data.task_type_list;
-            self.task_status_list = response.data.task_status_list;
-            self.module_status_list = response.data.module_status_list;
-            self.platform_list = response.data.platform_list;
-        });
+        // $http.get(
+        //     laravel_routes['getTaskFormData']
+        // ).then(function(response) {
+        //     if (!response.data.success) {
+        //         alert(response.data.users_list);
+        //         return;
+        //     }
+        //     self.task = response.data.task;
+        //     self.users_list = response.data.users_list;
+        //     self.project_list = response.data.project_list;
+        //     self.task_type_list = response.data.task_type_list;
+        //     self.task_status_list = response.data.task_status_list;
+        //     self.module_status_list = response.data.module_status_list;
+        //     self.platform_list = response.data.platform_list;
+        // });
 
         //SAVE MODULE
         $scope.saveModule = function() {
@@ -111,21 +111,21 @@ app.directive('taskModalForm', function() {
             var self = this;
             self.theme = theme;
 
-            $http.get(
-                laravel_routes['getTaskFormData']
-            ).then(function(response) {
-                if (!response.data.success) {
-                    alert(response.data.users_list);
-                    return;
-                }
-                self.task = response.data.task;
-                self.users_list = response.data.users_list;
-                self.project_list = response.data.project_list;
-                self.task_type_list = response.data.task_type_list;
-                self.task_status_list = response.data.task_status_list;
-                self.module_status_list = response.data.module_status_list;
-                self.project_version_list = [];
-            });
+            // $http.get(
+            //     laravel_routes['getTaskFormData']
+            // ).then(function(response) {
+            //     if (!response.data.success) {
+            //         alert(response.data.users_list);
+            //         return;
+            //     }
+            //     self.task = response.data.task;
+            //     self.users_list = response.data.users_list;
+            //     self.project_list = response.data.project_list;
+            //     self.task_type_list = response.data.task_type_list;
+            //     self.task_status_list = response.data.task_status_list;
+            //     self.module_status_list = response.data.module_status_list;
+            //     self.project_version_list = [];
+            // });
         }
     }
 });
@@ -148,7 +148,7 @@ app.directive('taskCardList', function() {
             self.theme = {};
             self.project_version_list = [];
 
-            $scope.dragTaskstartCallback = function(event){
+            $scope.dragTaskstartCallback = function(event) {
                 return true;
             }
 
@@ -203,7 +203,7 @@ app.directive('taskCardList', function() {
                     self.project_version = self.task.module.project_version;
                     $scope.onSelectedProject(self.project_version.project.id);
                     $scope.onSelectedProjectVersion(self.project_version.id);
-                }else{
+                } else {
                     self.project_version = false;
                     self.project_version_list = [];
                 }
