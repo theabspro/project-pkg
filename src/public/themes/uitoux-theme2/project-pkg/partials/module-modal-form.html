@@ -128,7 +128,7 @@
                             </div><!-- Column -->
                         </div>
                         <div class="row">
-                            <div class="col-sm-6" ng-if="$ctrl.show_project">
+                            <div class="col-sm-6" ng-show="$ctrl.show_project">
                                 <div class="separate-form-group">
                                     <label>Project <sup class="mandatory">*</sup> </label>
                                     <ui-select ng-model="$ctrl.module.project" theme="select2" ng-change="" ng-model-options="{trackBy: '$value.id' }">
@@ -142,7 +142,7 @@
                                     <input type="hidden" name="project_id" value="{{$ctrl.module.project.id}}" class="required">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                            <div class="col-sm-6" ng-if="$ctrl.show_project_version">
+                            <div class="col-sm-6" ng-show="$ctrl.show_project_version">
                                 <div class="separate-form-group">
                                     <label>
                                         Project Version
