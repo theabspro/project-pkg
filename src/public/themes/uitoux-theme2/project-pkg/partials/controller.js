@@ -1,131 +1,90 @@
-app.component('moduleModalForm', {
-    templateUrl: module_modal_form_template_url,
-    bindings: {
-        module: '<',
-    },
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element, $route) {
-        var self = this;
-        self.theme = theme;
-        // self.module = $element.attr("module");
-
-        // $http.get(
-        //     laravel_routes['getTaskFormData']
-        // ).then(function(response) {
-        //     if (!response.data.success) {
-        //         alert(response.data.users_list);
-        //         return;
-        //     }
-        //     self.task = response.data.task;
-        //     self.users_list = response.data.users_list;
-        //     self.project_list = response.data.project_list;
-        //     self.task_type_list = response.data.task_type_list;
-        //     self.task_status_list = response.data.task_status_list;
-        //     self.module_status_list = response.data.module_status_list;
-        //     self.platform_list = response.data.platform_list;
-        // });
-
-        //SAVE MODULE
-        $scope.saveModule = function() {
-            var module_form = '#module_form';
-            // console.log('===');
-            var v = jQuery(module_form).validate({
-                ignore: '',
-                // ignore: [],
-                rules: {
-                    'name': {
-                        required: true,
+app.directive('moduleModalForm', function() {
+    return {
+        templateUrl: module_modal_form_template_url,
+        controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $element, $route) {
+            var self = this;
+            self.theme = theme;
+            //SAVE MODULE
+            $scope.saveModule = function() {
+                var module_form = '#module_form';
+                var v = jQuery(module_form).validate({
+                    ignore: '',
+                    rules: {
+                        'name': {
+                            required: true,
+                        },
+                        'status_id': {
+                            required: true,
+                            number: true,
+                        },
+                        'project_id': {
+                            // required: true,
+                            number: true,
+                        },
+                        'project_version_id': {
+                            // required: true,
+                            number: true,
+                        },
+                        'duration': {
+                            number: true,
+                        },
+                        'priority': {
+                            number: true,
+                        },
+                        'assigned_to_id': {
+                            number: true,
+                        },
+                        'completed_percentage': {
+                            required: true,
+                            number: true,
+                        },
+                        'platform_id': {
+                            // required: true,
+                        },
+                        'remarks': {},
                     },
-                    'status_id': {
-                        required: true,
-                        number: true,
+                    invalidHandler: function(event, validator) {
+                        console.log(validator.errorList);
                     },
-                    'project_id': {
-                        // required: true,
-                        number: true,
-                    },
-                    'project_version_id': {
-                        // required: true,
-                        number: true,
-                    },
-                    'duration': {
-                        number: true,
-                    },
-                    'priority': {
-                        number: true,
-                    },
-                    'assigned_to_id': {
-                        number: true,
-                    },
-                    'completed_percentage': {
-                        required: true,
-                        number: true,
-                    },
-                    'platform_id': {
-                        // required: true,
-                    },
-                    'remarks': {},
-                },
-                invalidHandler: function(event, validator) {
-                    console.log(validator.errorList);
-                },
-                submitHandler: function(form) {
-                    let formData = new FormData($(module_form)[0]);
-                    $('#submit').button('loading');
-                    // console.log("===");
-                    $.ajax({
-                            url: laravel_routes['saveModule'],
-                            method: "POST",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .done(function(res) {
-                            $('#submit').button('reset');
-                            if (!res.success) {
-                                showErrorNoty(res);
-                                return;
-                            }
-                            $('#module-form-modal').modal('hide');
-                            $('body').removeClass('modal-open');
-                            $('.modal-backdrop').remove();
-                            $route.reload();
-                        })
-                        .fail(function(xhr) {
-                            $('#submit').button('reset');
-                            custom_noty('error', 'Something went wrong at server');
-                        });
-                }
-            });
+                    submitHandler: function(form) {
+                        let formData = new FormData($(module_form)[0]);
+                        $('#submit').button('loading');
+                        // console.log("===");
+                        $.ajax({
+                                url: laravel_routes['saveModule'],
+                                method: "POST",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                            })
+                            .done(function(res) {
+                                $('#submit').button('reset');
+                                if (!res.success) {
+                                    showErrorNoty(res);
+                                    return;
+                                }
+                                $('#module-form-modal').modal('hide');
+                                $('body').removeClass('modal-open');
+                                $('.modal-backdrop').remove();
+                                $route.reload();
+                            })
+                            .fail(function(xhr) {
+                                $('#submit').button('reset');
+                                custom_noty('error', 'Something went wrong at server');
+                            });
+                    }
+                });
+            }
         }
     }
 });
 
 app.directive('taskModalForm', function() {
     return {
-        // scope: {
-        //     task: '=',
-        //     tasks: '=',
-        // },
         templateUrl: task_modal_form_template_url,
         controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = theme;
-
-            // $http.get(
-            //     laravel_routes['getTaskFormData']
-            // ).then(function(response) {
-            //     if (!response.data.success) {
-            //         alert(response.data.users_list);
-            //         return;
-            //     }
-            //     self.task = response.data.task;
-            //     self.users_list = response.data.users_list;
-            //     self.project_list = response.data.project_list;
-            //     self.task_type_list = response.data.task_type_list;
-            //     self.task_status_list = response.data.task_status_list;
-            //     self.module_status_list = response.data.module_status_list;
-            //     self.project_version_list = [];
-            // });
         }
     }
 });
@@ -133,16 +92,11 @@ app.directive('taskModalForm', function() {
 app.directive('taskCardList', function() {
     return {
         scope: {
-            // task: '=',
             tasks: '=',
             type: '=',
-            // showTaskForm: '&',
         },
         templateUrl: task_card_list_template_url,
-        link: function(scope, element, attrs, tabsCtrl) {
-            // console.log(scope, element, attrs, tabsCtrl);
-            // tabsCtrl.showTaskForm(scope);
-        },
+        link: function(scope, element, attrs, tabsCtrl) {},
         controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
             var self = this;
             self.theme = {};

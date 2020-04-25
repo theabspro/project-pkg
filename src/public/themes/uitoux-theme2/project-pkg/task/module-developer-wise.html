@@ -4,7 +4,8 @@
             <div class="page-header-content-left">
                 <div class="page-header-content title-block">
                     <h1 class="title type-2">
-                        Tasks (Module & Developer Wise)
+                        {{$ctrl.project_version ? $ctrl.project_version.project.short_name+ "-"+ $ctrl.project_version.number : '' }}
+                        ({{$ctrl.modules.length}} modules)
                     </h1>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
@@ -50,8 +51,7 @@
         </div><!-- Page Header Inner -->
     </div><!-- Page Header -->
     <h5>
-        {{$ctrl.project_version ? $ctrl.project_version.project.short_name+ "-"+ $ctrl.project_version.number : '' }}
-        ({{$ctrl.modules.length}} modules)
+        Tasks (Module & Developer Wise)
     </h5>
     <div class="page-main-content">
         <br />
