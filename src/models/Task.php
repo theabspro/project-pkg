@@ -27,6 +27,7 @@ class Task extends Model {
 		'project_id',
 		'subject',
 		'description',
+		'platform_id',
 		'type_id',
 		'estimated_hours',
 		'actual_hours',

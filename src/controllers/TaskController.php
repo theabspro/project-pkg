@@ -391,6 +391,7 @@ class TaskController extends Controller {
 		$this->data['task_type_list'] = TaskType::getList();
 		$this->data['task_status_list'] = Status::getTaskStatusList();
 		$this->data['module_status_list'] = Status::getModuleStatusList();
+		//issue : shalini :  unwanted variable : not reusable and maintainable
 		$this->data['platform_list'] = Collect(
 			Platform::select([
 				'id',
@@ -485,7 +486,7 @@ class TaskController extends Controller {
 				],
 				'platform_id' => [
 					'nullable',
-					'exists:config,id',
+					'exists:platforms,id',
 				],
 				'subject' => [
 					'required:true',

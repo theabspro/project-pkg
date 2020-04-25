@@ -26,11 +26,11 @@
                                         Platform
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <ui-select focus-on='focus-task-platform' ng-model="$ctrl.task.type_id" theme="select2">
+                                    <ui-select focus-on='focus-task-platform' ng-model="$ctrl.task.platform_id" theme="select2">
                                         <ui-select-match placeholder="Select Platform">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in $ctrl.task_type_list | propsFilter: {name: $select.search}">
+                                        <ui-select-choices repeat="i.id as i in $ctrl.platform_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="i.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
