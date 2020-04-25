@@ -63,6 +63,18 @@ class ProjectPkgPermissionSeeder extends Seeder {
 				'name' => 'delete-project-version',
 				'display_name' => 'Delete',
 			],
+			[
+				'display_order' => 4,
+				'parent' => 'project-versions',
+				'name' => 'view-all-project-version',
+				'display_name' => 'View All',
+			],
+			[
+				'display_order' => 5,
+				'parent' => 'project-versions',
+				'name' => 'view-pm-based-project-version',
+				'display_name' => 'View PM Based',
+			],
 
 			//TASK
 			[

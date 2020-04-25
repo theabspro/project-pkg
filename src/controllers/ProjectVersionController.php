@@ -1,15 +1,16 @@
 <?php
 
 namespace Abs\ProjectPkg;
-use Abs\BasicPkg\Config;
-use Abs\StatusPkg\Status;
-use Abs\ProjectPkg\Document;
-use App\Http\Controllers\Controller;
-use App\User;
 use App\Attachment;
+use App\Config;
+use App\Document;
+use App\Http\Controllers\Controller;
+use App\Status;
+use App\User;
 use Auth;
 use Carbon\Carbon;
 use DB;
+use Entrust;
 use File;
 use Illuminate\Http\Request;
 use Validator;
@@ -21,7 +22,7 @@ class ProjectVersionController extends Controller {
 		$this->data['theme'] = config('custom.theme');
 	}
 
-	public function getProjectVerisons(Request $r) {
+	public function getProjectVersions(Request $r) {
 		$project_versions = ProjectVersion::with([
 			'status',
 			'project',
@@ -32,10 +33,18 @@ class ProjectVersionController extends Controller {
 			->where([
 				'project_versions.company_id' => Auth::user()->company_id,
 			])
+			->where(function ($q) {
+				if (!Entrust::can('view-all-project-version')) {
+					$q
+						->where('project_version_member.member_id', Auth::id())
+					;
+				}
+			})
 			->select([
 				'project_versions.*',
 			])
 			->join('projects as p', 'p.id', 'project_versions.project_id')
+			->leftJoin('project_version_member', 'project_version_member.project_version_id', 'project_versions.id')
 			->orderBy('p.short_name')
 			->get();
 		return response()->json([
@@ -201,18 +210,18 @@ class ProjectVersionController extends Controller {
 	public function getProjectVerisonDocsList(Request $r) {
 		//dd($r->id);
 		if ($r->id) {
-			$project_version=ProjectVersion::with('project')->find($r->id);
-			if($project_version){
-				$document_attachments =Document::with(['documentType','documentAttachment'])
-				->where('project_requirement_id',$project_version->id)
-				->where('type_id',240)
-				->get();
-				$document_links =Document::where('project_requirement_id',$project_version->id)
-				->where('type_id',241)
-				->get();
+			$project_version = ProjectVersion::with('project')->find($r->id);
+			if ($project_version) {
+				$document_attachments = Document::with(['documentType', 'documentAttachment'])
+					->where('project_requirement_id', $project_version->id)
+					->where('type_id', 240)
+					->get();
+				$document_links = Document::where('project_requirement_id', $project_version->id)
+					->where('type_id', 241)
+					->get();
 				$action = 'List';
 			}
-		} 
+		}
 		$this->data['project_version'] = $project_version;
 		$this->data['document_attachments'] = $document_attachments;
 		$this->data['document_links'] = $document_links;
@@ -225,13 +234,14 @@ class ProjectVersionController extends Controller {
 			$document = Document::withTrashed()->where('id', $request->id)->first();
 			if ($document) {
 				DB::beginTransaction();
-				if($document->type_id==240){ //ATTACHMENT OF PROJECT DOCS
-					$project_docs_des = storage_path('app/public/project-requirement/docs/'.$request->project_requirement_id.'/');
+				if ($document->type_id == 240) {
+					//ATTACHMENT OF PROJECT DOCS
+					$project_docs_des = storage_path('app/public/project-requirement/docs/' . $request->project_requirement_id . '/');
 					$remove_previous_attachment = Attachment::where([
-					'entity_id' => $document->id,
-					'attachment_of_id' => 121,//ATTACHMENT OF PROJECT DOCS
-					'attachment_type_id' => 141, //ATTACHMENT TYPE  PROJECT DOCS
-				])->first();
+						'entity_id' => $document->id,
+						'attachment_of_id' => 121, //ATTACHMENT OF PROJECT DOCS
+						'attachment_type_id' => 141, //ATTACHMENT TYPE  PROJECT DOCS
+					])->first();
 					if (!empty($remove_previous_attachment)) {
 						$img_path = $project_docs_des . $remove_previous_attachment->name;
 						if (File::exists($img_path)) {
@@ -252,8 +262,8 @@ class ProjectVersionController extends Controller {
 		}
 	}
 
-public function saveProjectVerisonDocs(Request $request) {
-		 //dd($request->all());
+	public function saveProjectVerisonDocs(Request $request) {
+		//dd($request->all());
 		try {
 			$error_messages = [
 				'name.required' => 'Name is Required',
@@ -268,13 +278,13 @@ public function saveProjectVerisonDocs(Request $request) {
 					'required:true',
 					'max:255',
 					'min:3',
-					'unique:documents,name,' . $request->id . ',id,name,' . $request->name . ',type_id,' . $request->type_id.',project_requirement_id,'.$request->project_requirement_id,
+					'unique:documents,name,' . $request->id . ',id,name,' . $request->name . ',type_id,' . $request->type_id . ',project_requirement_id,' . $request->project_requirement_id,
 				],
 				'type_id' => [
 					'required:true',
 					'exists:configs,id',
 					'integer',
-					'unique:documents,type_id,' . $request->id . ',id,name,' . $request->name . ',type_id,' . $request->type_id.',project_requirement_id,'.$request->project_requirement_id,
+					'unique:documents,type_id,' . $request->id . ',id,name,' . $request->name . ',type_id,' . $request->type_id . ',project_requirement_id,' . $request->project_requirement_id,
 				],
 			], $error_messages);
 			if ($validator->fails()) {
@@ -285,8 +295,8 @@ public function saveProjectVerisonDocs(Request $request) {
 			if (!$request->id) {
 				$document = new Document;
 				$document->created_by_id = Auth::user()->id;
-				 $document->created_at = Carbon::now();
-				
+				$document->created_at = Carbon::now();
+
 			} else {
 				$document = Document::withTrashed()->find($request->id);
 				$document->updated_by_id = Auth::user()->id;
@@ -294,20 +304,18 @@ public function saveProjectVerisonDocs(Request $request) {
 			}
 			$document->fill($request->all());
 			$document->save();
-			if(isset($request->link) && !empty($request->link))
-			{
-				$document->value=$request->link;
+			if (isset($request->link) && !empty($request->link)) {
+				$document->value = $request->link;
 			}
 
-			if(isset($request->attachment) && !empty($request->attachment))
-			{
-				$project_docs_des = storage_path('app/public/project-requirement/docs/'.$request->project_requirement_id.'/');
+			if (isset($request->attachment) && !empty($request->attachment)) {
+				$project_docs_des = storage_path('app/public/project-requirement/docs/' . $request->project_requirement_id . '/');
 				if (!File::exists($project_docs_des)) {
 					File::makeDirectory($project_docs_des, 0777, true);
 				}
 				$remove_previous_attachment = Attachment::where([
 					'entity_id' => $document->id,
-					'attachment_of_id' => 121,//ATTACHMENT OF PROJECT DOCS
+					'attachment_of_id' => 121, //ATTACHMENT OF PROJECT DOCS
 					'attachment_type_id' => 141, //ATTACHMENT TYPE  PROJECT DOCS
 				])->first();
 				if (!empty($remove_previous_attachment)) {
@@ -328,17 +336,17 @@ public function saveProjectVerisonDocs(Request $request) {
 				$document_attachement->entity_id = $document->id;
 				$document_attachement->name = $document->id . '.' . $extension;
 				$document_attachement->save();
-				$document->value=$original_name;
+				$document->value = $original_name;
 				$document->save();
 			}
 
 			/*if ($request->status == 'Inactive') {
-				$document->deleted_at = Carbon::now();
-				$document->deleted_by_id = Auth::user()->id;
-			} else {
-				$document->deleted_by_id = NULL;
-				$document->deleted_at = NULL;
-			}*/
+					$document->deleted_at = Carbon::now();
+					$document->deleted_by_id = Auth::user()->id;
+				} else {
+					$document->deleted_by_id = NULL;
+					$document->deleted_at = NULL;
+			*/
 			$document->save();
 			DB::commit();
 			if (!($request->id)) {
@@ -486,7 +494,7 @@ public function saveProjectVerisonDocs(Request $request) {
 		}
 	}
 
-	public function getProjectVersions(Request $r) {
+	public function getProjectVersionList(Request $r) {
 		// dd($r->all());
 		$this->data['success'] = true;
 		$this->data['project_versions'] =
