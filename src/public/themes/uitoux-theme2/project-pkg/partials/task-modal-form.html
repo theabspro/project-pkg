@@ -20,32 +20,13 @@
                 <div class="modal-body">
                     <div class="modal-form">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>
-                                        Subject
-                                        <sup class="mandatory">*</sup>
-                                    </label>
-                                    <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off" ng-focus="focus_task_subject" id="task-subject">
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea class="form-control" ng-model="$ctrl.task.description" name="description" autocomplete="off"></textarea>
-                                </div><!-- Field -->
-                            </div><!-- Column -->
-                        </div>
-                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
                                         Platform
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <ui-select ng-model="$ctrl.task.type_id" theme="select2">
+                                    <ui-select focus-on='focus-task-platform' ng-model="$ctrl.task.type_id" theme="select2">
                                         <ui-select-match placeholder="Select Platform">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
@@ -73,6 +54,27 @@
                                     <input type="hidden" name="type_id" id="type_id" value="{{$ctrl.task.type_id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>
+                                        Subject
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control" name="subject" ng-model="$ctrl.task.subject" autocomplete="off" ng-focus="focus_task_subject" id="task-subject">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control" ng-model="$ctrl.task.description" name="description" autocomplete="off"></textarea>
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
@@ -82,14 +84,14 @@
                                     <input type="text" class="form-control" ng-model="$ctrl.task.estimated_hours" name="estimated_hours" autocomplete="off">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Actual Hours</label>
                                     <input type="text" class="form-control" name="actual_hours" ng-model="$ctrl.task.actual_hours" autocomplete="off">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6" ng-show="$ctrl.show_assigned_to">
                                 <div class="separate-form-group">
                                     <label>Assigned To </label>
@@ -104,8 +106,6 @@
                                     <input type="hidden" name="assigned_to_id" id="assigned_to_id" value="{{$ctrl.task.assigned_to.id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                        </div>
-                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
@@ -123,6 +123,8 @@
                                     <input type="hidden" name="status_id" id="status_id" value="{{$ctrl.task.status_id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>
@@ -136,8 +138,6 @@
                                     </div><!-- Input Group -->
                                 </div><!-- Feild -->
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-rose" ng-click="saveTask()">
                                     Submit
