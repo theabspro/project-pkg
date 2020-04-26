@@ -92,6 +92,7 @@ class TaskController extends Controller {
 						'module.projectVersion.project',
 						'status',
 						'type',
+						'platform',
 						'assignedTo',
 						'assignedTo.profileImage',
 					])
@@ -109,8 +110,11 @@ class TaskController extends Controller {
 				->whereNull('assigned_to_id')
 				->with([
 					'module',
+					'module.projectVersion',
+					'module.projectVersion.project',
 					'status',
 					'type',
+					'platform',
 				])
 				->orderBy('date')
 				->orderBy('type_id')
@@ -181,6 +185,7 @@ class TaskController extends Controller {
 			'module.projectVersion.project',
 			'status',
 			'type',
+			'platform',
 			'assignedTo',
 			'assignedTo.profileImage',
 		])
@@ -335,6 +340,7 @@ class TaskController extends Controller {
 					$query->orderBy('display_order');
 				}
 			},
+			'platform',
 			'type',
 			'assignedTo',
 			'assignedTo.profileImage',

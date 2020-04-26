@@ -35,6 +35,10 @@ class Task extends Model {
 		'remarks',
 	];
 
+	public function platform() {
+		return $this->belongsTo('App\Platform');
+	}
+
 	public function module() {
 		return $this->belongsTo('Abs\ModulePkg\Module');
 	}
@@ -61,10 +65,6 @@ class Task extends Model {
 
 	public function project() {
 		return $this->belongsTo('App\Project', 'project_id');
-	}
-
-	public function platform() {
-		return $this->belongsTo('App\Config', 'platform_id');
 	}
 
 	// public function platform()
