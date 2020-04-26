@@ -482,54 +482,6 @@ app.component('moduleDeveloperWiseTasks', {
         }
 
 
-        var new_preset_form = '#new-preset-form';
-        var v = jQuery(new_preset_form).validate({
-            ignore: '',
-            rules: {
-                'user_id': {
-                    required: true,
-                    number: true,
-                },
-                'page_id': {
-                    required: true,
-                    number: true,
-                },
-                'name': {
-                    required: true,
-                },
-                'value': {
-                    // required: true,
-                },
-            },
-            invalidHandler: function(event, validator) {
-                console.log(validator.errorList);
-            },
-            submitHandler: function(form) {
-                self.filter_value = angular.toJson(self.filter);
-                $('#filter_value').val(angular.toJson(self.filter));
-                let formData = new FormData($(new_preset_form)[0]);
-                $('#submit').button('loading');
-                $.ajax({
-                        url: laravel_routes['saveFilterPreset'],
-                        method: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    })
-                    .done(function(res) {
-                        $('#submit').button('reset');
-                        if (!res.success) {
-                            showErrorNoty(res);
-                            return;
-                        }
-                        custom_noty('success', res.message);
-                    })
-                    .fail(function(xhr) {
-                        $('#submit').button('reset');
-                        custom_noty('error', 'Something went wrong at server');
-                    });
-            }
-        });
         $("input:text:visible:first").focus();
 
         $scope.saveFilter = function() {
@@ -698,75 +650,80 @@ app.component('userDateWiseTasks', {
 
         //SAVE TASK
         $scope.saveTask = function() {
-            var task_form = '#task_form';
-            var v = jQuery(task_form).validate({
-                ignore: '',
-                rules: {
-                    'date': {
-                        // required: true,
-                    },
-                    'assigned_to_id': {
-                        // required: true,
-                    },
-                    'project_id': {
-                        required: true,
-                    },
-                    'module_id': {
-                        required: true,
-                    },
-                    'project_version_id': {
-                        required: true,
-                    },
-                    'type_id': {
-                        required: true,
-                    },
-                    'subject': {
-                        required: true,
-                    },
-                    'status_id': {
-                        required: true,
-                        number: true,
-                    },
-                    'estimated_hours': {
-                        required: true,
-                        number: true,
-                    },
-                    'actual_hours': {
-                        // required: true,
-                        number: true,
-                    },
-                },
-                invalidHandler: function(event, validator) {
-                    console.log(validator.errorList);
-                },
-                submitHandler: function(form) {
-                    let formData = new FormData($(task_form)[0]);
-                    $('#submit').button('loading');
-                    $.ajax({
-                            url: laravel_routes['saveTask'],
-                            method: "POST",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .done(function(res) {
-                            $('#submit').button('reset');
-                            if (!res.success) {
-                                showErrorNoty(res);
-                                return;
-                            }
-                            custom_noty('success', res.message);
-                            $('#task-form-modal').modal('hide');
-                            $('body').removeClass('modal-open');
-                            $('.modal-backdrop').remove();
-                            $route.reload();
-                        })
-                        .fail(function(xhr) {
-                            $('#submit').button('reset');
-                            custom_noty('error', 'Something went wrong at server');
-                        });
-                }
+            ProjectPkgHelper.saveTask().then(function(res) {
+                console.log(res);
+                $scope.fetchData();
             });
+            //issue : ram : 
+            // var task_form = '#task_form';
+            // var v = jQuery(task_form).validate({
+            //     ignore: '',
+            //     rules: {
+            //         'date': {
+            //             // required: true,
+            //         },
+            //         'assigned_to_id': {
+            //             // required: true,
+            //         },
+            //         'project_id': {
+            //             required: true,
+            //         },
+            //         'module_id': {
+            //             required: true,
+            //         },
+            //         'project_version_id': {
+            //             required: true,
+            //         },
+            //         'type_id': {
+            //             required: true,
+            //         },
+            //         'subject': {
+            //             required: true,
+            //         },
+            //         'status_id': {
+            //             required: true,
+            //             number: true,
+            //         },
+            //         'estimated_hours': {
+            //             required: true,
+            //             number: true,
+            //         },
+            //         'actual_hours': {
+            //             // required: true,
+            //             number: true,
+            //         },
+            //     },
+            //     invalidHandler: function(event, validator) {
+            //         console.log(validator.errorList);
+            //     },
+            //     submitHandler: function(form) {
+            //         let formData = new FormData($(task_form)[0]);
+            //         $('#submit').button('loading');
+            //         $.ajax({
+            //                 url: laravel_routes['saveTask'],
+            //                 method: "POST",
+            //                 data: formData,
+            //                 processData: false,
+            //                 contentType: false,
+            //             })
+            //             .done(function(res) {
+            //                 $('#submit').button('reset');
+            //                 if (!res.success) {
+            //                     showErrorNoty(res);
+            //                     return;
+            //                 }
+            //                 custom_noty('success', res.message);
+            //                 $('#task-form-modal').modal('hide');
+            //                 $('body').removeClass('modal-open');
+            //                 $('.modal-backdrop').remove();
+            //                 $route.reload();
+            //             })
+            //             .fail(function(xhr) {
+            //                 $('#submit').button('reset');
+            //                 custom_noty('error', 'Something went wrong at server');
+            //             });
+            //     }
+            // });
         }
 
         //DELETE
@@ -780,22 +737,27 @@ app.component('userDateWiseTasks', {
 
         $scope.deleteTaskConfirm = function() {
             id = $('#task_id').val();
-            $http.get(
-                laravel_routes['deleteTask'], {
-                    params: {
-                        id: id,
-                    }
-                }
-            ).then(function(response) {
-                if (response.data.success) {
-                    custom_noty('success', 'Task Deleted Successfully');
-                    $('#delete_task').modal('hide');
-                    $('body').removeClass('modal-open');
-                    $('.modal-backdrop').remove();
-                    $scope.tasks.splice($scope.index, 1);
-                    // $route.reload();
-                }
-            });
+            //issue : ram
+            ProjectPkgHelper.deleteTask(id).then(function(res) {
+                $scope.tasks.splice($scope.index, 1);
+            });;
+
+            // $http.get(
+            //     laravel_routes['deleteTask'], {
+            //         params: {
+            //             id: id,
+            //         }
+            //     }
+            // ).then(function(response) {
+            //     if (response.data.success) {
+            //         custom_noty('success', 'Task Deleted Successfully');
+            //         $('#delete_task').modal('hide');
+            //         $('body').removeClass('modal-open');
+            //         $('.modal-backdrop').remove();
+            //         $scope.tasks.splice($scope.index, 1);
+            //         // $route.reload();
+            //     }
+            // });
         }
 
         $scope.dragTaskstartCallback = function(event) {
@@ -928,89 +890,68 @@ app.component('statusDateWiseTasks', {
 
         $("input:text:visible:first").focus();
 
-        var task_form = '#task_form';
-        var v = jQuery(task_form).validate({
-            ignore: '',
-            rules: {
-                'date': {
-                    required: true,
-                },
-                'assigned_to_id': {
-                    required: true,
-                },
-                'project_id': {
-                    required: true,
-                },
-                'subject': {
-                    required: true,
-                },
-                'estimated_hours': {
-                    required: true,
-                    number: true,
-                },
-                'actual_hours': {
-                    required: true,
-                    number: true,
-                },
-            },
-            submitHandler: function(form) {
-                let formData = new FormData($(task_form)[0]);
-                $('#submit').button('loading');
-                $.ajax({
-                        url: laravel_routes['saveTask'],
-                        method: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                    })
-                    .done(function(res) {
-                        if (res.success == true) {
-                            custom_noty('success', res.message);
-                            $location.path('/project-pkg/task/card-list');
-                            $scope.$apply();
-                        } else {
-                            if (!res.success == true) {
-                                $('#submit').button('reset');
-                                var errors = '';
-                                for (var i in res.errors) {
-                                    errors += '<li>' + res.errors[i] + '</li>';
-                                }
-                                custom_noty('error', errors);
-                            } else {
-                                $('#submit').button('reset');
-                                $('#task-form-modal').modal('hide');
-                                $location.path('/project-pkg/task/card-list');
-                                $scope.$apply();
-                            }
-                        }
-                    })
-                    .fail(function(xhr) {
-                        $('#submit').button('reset');
-                        custom_noty('error', 'Something went wrong at server');
-                    });
-            }
-        });
-
-        //DELETE
-        $scope.deleteProject = function($id) {
-            $('#task_id').val($id);
-        }
-        $scope.deleteConfirm = function() {
-            $id = $('#task_id').val();
-            $http.get(
-                laravel_routes['deleteProject'], {
-                    params: {
-                        id: $id,
-                    }
-                }
-            ).then(function(response) {
-                if (response.data.success) {
-                    custom_noty('success', 'Project Deleted Successfully');
-                    $('#tasks_list').DataTable().ajax.reload(function(json) {});
-                    $location.path('/project-pkg/task/list');
-                }
-            });
-        }
+        // var task_form = '#task_form';
+        // var v = jQuery(task_form).validate({
+        //     ignore: '',
+        //     rules: {
+        //         'date': {
+        //             required: true,
+        //         },
+        //         'assigned_to_id': {
+        //             required: true,
+        //         },
+        //         'project_id': {
+        //             required: true,
+        //         },
+        //         'subject': {
+        //             required: true,
+        //         },
+        //         'estimated_hours': {
+        //             required: true,
+        //             number: true,
+        //         },
+        //         'actual_hours': {
+        //             required: true,
+        //             number: true,
+        //         },
+        //     },
+        //     submitHandler: function(form) {
+        //         let formData = new FormData($(task_form)[0]);
+        //         $('#submit').button('loading');
+        //         $.ajax({
+        //                 url: laravel_routes['saveTask'],
+        //                 method: "POST",
+        //                 data: formData,
+        //                 processData: false,
+        //                 contentType: false,
+        //             })
+        //             .done(function(res) {
+        //                 if (res.success == true) {
+        //                     custom_noty('success', res.message);
+        //                     $location.path('/project-pkg/task/card-list');
+        //                     $scope.$apply();
+        //                 } else {
+        //                     if (!res.success == true) {
+        //                         $('#submit').button('reset');
+        //                         var errors = '';
+        //                         for (var i in res.errors) {
+        //                             errors += '<li>' + res.errors[i] + '</li>';
+        //                         }
+        //                         custom_noty('error', errors);
+        //                     } else {
+        //                         $('#submit').button('reset');
+        //                         $('#task-form-modal').modal('hide');
+        //                         $location.path('/project-pkg/task/card-list');
+        //                         $scope.$apply();
+        //                     }
+        //                 }
+        //             })
+        //             .fail(function(xhr) {
+        //                 $('#submit').button('reset');
+        //                 custom_noty('error', 'Something went wrong at server');
+        //             });
+        //     }
+        // });
 
 
         $scope.onSelectedProject = function(id) {
