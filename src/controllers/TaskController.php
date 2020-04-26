@@ -153,20 +153,26 @@ class TaskController extends Controller {
 
 		if ($request->filter_id) {
 			$filter = Filter::find($request->filter_id);
-			$filter_id = $filter->id;
-			if ($filter) {
-				$filter = json_decode($filter->value);
-			}
 		} else {
+			//GETTING DEFAULT FILTER PRESET OF USER
 			$filter = Filter::where([
 				'page_id' => 221,
+				'user_id' => Auth::id(),
+				'is_default' => 1,
 			])
-				->whereNull('user_id')
 				->first();
-			$filter_id = $filter->id;
-			if ($filter) {
-				$filter = json_decode($filter->value);
+			if (!$filter) {
+				//GETTING DEFAULT FILTER PRESET OF PAGE
+				$filter = Filter::where([
+					'page_id' => 221,
+				])
+					->whereNull('user_id')
+					->first();
 			}
+		}
+		$filter_id = $filter->id;
+		if ($filter) {
+			$filter = json_decode($filter->value);
 		}
 
 		$base_query = Task::with([

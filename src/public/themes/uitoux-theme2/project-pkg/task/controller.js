@@ -852,6 +852,7 @@ app.component('userDateWiseTasks', {
                                 return;
                             }
                             custom_noty('success', res.message);
+                            $('#task-user-date-filter-modal').modal('hide');
                         })
                         .fail(function(xhr) {
                             $('#submit').button('reset');
