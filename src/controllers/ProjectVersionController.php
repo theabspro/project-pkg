@@ -43,7 +43,7 @@ class ProjectVersionController extends Controller {
 				}
 			})
 			->where(function ($q) use ($filter_params) {
-				if ($filter_params['filter']->requirement_ids) {
+				if (isset($filter_params['filter']->requirement_ids)) {
 					$q
 						->whereIn('project_versions.id', $filter_params['filter']->requirement_ids)
 					;
