@@ -1,16 +1,17 @@
 <?php
 
 namespace Abs\ProjectPkg;
-use Abs\BasicPkg\Config;
-use Abs\CompanyPkg\Company;
-use Abs\ModulePkg\Module;
-use Abs\ModulePkg\Platform;
-use Abs\ProjectPkg\Project;
-use Abs\ProjectPkg\Task;
-use Abs\ProjectPkg\TaskType;
+use App\Company;
+use App\Config;
+use App\Filter;
 use App\Http\Controllers\Controller;
 use App\Mail\TaskMail;
+use App\Module;
+use App\Platform;
+use App\Project;
 use App\Status;
+use App\Task;
+use App\TaskType;
 use App\User;
 use Auth;
 use Carbon\Carbon;
@@ -150,6 +151,22 @@ class TaskController extends Controller {
 	}
 	public function getUserDateWiseTasks(Request $request) {
 
+		if ($request->filter_id) {
+			$filter = Filter::find($request->filter_id);
+			if ($filter) {
+				$filter = json_decode($filter->value);
+			}
+		} else {
+			$filter = Filter::where([
+				'page_id' => 221,
+			])
+				->whereNull('user_id')
+				->first();
+			if ($filter) {
+				$filter = json_decode($filter->value);
+			}
+		}
+
 		$base_query = Task::with([
 			'module',
 			'module.projectVersion',
@@ -183,6 +200,11 @@ class TaskController extends Controller {
 					$q->where('users.id', Auth::id());
 				}
 			})
+			->where(function ($q) use ($filter) {
+				if (isset($filter->employee_ids)) {
+					$q->whereIn('users.id', $filter->employee_ids);
+				}
+			})
 			->company()
 			->orderBy('first_name')
 			->get();
@@ -212,10 +234,13 @@ class TaskController extends Controller {
 				->get();
 		}
 
+		$extras = [];
+		$extras['filter_list'] = Filter::getList(221, false);
 		return response()->json([
 			'success' => true,
 			'users' => $users,
 			'unassigned_tasks' => $unassigned_tasks,
+			'extras' => $extras,
 		]);
 	}
 
@@ -383,7 +408,7 @@ class TaskController extends Controller {
 			$action = 'Edit';
 		}
 		//ISSUE : SARAVANAN : unwanted variable : not reusable and maintainable
-		$this->data['users_list'] = User::getList(1, 'Select Assignee');
+		$this->data['users_list'] = User::getList(1, false);
 		// $this->data['users_list'] = $users_list = Collect(User::select('id', 'first_name')->get())->prepend(['id' => '', 'first_name' => 'Select Assigned To']);
 		//ISSUE : SARAVANAN
 		$this->data['project_list'] = Project::getList();

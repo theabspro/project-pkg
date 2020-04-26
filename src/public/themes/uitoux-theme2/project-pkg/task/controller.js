@@ -519,7 +519,7 @@ app.component('moduleDeveloperWiseTasks', {
 
 app.component('userDateWiseTasks', {
     templateUrl: user_date_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $mdConstant) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -531,9 +531,17 @@ app.component('userDateWiseTasks', {
         self.add_permission = self.hasPermission('add-task');
         self.delete_task_permission = self.hasPermission('delete-task');
         self.theme = theme;
+        $scope.user_id = user_id;
 
+        //-------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------
         $scope.task_modal_form_template_url = task_modal_form_template_url;
         $scope.task_card_list_template_url = task_card_list_template_url;
+
+        $scope.filter = [];
 
         self.show_module = true;
         self.show_assigned_to = true;
@@ -542,32 +550,35 @@ app.component('userDateWiseTasks', {
 
         self.task = {};
 
-        $http.get(
-            laravel_routes['getUserDateWiseTasks'], {
-                params: {
-                    // id: $id,
-                }
-            }
-        ).then(function(response) {
-            if (!response.data.success) {
-                showErrorNoty(response.data);
-                return;
-            }
-            self.users = response.data.users;
-            $scope.unassigned_tasks = self.unassigned_tasks = response.data.unassigned_tasks;
-            // console.log(self.unassigned_tasks);
-            for (var i in self.users) {
-                for (var j in self.users[i].dates) {
-                    self.users[i].dates[j].total_estimated_hour = 0;
-                    self.users[i].dates[j].total_actual_hour = 0;
-                    for (var k in self.users[i].dates[j].tasks) {
-                        self.users[i].dates[j].total_estimated_hour += ($.isNumeric(self.users[i].dates[j].tasks[k].estimated_hours) ? parseFloat(self.users[i].dates[j].tasks[k].estimated_hours) : 0);
-                        self.users[i].dates[j].total_actual_hour += ($.isNumeric(self.users[i].dates[j].tasks[k].actual_hours) ? parseFloat(self.users[i].dates[j].tasks[k].actual_hours) : 0);
+        $scope.fetchData = function() {
+            $http.get(
+                laravel_routes['getUserDateWiseTasks'], {
+                    params: {
+                        filter_id: self.filter_id,
                     }
                 }
-            }
+            ).then(function(response) {
+                if (!response.data.success) {
+                    showErrorNoty(response.data);
+                    return;
+                }
+                self.users = response.data.users;
+                $scope.unassigned_tasks = self.unassigned_tasks = response.data.unassigned_tasks;
+                self.extras = response.data.extras;
+                // console.log(self.unassigned_tasks);
+                for (var i in self.users) {
+                    for (var j in self.users[i].dates) {
+                        self.users[i].dates[j].total_estimated_hour = 0;
+                        self.users[i].dates[j].total_actual_hour = 0;
+                        for (var k in self.users[i].dates[j].tasks) {
+                            self.users[i].dates[j].total_estimated_hour += ($.isNumeric(self.users[i].dates[j].tasks[k].estimated_hours) ? parseFloat(self.users[i].dates[j].tasks[k].estimated_hours) : 0);
+                            self.users[i].dates[j].total_actual_hour += ($.isNumeric(self.users[i].dates[j].tasks[k].actual_hours) ? parseFloat(self.users[i].dates[j].tasks[k].actual_hours) : 0);
+                        }
+                    }
+                }
 
-        });
+            });
+        }
 
         $http.get(
             laravel_routes['getTaskFormData']
@@ -790,6 +801,60 @@ app.component('userDateWiseTasks', {
                 }
                 custom_noty('success', res.data.message);
                 $route.reload();
+            });
+        }
+
+        $scope.saveFilter = function() {
+
+            $('#filter_value').val(angular.toJson($scope.filter));
+            var new_preset_form = '#new-preset-form';
+
+            var v = jQuery(new_preset_form).validate({
+                ignore: '',
+                rules: {
+                    'user_id': {
+                        required: true,
+                        number: true,
+                    },
+                    'page_id': {
+                        required: true,
+                        number: true,
+                    },
+                    'name': {
+                        required: true,
+                    },
+                    'value': {
+                        // required: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    self.filter_value = angular.toJson(self.filter);
+                    $('#filter_value').val(angular.toJson(self.filter));
+                    let formData = new FormData($(new_preset_form)[0]);
+                    $('#submit').button('loading');
+                    $.ajax({
+                            url: laravel_routes['saveFilterPreset'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('#submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                        })
+                        .fail(function(xhr) {
+                            $('#submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
             });
         }
 

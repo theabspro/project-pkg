@@ -8,8 +8,25 @@
                     </h1>
                 </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
-                    <button class="btn btn-bordered" data-toggle="modal" data-target="#project-filter-modal"><i class="icon ion-md-funnel"></i>Filter</button>
+                    <button class="btn btn-bordered" data-toggle="modal" data-target="#task-user-date-filter-modal">
+                        <i class="icon ion-md-funnel"></i>
+                        Filter
+                    </button>
                 </div><!-- Page Header Content -->
+                <div class="page-header-content button-block">
+                    <div class="form-group">
+                        {{$ctrl.filter_id | json}}
+                        <ui-select focus-on='focus-filter-preset' ng-model="$ctrl.filter_id" theme="select2" on-select="fetchData()">
+                            <ui-select-match placeholder="Select Filter Preset">
+                                {{$select.selected.name || $select.selected}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="i.id as i in $ctrl.extras.filter_list | propsFilter: {name: $select.search}">
+                                <div ng-bind-html="i.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <input type="hidden" name="filter_id" value="{{$ctrl.filter_id}}">
+                    </div><!-- Field -->
+                </div>
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
                 <div class="page-header-content indicator-block">
@@ -39,7 +56,7 @@
                             <h3 class="panel-title">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true">
                                 </span>
-                                UNASSIGNED
+                                UNASSIGNED &amp; UNPLANNED TASKS
                             </h3>
                             <div>
                                 <div class="btn-group">
@@ -206,42 +223,70 @@
     </div><!-- Page Main Content -->
 </div><!-- Content Wrap -->
 <task-modal-form task="$ctrl.task"></task-modal-form>
-<!-- <ng-include src="task_modal_form_template_url" task="$ctrl.task"></ng-include> -->
 <!-- Filter Modal -->
-<div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade filter" id="task-user-date-filter-modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
-                <h5 class="modal-title" id="myModalLabel">Project Filter</h5>
+                <h5 class="modal-title" id="myModalLabel">Filter</h5>
+                <hr />
+                <div class="row">
+                    <form id="new-preset-form">
+                        <input type="hidden" name="user_id" value="{{user_id}}">
+                        <input type="hidden" name="page_id" value="221">
+                        <input type="hidden" name="value" id="filter_value" value="{{angular.toJson($ctrl.filter)}}">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Filter Preset Name</label>
+                                <input type="text" class="form-control" name="name" autocomplete="off">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-rose" ng-click="saveFilter()">
+                                Save Filter Preset
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Project Code</label>
-                                <input type="text" class="form-control" id="project_code" name="project_code" placeholder="Enter Project Code" autocomplete="off">
+                        <div class="col-sm-6">
+                            <div class="separate-form-group">
+                                <label>
+                                    Employee
+                                </label>
+                                <ui-select multiple ng-model="$ctrl.filter.employee_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                    <ui-select-match placeholder="Select Employee">
+                                        <img ng-src="{{$item.image}}" style="width: 20px; height: 20px;">
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="employee.id as employee in $ctrl.users_list | propsFilter: {first_name: $select.search}">
+                                        <img ng-src="{{employee.image}}" style="width: 20px; height: 20px;">
+                                        <span ng-bind-html="employee.first_name | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="employee_ids" value="{{$ctrl.filter.employee_ids}}">
                             </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Project Name</label>
-                                <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
+                        </div><!-- Column -->
+                        <div class="col-sm-6">
+                            <div class="separate-form-group">
+                                <label>
+                                    Status
+                                    <sup class="mandatory">*</sup>
+                                </label>
+                                <ui-select multiple ng-model="$ctrl.filter.status_ids" theme="select2">
+                                    <ui-select-match>
+                                        {{$item.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="i.id as i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
+                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="status_ids" value="{{$ctrl.filter.status_ids}}">
                             </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Mobile Number</label>
-                                <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="Enter Mobile Number" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
+                        </div><!-- Column -->
                         <div class="col-md-6">
                             <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
                         </div>
@@ -251,24 +296,6 @@
         </div><!-- Modal Content -->
     </div><!-- Modal Dialog -->
 </div><!-- Modal -->
-<!-- Modal -->
-<div class="modal fade alert-modal failure" id="delete_project" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">ARE YOU SURE?</h4>
-            </div>
-            <div class="modal-body">
-                <h5>Delete</h5>
-                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
-                <input type="hidden" name="project_id" id="project_id" value="">
-                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn btn-rose" ng-click="deleteConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
 <!-- Modal -->
 <div class="modal fade alert-modal failure" id="delete_task" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
