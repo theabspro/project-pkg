@@ -484,6 +484,7 @@ app.component('projectVersionForm', {
         });
     }
 });
+
 app.component('projectVersionDocs', {
     templateUrl: project_version_docs_list_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {

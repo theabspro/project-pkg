@@ -1,6 +1,6 @@
 app.component('moduleDeveloperWiseTasks', {
     templateUrl: module_developer_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $route, $routeParams, $rootScope, $location, $mdSelect) {
+    controller: function($http, $location, HelperService, $scope, $route, $routeParams, $rootScope, $location, $mdSelect, ProjectPkgHelper) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -95,8 +95,8 @@ app.component('moduleDeveloperWiseTasks', {
             }
         }
 
-        $('.refresh_table').on("click", function() {
-            $route.reload();
+        $('#refresh_data').on("click", function() {
+            $scope.fetchData();
         });
 
 
@@ -124,94 +124,103 @@ app.component('moduleDeveloperWiseTasks', {
 
         //SAVE TASK
         $scope.saveTask = function() {
-            var task_form = '#task_form';
-            var v = jQuery(task_form).validate({
-                ignore: '',
-                rules: {
-                    'date': {
-                        // required: true,
-                    },
-                    'assigned_to_id': {
-                        // required: true,
-                    },
-                    'project_id': {
-                        required: true,
-                    },
-                    'project_version_id': {
-                        required: true,
-                    },
-                    'type_id': {
-                        required: true,
-                    },
-                    'subject': {
-                        required: true,
-                    },
-                    'status_id': {
-                        required: true,
-                        number: true,
-                    },
-                    'estimated_hours': {
-                        required: true,
-                        number: true,
-                    },
-                    'actual_hours': {
-                        // required: true,
-                        number: true,
-                    },
-                },
-                invalidHandler: function(event, validator) {
-                    console.log(validator.errorList);
-                },
-                submitHandler: function(form) {
-                    let formData = new FormData($(task_form)[0]);
-                    $('#submit').button('loading');
-                    $.ajax({
-                            url: laravel_routes['saveTask'],
-                            method: "POST",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .done(function(res) {
-                            $('#submit').button('reset');
-                            if (!res.success) {
-                                showErrorNoty(res);
-                                return;
-                            }
-                            custom_noty('success', res.message);
-                            $('#task-form-modal').modal('hide');
-                            $('body').removeClass('modal-open');
-                            $('.modal-backdrop').remove();
-
-                            $route.reload();
-
-                            //ISSUE : SARAVANAN
-                            // if (res.success == true) {
-                            //     custom_noty('success', res.message);
-                            //     $route.reload();
-                            //     $scope.$apply();
-                            // } else {
-                            //     if (!res.success == true) {
-                            //         $('#submit').button('reset');
-                            //         var errors = '';
-                            //         for (var i in res.errors) {
-                            //             errors += '<li>' + res.errors[i] + '</li>';
-                            //         }
-                            //         custom_noty('error', errors);
-                            //     } else {
-                            //         $('#submit').button('reset');
-                            //         $('#task-form-modal').modal('hide');
-                            //         $route.reload();
-                            //         $scope.$apply();
-                            //     }
-                            // }
-                        })
-                        .fail(function(xhr) {
-                            $('#submit').button('reset');
-                            custom_noty('error', 'Something went wrong at server');
-                        });
+            ProjectPkgHelper.saveTask().then(function(res) {
+                console.log(res.data);
+                if (!res.data.success) {
+                    custom_noty('error', res.data.error);
+                    return;
                 }
+                self.jv.from_account = res.data.vendor
             });
+            //issue : ramakrishnan : repeated code : not reusable and maintanable
+            // var task_form = '#task_form';
+            // var v = jQuery(task_form).validate({
+            //     ignore: '',
+            //     rules: {
+            //         'date': {
+            //             // required: true,
+            //         },
+            //         'assigned_to_id': {
+            //             // required: true,
+            //         },
+            //         'project_id': {
+            //             required: true,
+            //         },
+            //         'project_version_id': {
+            //             required: true,
+            //         },
+            //         'type_id': {
+            //             required: true,
+            //         },
+            //         'subject': {
+            //             required: true,
+            //         },
+            //         'status_id': {
+            //             required: true,
+            //             number: true,
+            //         },
+            //         'estimated_hours': {
+            //             required: true,
+            //             number: true,
+            //         },
+            //         'actual_hours': {
+            //             // required: true,
+            //             number: true,
+            //         },
+            //     },
+            //     invalidHandler: function(event, validator) {
+            //         console.log(validator.errorList);
+            //     },
+            //     submitHandler: function(form) {
+            //         let formData = new FormData($(task_form)[0]);
+            //         $('#submit').button('loading');
+            //         $.ajax({
+            //                 url: laravel_routes['saveTask'],
+            //                 method: "POST",
+            //                 data: formData,
+            //                 processData: false,
+            //                 contentType: false,
+            //             })
+            //             .done(function(res) {
+            //                 $('#submit').button('reset');
+            //                 if (!res.success) {
+            //                     showErrorNoty(res);
+            //                     return;
+            //                 }
+            //                 custom_noty('success', res.message);
+            //                 $('#task-form-modal').modal('hide');
+            //                 $('body').removeClass('modal-open');
+            //                 $('.modal-backdrop').remove();
+
+            //                 $route.reload();
+
+            //                 //ISSUE : SARAVANAN
+            //                 // if (res.success == true) {
+            //                 //     custom_noty('success', res.message);
+            //                 //     $route.reload();
+            //                 //     $scope.$apply();
+            //                 // } else {
+            //                 //     if (!res.success == true) {
+            //                 //         $('#submit').button('reset');
+            //                 //         var errors = '';
+            //                 //         for (var i in res.errors) {
+            //                 //             errors += '<li>' + res.errors[i] + '</li>';
+            //                 //         }
+            //                 //         custom_noty('error', errors);
+            //                 //     } else {
+            //                 //         $('#submit').button('reset');
+            //                 //         $('#task-form-modal').modal('hide');
+            //                 //         $route.reload();
+            //                 //         $scope.$apply();
+            //                 //     }
+            //                 // }
+            //             })
+            //             .fail(function(xhr) {
+            //                 $('#submit').button('reset');
+            //                 custom_noty('error', 'Something went wrong at server');
+            //             });
+            //     }
+            // });
         }
 
         //DELETE
@@ -222,24 +231,27 @@ app.component('moduleDeveloperWiseTasks', {
             $('#delete_task').modal('show');
             $('#task_id').val($id);
         }
+
         $scope.deleteTaskConfirm = function() {
             id = $('#task_id').val();
-            $http.get(
-                laravel_routes['deleteTask'], {
-                    params: {
-                        id: id,
-                    }
-                }
-            ).then(function(response) {
-                if (response.data.success) {
-                    custom_noty('success', 'Task Deleted Successfully');
-                    $('#delete_task').modal('hide');
-                    $('body').removeClass('modal-open');
-                    $('.modal-backdrop').remove();
-                    $scope.tasks.splice($scope.index, 1);
-                    // $route.reload();
-                }
-            });
+            ProjectPkgHelper.deleteTask(id);
+
+            // $http.get(
+            //     laravel_routes['deleteTask'], {
+            //         params: {
+            //             id: id,
+            //         }
+            //     }
+            // ).then(function(response) {
+            //     if (response.data.success) {
+            //         custom_noty('success', 'Task Deleted Successfully');
+            //         $('#delete_task').modal('hide');
+            //         $('body').removeClass('modal-open');
+            //         $('.modal-backdrop').remove();
+            //         $scope.tasks.splice($scope.index, 1);
+            //         // $route.reload();
+            //     }
+            // });
         }
 
         //DELETE
@@ -521,6 +533,11 @@ app.component('moduleDeveloperWiseTasks', {
         });
         $("input:text:visible:first").focus();
 
+        $scope.saveFilter = function() {
+            $('#filter_value').val(angular.toJson(self.filter));
+            ProjectPkgHelper.saveFilter();
+        }
+
         $rootScope.loading = false;
     }
 });
@@ -529,7 +546,7 @@ app.component('moduleDeveloperWiseTasks', {
 
 app.component('userDateWiseTasks', {
     templateUrl: user_date_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, ProjectPkgHelper, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $mdConstant) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $mdConstant, ProjectPkgHelper) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -828,7 +845,7 @@ app.component('userDateWiseTasks', {
 
 app.component('statusDateWiseTasks', {
     templateUrl: status_date_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, ProjectPkgHelper) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -1026,6 +1043,11 @@ app.component('statusDateWiseTasks', {
                 self.project_version = response.data.project_version;
                 self.task.project_version = self.project_version;
             });
+        }
+
+        $scope.saveFilter = function() {
+            $('#filter_value').val(angular.toJson(self.filter));
+            ProjectPkgHelper.saveFilter();
         }
 
         $rootScope.loading = false;
