@@ -29,6 +29,7 @@ class TaskController extends Controller {
 	}
 
 	public function getModuleDeveloperWiseTasks(Request $request) {
+		$filter_params = $this->getFilterParams($request, 220);
 		$modules = Module::
 			where(function ($query) use ($request) {
 			if ($request->project_version_id) {
@@ -124,14 +125,16 @@ class TaskController extends Controller {
 			;
 
 		}
+		$extras = [];
+		$extras['filter_list'] = Filter::getList(220, false);
+		$extras['project_version_list'] = $project_version_list;
 
 		return response()->json([
 			'success' => true,
 			'modules' => $modules,
 			'project_version' => $project_version,
-			'extras' => [
-				'project_version_list' => $project_version_list,
-			],
+			'extras' => $extras,
+			'filter_id' => $filter_params['filter_id'],
 		]);
 	}
 
@@ -153,14 +156,14 @@ class TaskController extends Controller {
 		];
 
 	}
-	public function getUserDateWiseTasks(Request $request) {
 
+	private function getFilterParams($request, $page_id) {
 		if ($request->filter_id) {
 			$filter = Filter::find($request->filter_id);
 		} else {
 			//GETTING DEFAULT FILTER PRESET OF USER
 			$filter = Filter::where([
-				'page_id' => 221,
+				'page_id' => $page_id,
 				'user_id' => Auth::id(),
 				'is_default' => 1,
 			])
@@ -168,7 +171,7 @@ class TaskController extends Controller {
 			if (!$filter) {
 				//GETTING DEFAULT FILTER PRESET OF PAGE
 				$filter = Filter::where([
-					'page_id' => 221,
+					'page_id' => $page_id,
 				])
 					->whereNull('user_id')
 					->first();
@@ -178,7 +181,15 @@ class TaskController extends Controller {
 		if ($filter) {
 			$filter = json_decode($filter->value);
 		}
+		return [
+			'filter' => $filter,
+			'filter_id' => $filter_id,
+		];
+	}
 
+	public function getUserDateWiseTasks(Request $request) {
+
+		$filter_params = $this->getFilterParams($request, 221);
 		$base_query = Task::with([
 			'module',
 			'module.projectVersion',
@@ -213,9 +224,9 @@ class TaskController extends Controller {
 					$q->where('users.id', Auth::id());
 				}
 			})
-			->where(function ($q) use ($filter) {
-				if (isset($filter->employee_ids)) {
-					$q->whereIn('users.id', $filter->employee_ids);
+			->where(function ($q) use ($filter_params) {
+				if (isset($filter_params['filter']->employee_ids)) {
+					$q->whereIn('users.id', $filter_params['filter']->employee_ids);
 				}
 			})
 			->company()
@@ -254,11 +265,12 @@ class TaskController extends Controller {
 			'users' => $users,
 			'unassigned_tasks' => $unassigned_tasks,
 			'extras' => $extras,
-			'filter_id' => $filter_id,
+			'filter_id' => $filter_params['filter_id'],
 		]);
 	}
 
 	public function getStatusDateWiseTasks(Request $request) {
+		$filter_params = $this->getFilterParams($request, 222);
 		$statuses = Status::with([
 		])
 			->where([
@@ -304,9 +316,13 @@ class TaskController extends Controller {
 		}
 		$all_statuses = collect($this->getAllStatusTasksByDate($dates));
 		$statuses = collect($statuses)->prepend($all_statuses);
+		$extras = [];
+		$extras['filter_list'] = Filter::getList(222, false);
 		return response()->json([
 			'success' => true,
 			'statuses' => $statuses,
+			'extras' => $extras,
+			'filter_id' => $filter_params['filter_id'],
 		]);
 	}
 

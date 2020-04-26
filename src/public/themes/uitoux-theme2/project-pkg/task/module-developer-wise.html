@@ -8,12 +8,8 @@
                         ({{$ctrl.modules.length}} modules)
                     </h1>
                 </div><!-- Page Header Content -->
-                <div class="page-header-content button-block">
-                    <button class="btn btn-bordered" data-toggle="modal" data-target="#project-requirement-filter-modal">
-                        <i class="icon ion-md-funnel"></i>
-                        Filter
-                    </button>
-                </div><!-- Page Header Content -->
+                <filter-btn></filter-btn>
+                <preset-filter-select></preset-filter-select>
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
                 <div class="page-header-content indicator-block">
@@ -236,12 +232,14 @@
 <module-modal-form module="$ctrl.module"></module-modal-form>
 <task-modal-form task="$ctrl.task"></task-modal-form>
 <!-- Filter Modal -->
-<div class="modal fade filter" id="project-filter-modal" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade filter" id="filter-modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
-                <h5 class="modal-title" id="myModalLabel">Filter</h5>
+                <h5 class="modal-title">
+                    Filter
+                </h5>
                 <hr />
                 <div class="row">
                     <div class="col-md-4">

@@ -34,34 +34,41 @@ app.component('moduleDeveloperWiseTasks', {
 
         self.module = {};
         self.task = {};
-        $http.get(
-            laravel_routes['getModuleDeveloperWiseTasks'], {
-                params: {
-                    project_version_id: typeof($routeParams.project_version_id) == 'undefined' ? null : $routeParams.project_version_id,
-                }
-            }
-        ).then(function(response) {
-            if (!response.data.success) {
-                showErrorNoty(response.data);
-                return;
-            }
-            self.modules = response.data.modules;
-            self.project_version_list = response.data.extras.project_version_list;
-            self.project_version = response.data.project_version;
-            for (var i in self.modules) {
-                for (var j in self.modules[i].developers) {
-                    self.modules[i].developers[j].total_estimated_hour = 0;
-                    self.modules[i].developers[j].total_actual_hour = 0;
-                    for (var k in self.modules[i].developers[j].tasks) {
-                        self.modules[i].developers[j].total_estimated_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].estimated_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].estimated_hours) : 0);
-                        self.modules[i].developers[j].total_actual_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].actual_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].actual_hours) : 0);
+
+        $scope.fetchData = function() {
+            $http.get(
+                laravel_routes['getModuleDeveloperWiseTasks'], {
+                    params: {
+                        project_version_id: typeof($routeParams.project_version_id) == 'undefined' ? null : $routeParams.project_version_id,
                     }
                 }
-            }
+            ).then(function(response) {
+                if (!response.data.success) {
+                    showErrorNoty(response.data);
+                    return;
+                }
+                self.modules = response.data.modules;
+                self.project_version_list = response.data.extras.project_version_list;
+                self.project_version = response.data.project_version;
+                self.extras = response.data.extras;
+                self.filter_id = response.data.filter_id;
 
-            $scope.hide_empty_panels = true;
-            $scope.toggleEmptyPanels();
-        });
+                for (var i in self.modules) {
+                    for (var j in self.modules[i].developers) {
+                        self.modules[i].developers[j].total_estimated_hour = 0;
+                        self.modules[i].developers[j].total_actual_hour = 0;
+                        for (var k in self.modules[i].developers[j].tasks) {
+                            self.modules[i].developers[j].total_estimated_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].estimated_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].estimated_hours) : 0);
+                            self.modules[i].developers[j].total_actual_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].actual_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].actual_hours) : 0);
+                        }
+                    }
+                }
+                $scope.toggleEmptyPanels();
+            });
+        }
+        $scope.hide_empty_panels = true;
+        $scope.fetchData();
+
 
         $scope.showModuleForm = function(module) {
             $('#module-form-modal').modal('show');
@@ -899,6 +906,8 @@ app.component('statusDateWiseTasks', {
                 return;
             }
             self.statuses = response.data.statuses;
+            self.extras = response.data.extras;
+            self.filter_id = response.data.filter_id;
         });
 
         $http.get(
