@@ -125,22 +125,53 @@ class TaskController extends Controller {
 			;
 
 		}
-		$extras = [];
-		$extras['filter_list'] = Filter::getList(220, false);
-		$extras['project_version_list'] = $project_version_list;
+		$extras = [
+			'filter_list' => Filter::getList(220, false),
+			'project_version_list' => $project_version_list,
+			'filter_id' => $filter_params['filter_id'],
+		];
 
 		return response()->json([
 			'success' => true,
 			'modules' => $modules,
 			'project_version' => $project_version,
 			'extras' => $extras,
-			'filter_id' => $filter_params['filter_id'],
 		]);
 	}
 
 	//todo : need to move this function to date helper
 	private function getDateRange($date) {
+		$day = date('D', strtotime($date));
+		if ($day == 'Mon' || $day == 'Tue') {
+			$date = date('Y-m-d', strtotime($date . ' -3 days'));
+		} else {
+			$date = date('Y-m-d', strtotime($date . ' -2 days'));
+		}
+
+		$dates = [];
+		for ($i = 1; $i <= 5; $i++) {
+			$day = date('D', strtotime($date));
+			if ($day == 'Sun') {
+				$dates[] = [
+					'date' => date('Y-m-d', strtotime($date . ' +1 days')),
+					'date_label' => date('d D', strtotime($date . ' +1 days')),
+				];
+				$date = date('Y-m-d', strtotime($date . ' +2 days'));
+			} else {
+				$dates[] = [
+					'date' => date('Y-m-d', strtotime($date)),
+					'date_label' => date('d D', strtotime($date)),
+				];
+				$date = date('Y-m-d', strtotime($date . ' +1 days'));
+			}
+
+		}
+		return $dates;
 		return $dates = [
+			[
+				'date' => date('Y-m-d', strtotime($date . ' -2 days')),
+				'date_label' => date('d D', strtotime($date . ' -2 days')),
+			],
 			[
 				'date' => date('Y-m-d', strtotime($date . ' -1 days')),
 				'date_label' => date('d D', strtotime($date . ' -1 days')),
@@ -152,6 +183,10 @@ class TaskController extends Controller {
 			[
 				'date' => date('Y-m-d', strtotime($date . ' +1 days')),
 				'date_label' => date('d D', strtotime($date . ' +1 days')),
+			],
+			[
+				'date' => date('Y-m-d', strtotime($date . ' +2 days')),
+				'date_label' => date('d D', strtotime($date . ' +2 days')),
 			],
 		];
 
@@ -233,7 +268,6 @@ class TaskController extends Controller {
 			->orderBy('first_name')
 			->get();
 
-		// $request->date = '2020-04-10';
 		$date = $request->date ? date('Y-m-d', strtotime($request->date)) : $date = date('Y-m-d');
 		$date_ranges = $this->getDateRange($date);
 
@@ -258,14 +292,16 @@ class TaskController extends Controller {
 				->get();
 		}
 
-		$extras = [];
-		$extras['filter_list'] = Filter::getList(221, false);
+		$extras = [
+			'filter_list' => Filter::getList(221, false),
+			'filter_id' => $filter_params['filter_id'],
+		];
+
 		return response()->json([
 			'success' => true,
 			'users' => $users,
 			'unassigned_tasks' => $unassigned_tasks,
 			'extras' => $extras,
-			'filter_id' => $filter_params['filter_id'],
 		]);
 	}
 
@@ -288,24 +324,12 @@ class TaskController extends Controller {
 			$date_label = date('d D');
 		}
 
-		$dates = [
-			[
-				'date' => date('Y-m-d', strtotime($date . ' -1 days')),
-				'date_label' => date('d D', strtotime($date . ' -1 days')),
-			],
-			[
-				'date' => date('Y-m-d', strtotime($date)),
-				'date_label' => date('d D', strtotime($date)),
-			],
-			[
-				'date' => date('Y-m-d', strtotime($date . ' +1 days')),
-				'date_label' => date('d D', strtotime($date . ' +1 days')),
-			],
-		];
+		$date = $request->date ? date('Y-m-d', strtotime($request->date)) : $date = date('Y-m-d');
+		$date_ranges = $this->getDateRange($date);
 
 		foreach ($statuses as $status) {
 			$dates_wise = [];
-			foreach ($dates as $key => $date) {
+			foreach ($date_ranges as $key => $date) {
 				$dates_wise[$key]['date'] = $date['date'];
 				$dates_wise[$key]['date_label'] = $date['date_label'];
 				$dates_wise[$key]['tasks'] = $this->getTasksByStatusDate($date['date'], $status->id, false, false);
@@ -316,13 +340,15 @@ class TaskController extends Controller {
 		}
 		$all_statuses = collect($this->getAllStatusTasksByDate($dates));
 		$statuses = collect($statuses)->prepend($all_statuses);
-		$extras = [];
-		$extras['filter_list'] = Filter::getList(222, false);
+		$extras = [
+			'filter_list' => Filter::getList(222, false),
+			'project_version_list' => $project_version_list,
+			'filter_id' => $filter_params['filter_id'],
+		];
 		return response()->json([
 			'success' => true,
 			'statuses' => $statuses,
 			'extras' => $extras,
-			'filter_id' => $filter_params['filter_id'],
 		]);
 	}
 
