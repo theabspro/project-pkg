@@ -240,30 +240,6 @@
                 <h5 class="modal-title">
                     Filter
                 </h5>
-                <hr />
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Filter Presets</label>
-                        </div><!-- Field -->
-                    </div><!-- Column -->
-                    <form id="new-preset-form">
-                        <input type="hidden" name="user_id" value="{{user_id}}">
-                        <input type="hidden" name="page_id" value="220">
-                        <input type="hidden" name="value" id="filter_value" value="">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Filter Preset Name</label>
-                                <input type="text" class="form-control" name="name" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-rose" ng-click1="reset_filter()">
-                                Save Filter Preset
-                            </button>
-                        </div>
-                    </form>
-                </div>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
@@ -283,8 +259,11 @@
                                 </ui-select>
                             </div><!-- Field -->
                         </div><!-- Column -->
+                        <preset-filter-form></preset-filter-form>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">Reset Filter</button>
+                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">
+                                Reset Filter
+                            </button>
                         </div>
                     </div><!-- Row -->
                 </div><!-- Modal Form -->

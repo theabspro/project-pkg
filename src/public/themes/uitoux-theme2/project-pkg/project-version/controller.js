@@ -11,22 +11,29 @@ app.component('projectVersionCardList', {
         }
         self.add_permission = self.hasPermission('add-project-version');
         self.theme = theme;
+
+        $scope.page_id = 223;
+
         $scope.project_version_modal_form_template_url = project_version_modal_form_template_url;
 
-        $http.get(
-            laravel_routes['getProjectVersions'], {
-                params: {
-                    // id: $id,
+        $scope.fetchData = function() {
+            $http.get(
+                laravel_routes['getProjectVersions'], {
+                    params: {
+                        filter_id: self.extras.filter_id,
+                    }
                 }
-            }
-        ).then(function(response) {
-            console.log(response.data);
-            if (!response.data.success) {
-                showErrorNoty(response.data);
-                return;
-            }
-            self.project_versions = response.data.project_versions;
-        });
+            ).then(function(response) {
+                console.log(response.data);
+                if (!response.data.success) {
+                    showErrorNoty(response.data);
+                    return;
+                }
+                self.project_versions = response.data.project_versions;
+                self.extras = response.data.extras;
+            });
+        }
+        $scope.fetchData();
 
         $scope.viewProjectVersion = function(project_version) {
             $location.path('/project-pkg/task/module-developer-wise/' + project_version.id);

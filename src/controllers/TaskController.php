@@ -29,7 +29,7 @@ class TaskController extends Controller {
 	}
 
 	public function getModuleDeveloperWiseTasks(Request $request) {
-		$filter_params = $this->getFilterParams($request, 220);
+		$filter_params = Filter::getFilterParams($request, 220);
 		$modules = Module::
 			where(function ($query) use ($request) {
 			if ($request->project_version_id) {
@@ -141,30 +141,29 @@ class TaskController extends Controller {
 
 	//todo : need to move this function to date helper
 	private function getDateRange($date) {
-		$day = date('D', strtotime($date));
-		if ($day == 'Mon' || $day == 'Tue') {
-			$date = date('Y-m-d', strtotime($date . ' -3 days'));
-		} else {
-			$date = date('Y-m-d', strtotime($date . ' -2 days'));
-		}
+		// $day = date('D', strtotime($date));
+		// if ($day == 'Mon' || $day == 'Tue') {
+		// 	$date = date('Y-m-d', strtotime($date . ' -3 days'));
+		// } else {
+		$date = date('Y-m-d', strtotime($date . ' -2 days'));
+		// }
 
 		$dates = [];
 		for ($i = 1; $i <= 5; $i++) {
-			$day = date('D', strtotime($date));
-			if ($day == 'Sun') {
-				$dates[] = [
-					'date' => date('Y-m-d', strtotime($date . ' +1 days')),
-					'date_label' => date('d D', strtotime($date . ' +1 days')),
-				];
-				$date = date('Y-m-d', strtotime($date . ' +2 days'));
-			} else {
-				$dates[] = [
-					'date' => date('Y-m-d', strtotime($date)),
-					'date_label' => date('d D', strtotime($date)),
-				];
-				$date = date('Y-m-d', strtotime($date . ' +1 days'));
-			}
-
+			// $day = date('D', strtotime($date));
+			// if ($day == 'Sun') {
+			// 	$dates[] = [
+			// 		'date' => date('Y-m-d', strtotime($date . ' +1 days')),
+			// 		'date_label' => date('d D', strtotime($date . ' +1 days')),
+			// 	];
+			// 	$date = date('Y-m-d', strtotime($date . ' +2 days'));
+			// } else {
+			$dates[] = [
+				'date' => date('Y-m-d', strtotime($date)),
+				'date_label' => date('d D', strtotime($date)),
+			];
+			$date = date('Y-m-d', strtotime($date . ' +1 days'));
+			// }
 		}
 		return $dates;
 		return $dates = [
@@ -192,39 +191,9 @@ class TaskController extends Controller {
 
 	}
 
-	private function getFilterParams($request, $page_id) {
-		if ($request->filter_id) {
-			$filter = Filter::find($request->filter_id);
-		} else {
-			//GETTING DEFAULT FILTER PRESET OF USER
-			$filter = Filter::where([
-				'page_id' => $page_id,
-				'user_id' => Auth::id(),
-				'is_default' => 1,
-			])
-				->first();
-			if (!$filter) {
-				//GETTING DEFAULT FILTER PRESET OF PAGE
-				$filter = Filter::where([
-					'page_id' => $page_id,
-				])
-					->whereNull('user_id')
-					->first();
-			}
-		}
-		$filter_id = $filter->id;
-		if ($filter) {
-			$filter = json_decode($filter->value);
-		}
-		return [
-			'filter' => $filter,
-			'filter_id' => $filter_id,
-		];
-	}
-
 	public function getUserDateWiseTasks(Request $request) {
 
-		$filter_params = $this->getFilterParams($request, 221);
+		$filter_params = Filter::getFilterParams($request, 221);
 		$base_query = Task::with([
 			'module',
 			'module.projectVersion',
@@ -306,7 +275,7 @@ class TaskController extends Controller {
 	}
 
 	public function getStatusDateWiseTasks(Request $request) {
-		$filter_params = $this->getFilterParams($request, 222);
+		$filter_params = Filter::getFilterParams($request, 222);
 		$statuses = Status::with([
 		])
 			->where([
@@ -338,11 +307,11 @@ class TaskController extends Controller {
 
 			$status->unplanned_tasks = $this->getTasksByStatusDate(null, $status->id, false, true);
 		}
-		$all_statuses = collect($this->getAllStatusTasksByDate($dates));
+		$all_statuses = collect($this->getAllStatusTasksByDate($date_ranges));
 		$statuses = collect($statuses)->prepend($all_statuses);
 		$extras = [
 			'filter_list' => Filter::getList(222, false),
-			'project_version_list' => $project_version_list,
+			// 'project_version_list' => $project_version_list,
 			'filter_id' => $filter_params['filter_id'],
 		];
 		return response()->json([

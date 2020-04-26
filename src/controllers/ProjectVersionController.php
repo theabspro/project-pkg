@@ -23,6 +23,7 @@ class ProjectVersionController extends Controller {
 	}
 
 	public function getProjectVersions(Request $r) {
+		$filter_params = Filter::getFilterParams($request, 223);
 		$project_versions = ProjectVersion::with([
 			'status',
 			'project',
@@ -48,9 +49,16 @@ class ProjectVersionController extends Controller {
 			->orderBy('project_versions.display_order')
 			->orderBy('p.short_name')
 			->get();
+
+		$extras = [
+			'filter_list' => Filter::getList(223, false),
+			'filter_id' => $filter_params['filter_id'],
+		];
+
 		return response()->json([
 			'success' => true,
 			'project_versions' => $project_versions,
+			'extras' => $extras,
 		]);
 	}
 

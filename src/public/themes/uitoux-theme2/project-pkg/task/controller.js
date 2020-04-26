@@ -14,9 +14,12 @@ app.component('moduleDeveloperWiseTasks', {
 
 
         self.filter = {};
+        self.extras = {};
         self.add_permission = self.hasPermission('add-task');
         self.delete_task_permission = self.hasPermission('delete-task');
         self.delete_module_permission = self.hasPermission('delete-module');
+
+        $scope.page_id = 220;
 
         $scope.module_modal_form_template_url = module_modal_form_template_url;
         $scope.task_modal_form_template_url = task_modal_form_template_url;
@@ -40,6 +43,7 @@ app.component('moduleDeveloperWiseTasks', {
                 laravel_routes['getModuleDeveloperWiseTasks'], {
                     params: {
                         project_version_id: typeof($routeParams.project_version_id) == 'undefined' ? null : $routeParams.project_version_id,
+                        filter_id: self.extras.filter_id,
                     }
                 }
             ).then(function(response) {
@@ -51,7 +55,6 @@ app.component('moduleDeveloperWiseTasks', {
                 self.project_version_list = response.data.extras.project_version_list;
                 self.project_version = response.data.project_version;
                 self.extras = response.data.extras;
-                self.filter_id = response.data.filter_id;
 
                 for (var i in self.modules) {
                     for (var j in self.modules[i].developers) {
@@ -539,16 +542,13 @@ app.component('userDateWiseTasks', {
         self.delete_task_permission = self.hasPermission('delete-task');
         self.theme = theme;
         $scope.user_id = user_id;
-
-        //-------------------------------------------------------------------------------------------------------------------
-        //-------------------------------------------------------------------------------------------------------------------
-
-        //-------------------------------------------------------------------------------------------------------------------
-        //-------------------------------------------------------------------------------------------------------------------
         $scope.task_modal_form_template_url = task_modal_form_template_url;
         $scope.task_card_list_template_url = task_card_list_template_url;
 
-        $scope.filter = [];
+        $scope.page_id = 221;
+
+        $scope.filter = {};
+        self.extras = {};
 
         self.show_module = true;
         self.show_assigned_to = true;
@@ -561,7 +561,7 @@ app.component('userDateWiseTasks', {
             $http.get(
                 laravel_routes['getUserDateWiseTasks'], {
                     params: {
-                        filter_id: self.filter_id,
+                        filter_id: self.extras.filter_id,
                     }
                 }
             ).then(function(response) {
@@ -572,7 +572,6 @@ app.component('userDateWiseTasks', {
                 self.users = response.data.users;
                 $scope.unassigned_tasks = self.unassigned_tasks = response.data.unassigned_tasks;
                 self.extras = response.data.extras;
-                self.filter_id = response.data.filter_id;
 
                 // console.log(self.unassigned_tasks);
                 for (var i in self.users) {
@@ -891,24 +890,30 @@ app.component('statusDateWiseTasks', {
         self.add_permission = self.hasPermission('add-task');
         self.theme = theme;
 
+        $scope.page_id = 222;
+        self.extras = {};
+
         $scope.task_modal_form_template_url = task_modal_form_template_url;
         $scope.task_card_list_template_url = task_card_list_template_url;
 
-        $http.get(
-            laravel_routes['getStatusDateWiseTasks'], {
-                params: {
-                    // id: $id,
+        $scope.fetchData = function() {
+            $http.get(
+                laravel_routes['getStatusDateWiseTasks'], {
+                    params: {
+                        filter_id: self.extras.filter_id,
+                    }
                 }
-            }
-        ).then(function(response) {
-            if (!response.data.success) {
-                showErrorNoty(response.data);
-                return;
-            }
-            self.statuses = response.data.statuses;
-            self.extras = response.data.extras;
-            self.filter_id = response.data.filter_id;
-        });
+            ).then(function(response) {
+                if (!response.data.success) {
+                    showErrorNoty(response.data);
+                    return;
+                }
+                self.statuses = response.data.statuses;
+                self.extras = response.data.extras;
+            });
+        }
+
+        $scope.fetchData();
 
         $http.get(
             laravel_routes['getTaskFormData']

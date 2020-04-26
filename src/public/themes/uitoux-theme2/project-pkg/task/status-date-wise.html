@@ -7,20 +7,10 @@
                         Tasks (Status & Date Wise)
                     </h1>
                 </div><!-- Page Header Content -->
-                <div class="page-header-content button-block">
-                    <button class="btn btn-bordered" data-toggle="modal" data-target="#task-filter-modal">
-                        <i class="icon ion-md-funnel"></i>
-                        Filter
-                    </button>
-                </div><!-- Page Header Content -->
+                <filter-btn></filter-btn>
+                <preset-filter-select></preset-filter-select>
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
-                <div class="page-header-content indicator-block">
-                    <ul class="indicator-list">
-                        <li class="green">Active</li>
-                        <li class="red">Inactive</li>
-                    </ul>
-                </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
                     <a href="javascript:;" ng-click="showTaskForm({}, 0, $event)" class="btn btn-primary">
                         Add Task
@@ -109,37 +99,16 @@
 </div><!-- Content Wrap -->
 <task-modal-form task="$ctrl.task"></task-modal-form>
 <!-- Filter Modal -->
-<div class="modal fade filter" id="task-filter-modal" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade filter" id="filter-modal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close"><i class="icon ion-md-close"></i></button>
-                <h5 class="modal-title" id="myModalLabel">Task Filter</h5>
-                <hr />
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Filter Presets</label>
-                            <!-- <md-select ng-model="">
-                                <md-select-label>Select a Member</md-select-label>
-                                <md-option ng-value="opt" ng-repeat="opt in options">
-                                    {{ opt }}
-                                </md-option>
-                            </md-select> -->
-                        </div><!-- Field -->
-                    </div><!-- Column -->
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Filter Preset Name</label>
-                            <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Project Name" autocomplete="off">
-                        </div><!-- Field -->
-                    </div><!-- Column -->
-                    <div class="col-md-4">
-                        <button type="button" class="btn btn-rose" ng-click="reset_filter()">
-                            Save New Preset Filter
-                        </button>
-                    </div>
-                </div>
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="icon ion-md-close"></i>
+                </button>
+                <h5 class="modal-title">
+                    Filter
+                </h5>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
@@ -188,6 +157,7 @@
                                 </md-select> -->
                             </div><!-- Field -->
                         </div><!-- Column -->
+                        <preset-filter-form></preset-filter-form>
                         <div class="col-md-6">
                             <button type="button" class="btn btn-rose" ng-click="reset_filter()">
                                 Reset Filter

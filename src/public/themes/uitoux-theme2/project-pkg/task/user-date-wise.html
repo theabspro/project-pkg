@@ -11,12 +11,6 @@
                 <preset-filter-select></preset-filter-select>
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
-                <div class="page-header-content indicator-block">
-                    <ul class="indicator-list">
-                        <li class="green">Active</li>
-                        <li class="red">Inactive</li>
-                    </ul>
-                </div><!-- Page Header Content -->
                 <div class="page-header-content button-block">
                     <a href="javascript:;" ng-click="showTaskForm({},0, $event)" class="btn btn-primary">
                         Add Task
@@ -213,32 +207,9 @@
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
                     <i class="glyphicon glyphicon-remove"></i>
                 </button>
-                <h5 class="modal-title" id="myModalLabel">Filter</h5>
-                <hr />
-                <div class="row">
-                    <form id="new-preset-form">
-                        <input type="hidden" name="user_id" value="{{user_id}}">
-                        <input type="hidden" name="page_id" value="221">
-                        <input type="hidden" name="value" id="filter_value" value="{{angular.toJson($ctrl.filter)}}">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Filter Preset Name</label>
-                                <input type="text" class="form-control" name="name" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Make as my default filter</label>
-                                <input type="checkbox" class="form-control" name="is_default" value="1" autocomplete="off">
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-rose" ng-click="saveFilter()">
-                                Save Filter Preset
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                <h5 class="modal-title">
+                    Filter
+                </h5>
             </div><!-- Modal Header -->
             <div class="modal-body">
                 <div class="modal-form">
@@ -277,6 +248,7 @@
                                 <input type="hidden" name="status_ids" value="{{$ctrl.filter.status_ids}}">
                             </div><!-- Field -->
                         </div><!-- Column -->
+                        <preset-filter-form></preset-filter-form>
                         <div class="col-md-6">
                             <button type="button" class="btn btn-rose" ng-click="reset_filter()">
                                 Reset Filter
