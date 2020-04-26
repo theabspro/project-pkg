@@ -1,4 +1,4 @@
-app.factory("ProjectPkgHelper", function() {
+app.factory("ProjectPkgHelper", function($http, $q) {
     return {
         saveFilter: function() {
             var new_preset_form = '#new-preset-form';
@@ -48,6 +48,8 @@ app.factory("ProjectPkgHelper", function() {
         },
 
         saveTask: function() {
+            var defer = $q.defer();
+
             var task_form = '#task_form';
             var v = jQuery(task_form).validate({
                 ignore: '',
@@ -89,6 +91,7 @@ app.factory("ProjectPkgHelper", function() {
                 submitHandler: function(form) {
                     let formData = new FormData($(task_form)[0]);
                     $('#submit').button('loading');
+
                     $.ajax({
                             url: laravel_routes['saveTask'],
                             method: "POST",
@@ -106,8 +109,8 @@ app.factory("ProjectPkgHelper", function() {
                             $('#task-form-modal').modal('hide');
                             $('body').removeClass('modal-open');
                             $('.modal-backdrop').remove();
+                            defer.resolve(res);
 
-                            $route.reload();
 
                             //ISSUE : SARAVANAN
                             // if (res.success == true) {
@@ -136,9 +139,12 @@ app.factory("ProjectPkgHelper", function() {
                         });
                 }
             });
+            return defer.promise;
+
         },
 
         deleteTask: function(id) {
+            alert(id)
             return $http.get(
                 laravel_routes['deleteTask'], {
                     params: {
@@ -152,7 +158,6 @@ app.factory("ProjectPkgHelper", function() {
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                     $scope.tasks.splice($scope.index, 1);
-                    // $route.reload();
                 }
             });
 

@@ -125,12 +125,8 @@ app.component('moduleDeveloperWiseTasks', {
         //SAVE TASK
         $scope.saveTask = function() {
             ProjectPkgHelper.saveTask().then(function(res) {
-                console.log(res.data);
-                if (!res.data.success) {
-                    custom_noty('error', res.data.error);
-                    return;
-                }
-                self.jv.from_account = res.data.vendor
+                console.log(res);
+                $scope.fetchData();
             });
             //issue : ramakrishnan : repeated code : not reusable and maintanable
             // var task_form = '#task_form';
@@ -234,7 +230,10 @@ app.component('moduleDeveloperWiseTasks', {
 
         $scope.deleteTaskConfirm = function() {
             id = $('#task_id').val();
-            ProjectPkgHelper.deleteTask(id);
+            ProjectPkgHelper.deleteTask(id).then(function(res) {
+                console.log(res);
+                $scope.tasks.splice($scope.index, 1);
+            });;
 
             // $http.get(
             //     laravel_routes['deleteTask'], {
