@@ -153,6 +153,7 @@ class TaskController extends Controller {
 
 		if ($request->filter_id) {
 			$filter = Filter::find($request->filter_id);
+			$filter_id = $filter->id;
 			if ($filter) {
 				$filter = json_decode($filter->value);
 			}
@@ -162,6 +163,7 @@ class TaskController extends Controller {
 			])
 				->whereNull('user_id')
 				->first();
+			$filter_id = $filter->id;
 			if ($filter) {
 				$filter = json_decode($filter->value);
 			}
@@ -241,6 +243,7 @@ class TaskController extends Controller {
 			'users' => $users,
 			'unassigned_tasks' => $unassigned_tasks,
 			'extras' => $extras,
+			'filter_id' => $filter_id,
 		]);
 	}
 

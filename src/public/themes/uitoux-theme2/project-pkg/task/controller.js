@@ -565,6 +565,8 @@ app.component('userDateWiseTasks', {
                 self.users = response.data.users;
                 $scope.unassigned_tasks = self.unassigned_tasks = response.data.unassigned_tasks;
                 self.extras = response.data.extras;
+                self.filter_id = response.data.filter_id;
+
                 // console.log(self.unassigned_tasks);
                 for (var i in self.users) {
                     for (var j in self.users[i].dates) {
@@ -579,6 +581,7 @@ app.component('userDateWiseTasks', {
 
             });
         }
+        $scope.fetchData();
 
         $http.get(
             laravel_routes['getTaskFormData']
