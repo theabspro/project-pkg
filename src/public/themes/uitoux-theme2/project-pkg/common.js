@@ -156,7 +156,6 @@ app.factory("ProjectPkgHelper", function($http, $q) {
                     $('#delete_task').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
-                    $scope.tasks.splice($scope.index, 1);
                 }
             });
 
