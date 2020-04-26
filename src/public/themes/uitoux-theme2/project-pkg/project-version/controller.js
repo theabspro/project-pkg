@@ -13,6 +13,7 @@ app.component('projectVersionCardList', {
         self.theme = theme;
 
         $scope.page_id = 223;
+        self.extras = {};
 
         $scope.project_version_modal_form_template_url = project_version_modal_form_template_url;
 

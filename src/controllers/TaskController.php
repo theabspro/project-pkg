@@ -58,7 +58,7 @@ class TaskController extends Controller {
 			$project_version->tl = $project_version->members()->where('type_id', 180)->where('role_id', 201)->first();
 			$project_version->pm = $project_version->members()->where('type_id', 180)->where('role_id', 200)->first();
 			$project_version->qa = $project_version->members()->where('type_id', 180)->where('role_id', 204)->first();
-			$project_version_list = Collect(ProjectVersion::select('id', 'number as name')->where('project_id', $project_version->id)->get())->prepend(['id' => '', 'name' => 'Select Project Version']);
+			$project_version_list = ProjectVersion::getList($project_version);
 		} else {
 			$project_version = null;
 			$project_version_list = null;

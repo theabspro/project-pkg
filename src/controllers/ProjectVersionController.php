@@ -4,6 +4,7 @@ namespace Abs\ProjectPkg;
 use App\Attachment;
 use App\Config;
 use App\Document;
+use App\Filter;
 use App\Http\Controllers\Controller;
 use App\Status;
 use App\User;
@@ -23,7 +24,7 @@ class ProjectVersionController extends Controller {
 	}
 
 	public function getProjectVersions(Request $r) {
-		$filter_params = Filter::getFilterParams($request, 223);
+		$filter_params = Filter::getFilterParams($r, 223);
 		$project_versions = ProjectVersion::with([
 			'status',
 			'project',
@@ -53,6 +54,7 @@ class ProjectVersionController extends Controller {
 		$extras = [
 			'filter_list' => Filter::getList(223, false),
 			'filter_id' => $filter_params['filter_id'],
+			'project_version_list' => ProjectVersion::getList(null),
 		];
 
 		return response()->json([

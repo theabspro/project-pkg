@@ -5,6 +5,7 @@ namespace Abs\ProjectPkg;
 use Abs\BasicPkg\Config;
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -104,5 +105,23 @@ class ProjectVersion extends Model {
 		$record->created_by_id = $admin->id;
 		$record->save();
 		return $record;
+	}
+
+	public static function getList($project_version, $add_default = true, $default_text = 'Select Project Requirement') {
+		$list = Self::select([
+			'project_versions.id',
+			DB::raw('CONCAT(p.short_name,"-",number) as name'),
+		])
+			->join('projects as p', 'p.id', 'project_versions.project_id')
+		;
+		if ($project_version) {
+			$list->where('project_id', $project_version->id);
+		}
+
+		$list = Collect($list->get());
+		if ($add_default) {
+			$list->prepend(['id' => '', 'name' => $default_text]);
+		}
+		return $list;
 	}
 }
