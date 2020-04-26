@@ -141,6 +141,22 @@
             <div class="modal-body">
                 <div class="modal-form">
                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="separate-form-group">
+                                <label>
+                                    Requirements
+                                </label>
+                                <ui-select multiple ng-model="$ctrl.filter.requirement_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                    <ui-select-match placeholder="Select">
+                                        {{$item.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="requirement.id as requirement in $ctrl.extras.requirement_list | propsFilter: {name: $select.search}">
+                                        <span ng-bind-html="requirement.name | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="hidden" name="requirement_ids" value="{{$ctrl.filter.requirement_ids}}">
+                            </div><!-- Field -->
+                        </div><!-- Column -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Project Code</label>

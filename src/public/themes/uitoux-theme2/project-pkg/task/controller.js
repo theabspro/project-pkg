@@ -529,7 +529,7 @@ app.component('moduleDeveloperWiseTasks', {
 
 app.component('userDateWiseTasks', {
     templateUrl: user_date_wise_tasks_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $mdConstant) {
+    controller: function($http, $location, HelperService, ProjectPkgHelper, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $mdConstant) {
         $scope.loading = true;
         var self = this;
         $('#search_task').focus();
@@ -814,58 +814,8 @@ app.component('userDateWiseTasks', {
         }
 
         $scope.saveFilter = function() {
-
-            $('#filter_value').val(angular.toJson($scope.filter));
-            var new_preset_form = '#new-preset-form';
-
-            var v = jQuery(new_preset_form).validate({
-                ignore: '',
-                rules: {
-                    'user_id': {
-                        required: true,
-                        number: true,
-                    },
-                    'page_id': {
-                        required: true,
-                        number: true,
-                    },
-                    'name': {
-                        required: true,
-                    },
-                    'value': {
-                        // required: true,
-                    },
-                },
-                invalidHandler: function(event, validator) {
-                    console.log(validator.errorList);
-                },
-                submitHandler: function(form) {
-                    self.filter_value = angular.toJson(self.filter);
-                    $('#filter_value').val(angular.toJson(self.filter));
-                    let formData = new FormData($(new_preset_form)[0]);
-                    $('#submit').button('loading');
-                    $.ajax({
-                            url: laravel_routes['saveFilterPreset'],
-                            method: "POST",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .done(function(res) {
-                            $('#submit').button('reset');
-                            if (!res.success) {
-                                showErrorNoty(res);
-                                return;
-                            }
-                            custom_noty('success', res.message);
-                            $('#task-user-date-filter-modal').modal('hide');
-                        })
-                        .fail(function(xhr) {
-                            $('#submit').button('reset');
-                            custom_noty('error', 'Something went wrong at server');
-                        });
-                }
-            });
+            $('#filter_value').val(angular.toJson(self.filter));
+            ProjectPkgHelper.saveFilter();
         }
 
         $("input:text:visible:first").focus();

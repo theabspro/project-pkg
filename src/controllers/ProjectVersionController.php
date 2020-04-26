@@ -42,6 +42,13 @@ class ProjectVersionController extends Controller {
 					;
 				}
 			})
+			->where(function ($q) use ($filter_params) {
+				if ($filter_params['filter']->requirement_ids) {
+					$q
+						->whereIn('project_versions.id', $filter_params['filter']->requirement_ids)
+					;
+				}
+			})
 			->select([
 				'project_versions.*',
 			])
@@ -54,7 +61,7 @@ class ProjectVersionController extends Controller {
 		$extras = [
 			'filter_list' => Filter::getList(223, false),
 			'filter_id' => $filter_params['filter_id'],
-			'project_version_list' => ProjectVersion::getList(null),
+			'requirement_list' => ProjectVersion::getList(null),
 		];
 
 		return response()->json([

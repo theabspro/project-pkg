@@ -1,6 +1,6 @@
 app.component('projectVersionCardList', {
     templateUrl: project_version_card_list_template_url,
-    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $timeout) {
+    controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $timeout, ProjectPkgHelper) {
         $scope.loading = true;
         var self = this;
         $('#search_project_version').focus();
@@ -156,6 +156,12 @@ app.component('projectVersionCardList', {
                         });
                 }
             });
+        }
+
+
+        $scope.saveFilter = function() {
+            $('#filter_value').val(angular.toJson(self.filter));
+            ProjectPkgHelper.saveFilter();
         }
 
         $rootScope.loading = false;
