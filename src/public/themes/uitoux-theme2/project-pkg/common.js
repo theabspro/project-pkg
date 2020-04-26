@@ -144,7 +144,6 @@ app.factory("ProjectPkgHelper", function($http, $q) {
         },
 
         deleteTask: function(id) {
-            alert(id)
             return $http.get(
                 laravel_routes['deleteTask'], {
                     params: {
