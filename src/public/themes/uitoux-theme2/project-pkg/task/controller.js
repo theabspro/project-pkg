@@ -590,6 +590,7 @@ app.component('userDateWiseTasks', {
             self.users_list = response.data.users_list;
             self.project_list = response.data.project_list;
             self.task_type_list = response.data.task_type_list;
+            self.platform_list = response.data.platform_list;
             self.task_status_list = response.data.task_status_list;
             self.module_status_list = response.data.module_status_list;
             self.project_version_list = [];
