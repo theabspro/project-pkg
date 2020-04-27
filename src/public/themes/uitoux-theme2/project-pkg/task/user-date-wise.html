@@ -126,12 +126,11 @@
                                             <span class="glyphicon glyphicon-calendar" aria-hidden="true">
                                             </span>
                                             {{date_val.date_label}}
+                                            <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
+                                            <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                             <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showTaskForm({},0,$event)" class="pull-right">
                                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                             </a>
-                                            <br />
-                                            <span class="badge"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>1</span>
-                                            <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                         </h3>
                                     </div>
                                     <ng-include src="task_card_list_template_url" ng-init="tasks = date_val.tasks;date = date_val.date;assigned_to_id = user.id;status_id='';module_id=''"></ng-include>
