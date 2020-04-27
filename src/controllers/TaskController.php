@@ -29,11 +29,15 @@ class TaskController extends Controller {
 	}
 
 	public function getModuleDeveloperWiseTasks(Request $request) {
+		//dd($request->all());
 		$filter_params = Filter::getFilterParams($request, 220);
 		$modules = Module::
 			where(function ($query) use ($request) {
 			if ($request->project_version_id) {
 				$query->where('modules.project_version_id', $request->project_version_id);
+			}
+			if (!empty($request->search_key)) {
+				$query->where('modules.name','Like','%'.$request->search_key.'%');
 			}
 		})
 			->with([

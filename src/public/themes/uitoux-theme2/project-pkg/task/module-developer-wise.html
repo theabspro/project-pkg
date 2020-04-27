@@ -10,6 +10,14 @@
                 </div><!-- Page Header Content -->
                 <filter-btn></filter-btn>
                 <preset-filter-select></preset-filter-select>
+                <div class="page-header-content search-block">
+                    <div class="search_filter">
+                        <label>
+                            <input type="search" id="search_project_version1" class="form-control" placeholder="Search" ng-keyup="searchKey($event)" ng-model="search_project_version" />
+                            <button class="btn-clear" ng-click="clear_search();">Clear</button>
+                        </label>
+                    </div><!-- Search Filter -->
+                </div><!-- Page Header Content -->
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
                 <div class="page-header-content indicator-block">

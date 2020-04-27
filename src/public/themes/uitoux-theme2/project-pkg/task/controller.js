@@ -37,13 +37,25 @@ app.component('moduleDeveloperWiseTasks', {
 
         self.module = {};
         self.task = {};
+        $scope.searchKey = function(event) {
+            $scope.fetchData(event.target.value);
+        }
+        $scope.clear_search = function() {
+            $scope.search_project_version = '';
+            $scope.fetchData('');
+        }
 
-        $scope.fetchData = function() {
+
+        //self.search_name = $();
+        $scope.fetchData = function(search_key) {
+            //console.log(search_key);
             $http.get(
                 laravel_routes['getModuleDeveloperWiseTasks'], {
                     params: {
                         project_version_id: typeof($routeParams.project_version_id) == 'undefined' ? null : $routeParams.project_version_id,
                         filter_id: self.extras.filter_id,
+                        search_key: search_key,
+
                     }
                 }
             ).then(function(response) {
@@ -72,6 +84,15 @@ app.component('moduleDeveloperWiseTasks', {
         $scope.hide_empty_panels = true;
         $scope.fetchData();
 
+        // $scope.clear_search = function() {
+        //     $('#search_project_version').val('');
+        //     // $('#tasks_list').DataTable().search('').draw();
+        // }
+
+
+        // $("#search_project_version").keyup(function() {
+        //     dataTables.fnFilter(this.value);
+        // });
 
         $scope.showModuleForm = function(module) {
             $('#module-form-modal').modal('show');
