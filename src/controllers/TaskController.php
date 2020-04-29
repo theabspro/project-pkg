@@ -1,6 +1,7 @@
 <?php
 
 namespace Abs\ProjectPkg;
+
 use App\Company;
 use App\Config;
 use App\Filter;
@@ -17,6 +18,7 @@ use Auth;
 use Carbon\Carbon;
 use DB;
 use Entrust;
+use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Validator;
@@ -37,7 +39,7 @@ class TaskController extends Controller {
 				$query->where('modules.project_version_id', $request->project_version_id);
 			}
 			if (!empty($request->search_key)) {
-				$query->where('modules.name','Like','%'.$request->search_key.'%');
+				$query->where('modules.name', 'Like', '%' . $request->search_key . '%');
 			}
 		})
 			->with([
@@ -444,6 +446,7 @@ class TaskController extends Controller {
 		$this->data['project_list'] = Project::getList();
 		// $this->data['project_list'] = Collect(Project::select('id', 'short_name as name')->get())->prepend(['id' => '', 'name' => 'Select Project']);
 		$this->data['task_type_list'] = TaskType::getList();
+		$this->data['employee_list'] = collect(User::where('company_id', Auth::user()->company_id)->select('id', 'first_name as name')->get())->prepend(['id' => '', 'name' => 'Select Employee Name']);
 		$this->data['task_status_list'] = Status::getTaskStatusList();
 		$this->data['module_status_list'] = Status::getModuleStatusList();
 		//issue : shalini :  unwanted variable : not reusable and maintainable
@@ -813,4 +816,129 @@ class TaskController extends Controller {
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
 	}
+
+	public function export(Request $request) {
+		// dd($request->all());
+		$start_date = '';
+		$end_date = '';
+		if (!empty($request->daterange)) {
+			$date_range = explode(' to ', $request->daterange);
+			$start_date = date('Y-m-d', strtotime($date_range[0]));
+			$end_date = date('Y-m-d', strtotime($date_range[1]));
+		}
+		// dd($start_date, $end_date);
+
+		$task_details = Task::where('status_id', $request->task_status_id)
+			->whereIn('assigned_to_id', json_decode($request->employe_ids))
+			->whereBetween('date', [$start_date, $end_date])
+			->with([
+				'exportModule',
+				'exportModule.projectVersion',
+				'exportModule.projectVersion.project',
+				'tl',
+				'pm',
+				'status',
+				'type',
+				'platform',
+				'assignedTo',
+				'assignedTo.profileImage',
+			])
+			->orderBy('date')
+			->orderBy('type_id')
+			->orderBy('status_id')
+			->get()
+		;
+
+		$task = [];
+		$module = [];
+		$platform = [];
+		foreach ($task_details as $key => $task_detail) {
+			// dump($task_detail);
+			$company = Auth::user()->company;
+			// $module_detail = $task_detail->module;
+			// $project_version = $task_detail->module->projectVersion ? $task_detail->module->projectVersion : '';
+			// $project = $task_detail->module->projectVersion->project ? $task_detail->module->projectVersion->project : '';
+			// dd($task_detail->module->projectVersion->project->name);
+			// dump($task_detail->id);
+			// dump($task_detail->exportModule->id);
+			//TASK DETAILS
+			$task[$key]['Project Short Name'] = !empty($task_detail->exportModule->projectVersion->project) ? $task_detail->exportModule->projectVersion->project->code : '';
+			$task[$key]['Requirement Number'] = !empty($task_detail->exportModule->projectVersion) ? $task_detail->exportModule->projectVersion->number : '';
+			$task[$key]['Module Name'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->name : '';
+			$task[$key]['Platform'] = !empty($task_detail->platform) ? $task_detail->platform->name : '';
+			$task[$key]['Type'] = !empty($task_detail->type) ? $task_detail->type->name : '';
+			$task[$key]['Subject'] = !empty($task_detail->subject) ? $task_detail->subject : '';
+			$task[$key]['Description'] = !empty($task_detail->description) ? $task_detail->description : '';
+			$task[$key]['Estimated Hours'] = !empty($task_detail->estimated_hours) ? $task_detail->estimated_hours : '';
+			$task[$key]['Actual Hours'] = !empty($task_detail->actual_hours) ? $task_detail->actual_hours : '';
+			$task[$key]['Assigned To'] = !empty($task_detail->assignedTo) ? $task_detail->assignedTo->first_name . ' ' . $task_detail->assignedTo->last_name : '';
+			$task[$key]['Status'] = !empty($task_detail->status) ? $task_detail->status->name : '';
+			$task[$key]['Task Date'] = !empty($task_detail->date) ? date('d-m-Y', strtotime($task_detail->date)) : '';
+			$task[$key]['Remarks'] = !empty($task_detail->remarks) ? $task_detail->remarks : '';
+			$task[$key]['Notify Assigne'] = '';
+			$task[$key]['Notify PM'] = !empty($task_detail->pm) ? $task_detail->pm->first_name . ' ' . $task_detail->pm->last_name : '';
+			$task[$key]['Notify TL'] = !empty($task_detail->tl) ? $task_detail->tl->first_name . ' ' . $task_detail->tl->last_name : '';
+			$task[$key]['Notify QA'] = '';
+
+			//MODUEL
+			$module[$key]['Project Code'] = !empty($task_detail->exportModule->projectVersion->project) ? $task_detail->exportModule->projectVersion->project->code : '';
+			$module[$key]['Requirement Number'] = !empty($task_detail->exportModule->projectVersion) ? $task_detail->exportModule->projectVersion->number : '';
+			$module[$key]['Module Code'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->code : '';
+			$module[$key]['Module Name'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->name : '';
+			$module[$key]['Priority'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->priority : '';
+			$module[$key]['Platform'] = !empty($task_detail->exportModule->platform) ? $task_detail->exportModule->platform->name : '';
+			$module[$key]['Start Date'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->start_date : '';
+			$module[$key]['End Date'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->end_date : '';
+			$module[$key]['Duration'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->duration : '';
+			$module[$key]['Completed Percentage'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->completed_percentage : '';
+			$module[$key]['Status'] = !empty($task_detail->exportModule->status) ? $task_detail->exportModule->status->name : '';
+
+			//PLATFORM BY TASK
+			$platform[$key]['Company Code'] = !empty($company) ? $company->code : '';
+			$platform[$key]['Name'] = !empty($task_detail->platform) ? $task_detail->platform->name : '';
+			$platform[$key]['Display Order'] = !empty($task_detail->platform) ? $task_detail->platform->display_order : '';
+
+		}
+
+		// dd($task);
+		//UNIQUE MODULE AND PLATFORM
+		$module_unique = array_unique($module, SORT_REGULAR);
+		$platform_unique = array_unique($platform, SORT_REGULAR);
+
+		// dd($task, $module, $platform);
+
+		//CREATE EXCEL
+		Excel::create('Project Details' . rand(1, 1000), function ($excel) use ($task, $module_unique, $platform_unique) {
+			$excel->sheet('Task', function ($sheet) use ($task) {
+				$sheet->cell('A1:Q1', function ($row) use ($task) {
+					$row->setFontSize(10);
+					$row->setFontFamily('Work Sans');
+					$row->setFontWeight('bold');
+				});
+				$sheet->fromArray($task);
+				$sheet->setAutoSize(true);
+			});
+			$excel->sheet('Module', function ($sheet) use ($module_unique) {
+				$sheet->cell('A1:K1', function ($row) use ($module_unique) {
+					$row->setFontSize(10);
+					$row->setFontFamily('Work Sans');
+					$row->setFontWeight('bold');
+				});
+				$sheet->fromArray($module_unique);
+				$sheet->setAutoSize(true);
+			});
+			$excel->sheet('Platform', function ($sheet) use ($platform_unique) {
+				$sheet->cell('A1:C1', function ($row) use ($platform_unique) {
+					$row->setFontSize(10);
+					$row->setFontFamily('Work Sans');
+					$row->setFontWeight('bold');
+				});
+				$sheet->fromArray($platform_unique);
+				$sheet->setAutoSize(true);
+			});
+
+		})->store('xls', storage_path('excel/exports1'))->download('xls');
+
+	}
+
 }

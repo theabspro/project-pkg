@@ -44,6 +44,10 @@ class Task extends Model {
 		return $this->belongsTo('Abs\ModulePkg\Module');
 	}
 
+	public function exportModule() {
+		return $this->belongsTo('Abs\ModulePkg\Module')->withTrashed();
+	}
+
 	public function status() {
 		return $this->belongsTo('Abs\StatusPkg\Status');
 	}
