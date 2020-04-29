@@ -128,13 +128,23 @@ app.component('moduleDeveloperWiseTasks', {
                 alert(response.data.users_list);
                 return;
             }
+            console.log(response);
             self.task = response.data.task;
             self.users_list = response.data.users_list;
             self.project_list = response.data.project_list;
             self.platform_list = response.data.platform_list;
             self.task_type_list = response.data.task_type_list;
+            self.employee_list = response.data.employee_list;
             self.task_status_list = response.data.task_status_list;
             self.module_status_list = response.data.module_status_list;
+        });
+
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD-MM-YYYY') + ' to ' + picker.endDate.format('DD-MM-YYYY'));
+            dataTables.fnFilter();
+        });
+        $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
         });
 
         $scope.taskColor = function(color) {
@@ -502,6 +512,56 @@ app.component('moduleDeveloperWiseTasks', {
             }
         }
 
+        //FOR MULTIPLE VALIDATION
+        $.validator.addMethod("employees", function(value, element) {
+            return this.optional(element) || value != '[]';
+        }, " This field is required.");
+
+        $scope.export_filter = function() {
+            var task_export_filter_data = '#task_filter_form';
+            var v = jQuery(task_export_filter_data).validate({
+                ignore: '',
+                rules: {
+                    'task_status_id': {
+                        required: true,
+                    },
+                    'employe_ids': {
+                        employees: true,
+                    },
+                    'daterange': {
+                        required: true,
+                    },
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(task_export_filter_data)[0]);
+                    $('.export_filter').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['export'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.export_filter').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#filter-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.export_filter').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+        }
 
         $("input:text:visible:first").focus();
 

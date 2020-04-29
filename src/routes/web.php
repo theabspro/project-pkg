@@ -46,6 +46,7 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/task/save', 'TaskController@saveTask')->name('saveTask');
 	Route::get('/task/delete/', 'TaskController@deleteTask')->name('deleteTask');
 	Route::post('/task/update', 'TaskController@updateTask')->name('updateTask');
+	Route::post('/task/export/', 'TaskController@export')->name('export');
 	//ISSUE: SARAVANAN
 	//Get Project Version List
 	Route::post('task/get-project-version-list/', 'TaskController@getProjectVersionList')->name('getProjectVersionList');

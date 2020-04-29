@@ -263,33 +263,74 @@
                     Filter
                 </h5>
             </div><!-- Modal Header -->
-            <div class="modal-body">
-                <div class="modal-form">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="separate-form-group">
-                                <label>
-                                    Task Status
-                                </label>
-                                <ui-select ng-model="$ctrl.filter.task_status" theme="select2">
-                                    <ui-select-match placeholder="Select Task Status">
-                                        {{$select.selected.name || $select.selected}}
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
-                                        <div ng-bind-html="i.name | highlight: $select.search"></div>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div><!-- Field -->
-                        </div><!-- Column -->
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-rose" ng-click="reset_filter()">
-                                Reset Filter
-                            </button>
-                        </div>
-                        <preset-filter-form></preset-filter-form>
-                    </div><!-- Row -->
-                </div><!-- Modal Form -->
-            </div><!-- Modal Body -->
+            <form id="task_filter_form" autocomplete="off">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Task Status
+                                    </label>
+                                    <ui-select ng-model="$ctrl.filter.task_status_id" theme="select2">
+                                        <ui-select-match placeholder="Select Task Status">
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="task_status_id" class="required" value="{{$ctrl.filter.task_status_id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Employee
+                                    </label>
+                                    <ui-select multiple ng-model="$ctrl.filter.employee" theme="select2">
+                                        <ui-select-match placeholder="Select Employee">
+                                            {{$item.name}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i.id as i in $ctrl.employee_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="employe_ids" class="required" value="{{$ctrl.filter.employee}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="input-text form-group mb-0">
+                                    <label>Date</label>
+                                    <div class="input-group date">
+                                        <input date-range-picker id="daterange" name="daterange" class="form-control date-picker required" type="text" ng-model="$ctrl.daterange" value="{{$ctrl.daterange}}" placeholder="Select Receipt Date" />
+                                        <span class="input-group-addon">
+                                            <img class="img-responsive" src="./public/theme/img/content/calender-gray-icon.svg" alt="Calendar Image" />
+                                        </span>
+                                    </div>
+                                    <!-- Input Group -->
+                                </div>
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-rose" ng-click="reset_filter();$ctrl.filter.task_status='';$ctrl.filter.employee='';$ctrl.daterange=''">
+                                    Reset Filter
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose apply_filter" ng-click="apply_filter()">
+                                    Apply Filter
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose export_filter" ng-click="export_filter()">
+                                    Export
+                                </button>
+                            </div>
+                            <preset-filter-form></preset-filter-form>
+                        </div><!-- Row -->
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
         </div><!-- Modal Content -->
     </div><!-- Modal Dialog -->
 </div><!-- Modal -->
