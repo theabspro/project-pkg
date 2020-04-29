@@ -832,9 +832,11 @@ class TaskController extends Controller {
 			->whereIn('assigned_to_id', json_decode($request->employe_ids))
 			->whereBetween('date', [$start_date, $end_date])
 			->with([
-				'module',
-				'module.projectVersion',
-				'module.projectVersion.project',
+				'exportModule',
+				'exportModule.projectVersion',
+				'exportModule.projectVersion.project',
+				'tl',
+				'pm',
 				'status',
 				'type',
 				'platform',
@@ -851,52 +853,55 @@ class TaskController extends Controller {
 		$module = [];
 		$platform = [];
 		foreach ($task_details as $key => $task_detail) {
-			// dd($task_detail);
+			// dump($task_detail);
 			$company = Auth::user()->company;
-			$module_detail = $task_detail->module;
-			$project_version = !empty($module_detail->projectVersion) ? $module_detail->projectVersion : '';
-			$project = !empty($project_version->project) ? $project_version->project : '';
-			// dd($module_detail);
-
+			// $module_detail = $task_detail->module;
+			// $project_version = $task_detail->module->projectVersion ? $task_detail->module->projectVersion : '';
+			// $project = $task_detail->module->projectVersion->project ? $task_detail->module->projectVersion->project : '';
+			// dd($task_detail->module->projectVersion->project->name);
+			// dump($task_detail->id);
+			// dump($task_detail->exportModule->id);
 			//TASK DETAILS
-			$task[$key]['Project Short Name'] = $project ? $project->code : '';
-			$task[$key]['Requirement Number'] = $project_version ? $project_version->number : '';
-			$task[$key]['Module Name'] = $module_detail ? $module_detail->name : '';
-			$task[$key]['Platform'] = $task_detail->platform ? $task_detail->platform->name : '';
-			$task[$key]['Type'] = $task_detail->type ? $task_detail->type->name : '';
-			$task[$key]['Subject'] = $task_detail->subject ? $task_detail->subject : '';
-			$task[$key]['Description'] = $task_detail->description ? $task_detail->description : '';
-			$task[$key]['Estimated Hours'] = $task_detail->estimated_hours ? $task_detail->estimated_hours : '';
-			$task[$key]['Actual Hours'] = $task_detail->actual_hours ? $task_detail->actual_hours : '';
-			$task[$key]['Assigned To'] = $task_detail->assignedTo ? $task_detail->assignedTo->first_name . ' ' . $task_detail->assignedTo->last_name : '';
-			$task[$key]['Status'] = $task_detail->status ? $task_detail->status->name : '';
-			$task[$key]['Task Date'] = $task_detail->date ? date('d/m/Y', strtotime($task_detail->description)) : '';
-			$task[$key]['Remarks'] = $task_detail->remarks ? $task_detail->remarks : '';
+			$task[$key]['Project Short Name'] = !empty($task_detail->exportModule->projectVersion->project) ? $task_detail->exportModule->projectVersion->project->code : '';
+			$task[$key]['Requirement Number'] = !empty($task_detail->exportModule->projectVersion) ? $task_detail->exportModule->projectVersion->number : '';
+			$task[$key]['Module Name'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->name : '';
+			$task[$key]['Platform'] = !empty($task_detail->platform) ? $task_detail->platform->name : '';
+			$task[$key]['Type'] = !empty($task_detail->type) ? $task_detail->type->name : '';
+			$task[$key]['Subject'] = !empty($task_detail->subject) ? $task_detail->subject : '';
+			$task[$key]['Description'] = !empty($task_detail->description) ? $task_detail->description : '';
+			$task[$key]['Estimated Hours'] = !empty($task_detail->estimated_hours) ? $task_detail->estimated_hours : '';
+			$task[$key]['Actual Hours'] = !empty($task_detail->actual_hours) ? $task_detail->actual_hours : '';
+			$task[$key]['Assigned To'] = !empty($task_detail->assignedTo) ? $task_detail->assignedTo->first_name . ' ' . $task_detail->assignedTo->last_name : '';
+			$task[$key]['Status'] = !empty($task_detail->status) ? $task_detail->status->name : '';
+			$task[$key]['Task Date'] = !empty($task_detail->date) ? date('d-m-Y', strtotime($task_detail->date)) : '';
+			$task[$key]['Remarks'] = !empty($task_detail->remarks) ? $task_detail->remarks : '';
 			$task[$key]['Notify Assigne'] = '';
-			$task[$key]['Notify PM'] = '';
-			$task[$key]['Notify TL'] = '';
+			$task[$key]['Notify PM'] = !empty($task_detail->pm) ? $task_detail->pm->first_name . ' ' . $task_detail->pm->last_name : '';
+			$task[$key]['Notify TL'] = !empty($task_detail->tl) ? $task_detail->tl->first_name . ' ' . $task_detail->tl->last_name : '';
 			$task[$key]['Notify QA'] = '';
 
 			//MODUEL
-			$module[$key]['Project Code'] = $project ? $project->code : '';
-			$module[$key]['Requirement Number'] = $project_version ? $project_version->number : '';
-			$module[$key]['Module Code'] = $module_detail ? $module_detail->code : '';
-			$module[$key]['Module Name'] = $module_detail ? $module_detail->name : '';
-			$module[$key]['Priority'] = $module_detail ? $module_detail->priority : '';
-			$module[$key]['Platform'] = !empty($module_detail->platform) ? $module_detail->platform->name : '';
-			$module[$key]['Start Date'] = $module_detail ? $module_detail->start_date : '';
-			$module[$key]['End Date'] = $module_detail ? $module_detail->end_date : '';
-			$module[$key]['Duration'] = $module_detail ? $module_detail->duration : '';
-			$module[$key]['Completed Percentage'] = $module_detail ? $module_detail->completed_percentage : '';
-			$module[$key]['Status'] = !empty($module_detail->status) ? $module_detail->status->name : '';
+			$module[$key]['Project Code'] = !empty($task_detail->exportModule->projectVersion->project) ? $task_detail->exportModule->projectVersion->project->code : '';
+			$module[$key]['Requirement Number'] = !empty($task_detail->exportModule->projectVersion) ? $task_detail->exportModule->projectVersion->number : '';
+			$module[$key]['Module Code'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->code : '';
+			$module[$key]['Module Name'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->name : '';
+			$module[$key]['Priority'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->priority : '';
+			$module[$key]['Platform'] = !empty($task_detail->exportModule->platform) ? $task_detail->exportModule->platform->name : '';
+			$module[$key]['Start Date'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->start_date : '';
+			$module[$key]['End Date'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->end_date : '';
+			$module[$key]['Duration'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->duration : '';
+			$module[$key]['Completed Percentage'] = !empty($task_detail->exportModule) ? $task_detail->exportModule->completed_percentage : '';
+			$module[$key]['Status'] = !empty($task_detail->exportModule->status) ? $task_detail->exportModule->status->name : '';
 
 			//PLATFORM BY TASK
-			$platform[$key]['Company Code'] = $company ? $company->code : '';
-			$platform[$key]['Name'] = $task_detail->platform ? $task_detail->platform->name : '';
-			$platform[$key]['Display Order'] = $task_detail->platform ? $task_detail->platform->display_order : '';
+			$platform[$key]['Company Code'] = !empty($company) ? $company->code : '';
+			$platform[$key]['Name'] = !empty($task_detail->platform) ? $task_detail->platform->name : '';
+			$platform[$key]['Display Order'] = !empty($task_detail->platform) ? $task_detail->platform->display_order : '';
 
 		}
 
+		// dd($task);
+		//UNIQUE MODULE AND PLATFORM
 		$module_unique = array_unique($module, SORT_REGULAR);
 		$platform_unique = array_unique($platform, SORT_REGULAR);
 
