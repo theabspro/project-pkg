@@ -4,17 +4,28 @@
             <div class="page-header-content-left">
                 <div class="page-header-content title-block">
                     <h1 class="title type-2">
-                        Project Versions
+                        Requirements
                     </h1>
                 </div><!-- Page Header Content -->
                 <filter-btn></filter-btn>
                 <preset-filter-select></preset-filter-select>
             </div><!-- Page Header Content Left -->
             <div class="page-header-content-right">
-                <div class="page-header-content button-block">
-                    <a href="javascript:;" ng-click="showProjectVersionForm({})" class="btn btn-primary">
-                        Add
-                    </a>
+                <div class="page-header-content">
+                    <div class="btn-group">
+                        <a href="javascript:;" ng-click="showProjectVersionForm({})" class="btn btn-sm btn-default">
+                            <md-tooltip md-direction="top">
+                                Add Requirement
+                            </md-tooltip>
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </a>
+                        <a href=".#!/import-cron-job-pkg/import-job/form/3" class="btn btn-sm btn-default">
+                            <md-tooltip md-direction="top">
+                                Import
+                            </md-tooltip>
+                            <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+                        </a>
+                    </div>
                 </div><!-- Page Header Content -->
             </div><!-- Page Header Content Right -->
         </div><!-- Page Header Inner -->
