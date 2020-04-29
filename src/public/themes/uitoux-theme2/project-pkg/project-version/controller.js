@@ -17,11 +17,21 @@ app.component('projectVersionCardList', {
 
         $scope.project_version_modal_form_template_url = project_version_modal_form_template_url;
 
-        $scope.fetchData = function() {
+        $scope.searchKey = function(event) {
+            $scope.fetchData(event.target.value);
+        }
+        $scope.clear_search = function() {
+            $scope.search_project = '';
+            $scope.fetchData('');
+        }
+
+
+        $scope.fetchData = function(search_key) {
             $http.get(
                 laravel_routes['getProjectVersions'], {
                     params: {
                         filter_id: self.extras.filter_id,
+                        search_key: search_key,
                     }
                 }
             ).then(function(response) {

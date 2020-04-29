@@ -198,7 +198,6 @@ class TaskController extends Controller {
 	}
 
 	public function getUserDateWiseTasks(Request $request) {
-
 		$filter_params = Filter::getFilterParams($request, 221);
 		$base_query = Task::with([
 			'module',
@@ -210,6 +209,12 @@ class TaskController extends Controller {
 			'assignedTo',
 			'assignedTo.profileImage',
 		])
+			->join('users','users.id','tasks.assigned_to_id')
+			->where(function ($query) use ($request) {
+			if (!empty($request->search_key)) {
+				$query->where('users.first_name', 'Like', '%' . $request->search_key . '%');
+			}
+		})
 			->orderBy('date')
 			->orderBy('type_id')
 			->orderBy('status_id')
@@ -232,6 +237,11 @@ class TaskController extends Controller {
 			->where(function ($q) {
 				if (!Entrust::can('view-all-tasks')) {
 					$q->where('users.id', Auth::id());
+				}
+			})
+			->where(function ($query) use ($request) {
+				if (!empty($request->search_key)) {
+					$query->where('users.first_name', 'Like', '%' . $request->search_key . '%');
 				}
 			})
 			->where(function ($q) use ($filter_params) {
@@ -285,8 +295,13 @@ class TaskController extends Controller {
 		$statuses = Status::with([
 		])
 			->where([
-				'type_id' => 162,
+				'type_id' => 162,//TASK
 			])
+			->where(function ($query) use ($request) {
+				if (!empty($request->search_key)) {
+					$query->where('statuses.name', 'Like', '%' . $request->search_key . '%');
+				}
+			})
 			->company()
 			->orderBy('display_order')
 			->get();

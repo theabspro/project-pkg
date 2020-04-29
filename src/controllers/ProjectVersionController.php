@@ -35,10 +35,16 @@ class ProjectVersionController extends Controller {
 			->where([
 				'project_versions.company_id' => Auth::user()->company_id,
 			])
+			->where(function ($q) use ($r) {
+				if (!empty($r->search_key)) {
+					$q->where('project_versions.number', 'Like', '%' . $r->search_key . '%')
+					->orWhere('p.short_name','Like','%'.$r->search_key .'%');
+				}
+			})
 			->where(function ($q) {
 				if (!Entrust::can('view-all-project-version')) {
 					$q
-						->where('project_version_member.member_id', Auth::id())
+					->where('project_version_member.member_id', Auth::id())
 					;
 				}
 			})

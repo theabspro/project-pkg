@@ -606,11 +606,20 @@ app.component('userDateWiseTasks', {
 
         self.task = {};
 
-        $scope.fetchData = function() {
+        $scope.searchKey = function(event) {
+            $scope.fetchData(event.target.value);
+        }
+        $scope.clear_search = function() {
+            $scope.search_task_user_wise = '';
+            $scope.fetchData('');
+        }
+
+        $scope.fetchData = function(search_key) {
             $http.get(
                 laravel_routes['getUserDateWiseTasks'], {
                     params: {
                         filter_id: self.extras.filter_id,
+                        search_key: search_key,
                     }
                 }
             ).then(function(response) {
@@ -906,11 +915,20 @@ app.component('statusDateWiseTasks', {
         $scope.task_modal_form_template_url = task_modal_form_template_url;
         $scope.task_card_list_template_url = task_card_list_template_url;
 
-        $scope.fetchData = function() {
+        $scope.searchKey = function(event) {
+            $scope.fetchData(event.target.value);
+        }
+        $scope.clear_search = function() {
+            $scope.search_task_status_wise = '';
+            $scope.fetchData('');
+        }
+
+        $scope.fetchData = function(search_key) {
             $http.get(
                 laravel_routes['getStatusDateWiseTasks'], {
                     params: {
                         filter_id: self.extras.filter_id,
+                        search_key: search_key,
                     }
                 }
             ).then(function(response) {
