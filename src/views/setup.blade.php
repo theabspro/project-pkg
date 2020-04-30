@@ -86,6 +86,10 @@
 	        template: '<module-developer-wise-tasks></module-developer-wise-tasks>',
 	        title: 'Tasks (Module-Developer Wise)',
 	    }).
+	    when('/project-pkg/task/status-developer-wise/:module_id?', {
+	        template: '<status-developer-wise-tasks></status-developer-wise-tasks>',
+	        title: 'Tasks (Status-Developer Wise)',
+	    }).
 	    when('/project-pkg/task/user-date-wise', {
 	        template: '<user-date-wise-tasks></user-date-wise-tasks>',
 	        title: 'Tasks (User-Date Wise)',
@@ -160,7 +164,9 @@
     var module_view_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/module/view.html')}}";
 
 
+    //Tasks
     var module_developer_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/module-developer-wise.html')}}";
+    var status_developer_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/status-developer-wise.html')}}";
     var user_date_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/user-date-wise.html')}}";
     var status_date_wise_tasks_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/status-date-wise.html')}}";
     var task_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/list.html')}}";

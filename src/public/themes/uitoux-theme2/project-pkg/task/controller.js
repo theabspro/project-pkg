@@ -561,6 +561,459 @@ app.component('moduleDeveloperWiseTasks', {
 //------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------
 
+app.component('statusDeveloperWiseTasks', {
+    templateUrl: status_developer_wise_tasks_template_url,
+    controller: function($http, $location, HelperService, $scope, $route, $routeParams, $rootScope, $location, $mdSelect, ProjectPkgHelper) {
+        $scope.loading = true;
+        var self = this;
+        $('#search_task').focus();
+        self.hasPermission = HelperService.hasPermission;
+        if (!self.hasPermission('tasks')) {
+            window.location = "#!/page-permission-denied";
+            return false;
+        }
+        self.theme = theme;
+        $scope.user_id = user_id;
+
+
+        self.filter = {};
+        self.extras = {};
+        self.add_permission = self.hasPermission('add-task');
+        self.delete_task_permission = self.hasPermission('delete-task');
+        self.delete_module_permission = self.hasPermission('delete-module');
+
+        $scope.page_id = 220;
+
+        $scope.module_modal_form_template_url = module_modal_form_template_url;
+        $scope.task_modal_form_template_url = task_modal_form_template_url;
+        $scope.task_card_list_template_url = task_card_list_template_url;
+
+        self.show_module = true;
+        self.show_assigned_to = true;
+        self.show_project_version = true;
+        self.show_project = true;
+
+        self.task_types = ['task'];
+        self.module_types = ['module'];
+        self.task_type = 'task';
+        self.module_type = 'module';
+
+        self.module = {};
+        self.task = {};
+        $scope.searchKey = function(event) {
+            $scope.fetchData(event.target.value);
+        }
+        $scope.clear_search = function() {
+            $scope.search_project_version = '';
+            $scope.fetchData('');
+        }
+
+
+        $scope.fetchData = function(search_key) {
+            $http.get(
+                laravel_routes['getStatusDeveloperWiseTasks'], {
+                    params: {
+                        module_id: typeof($routeParams.module_id) == 'undefined' ? null : $routeParams.module_id,
+                        filter_id: self.extras.filter_id,
+                        search_key: search_key,
+                    }
+                }
+            ).then(function(response) {
+                if (!response.data.success) {
+                    showErrorNoty(response.data);
+                    return;
+                }
+                self.statuses = response.data.statuses;
+                self.project_version_list = response.data.extras.project_version_list;
+                self.module = response.data.module;
+                self.extras = response.data.extras;
+
+                // for (var i in self.modules) {
+                //     for (var j in self.modules[i].developers) {
+                //         self.modules[i].developers[j].total_estimated_hour = 0;
+                //         self.modules[i].developers[j].total_actual_hour = 0;
+                //         for (var k in self.modules[i].developers[j].tasks) {
+                //             self.modules[i].developers[j].total_estimated_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].estimated_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].estimated_hours) : 0);
+                //             self.modules[i].developers[j].total_actual_hour += ($.isNumeric(self.modules[i].developers[j].tasks[k].actual_hours) ? parseFloat(self.modules[i].developers[j].tasks[k].actual_hours) : 0);
+                //         }
+                //     }
+                // }
+                $scope.toggleEmptyPanels();
+            });
+        }
+        $scope.hide_empty_panels = true;
+        $scope.fetchData();
+
+        $scope.showModuleForm = function(module) {
+            $('#module-form-modal').modal('show');
+
+            $('#module-form-modal').on('shown.bs.modal', function(e) {
+                $('#module-name').focus();
+            })
+
+            self.module = module;
+            if (self.project_version) {
+                self.module.project_version = self.project_version;
+                self.module.project = self.project_version.project;
+                self.show_project_version = false;
+                self.show_project = false;
+            } else {
+                self.show_project_version = true;
+                self.show_project = true;
+            }
+            if (self.module.id) {
+                return;
+            }
+        }
+
+        $('#refresh_data').on("click", function() {
+            $scope.fetchData();
+        });
+
+
+        $http.get(
+            laravel_routes['getTaskFormData']
+        ).then(function(response) {
+            if (!response.data.success) {
+                alert(response.data.users_list);
+                return;
+            }
+            console.log(response);
+            self.task = response.data.task;
+            self.users_list = response.data.users_list;
+            self.project_list = response.data.project_list;
+            self.platform_list = response.data.platform_list;
+            self.task_type_list = response.data.task_type_list;
+            self.employee_list = response.data.employee_list;
+            self.task_status_list = response.data.task_status_list;
+            self.module_status_list = response.data.module_status_list;
+        });
+
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD-MM-YYYY') + ' to ' + picker.endDate.format('DD-MM-YYYY'));
+            dataTables.fnFilter();
+        });
+        $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
+        $scope.taskColor = function(color) {
+            return {
+                "background-color": color
+            };
+        };
+
+        //SAVE TASK
+        $scope.saveTask = function() {
+            ProjectPkgHelper.saveTask().then(function(res) {
+                console.log(res);
+                $scope.fetchData();
+            });
+        }
+
+        //DELETE
+        $scope.deleteTask = function($id, $event, tasks, index) {
+            $event.stopPropagation();
+            $scope.tasks = tasks;
+            $scope.index = index;
+            $('#delete_task').modal('show');
+            $('#task_id').val($id);
+        }
+
+        $scope.deleteTaskConfirm = function() {
+            id = $('#task_id').val();
+            ProjectPkgHelper.deleteTask(id).then(function(res) {
+                $scope.tasks.splice($scope.index, 1);
+            });
+        }
+
+        //DELETE
+        $scope.deleteModule = function($id, $event, modules, index) {
+            $event.stopPropagation();
+            $scope.modules = modules;
+            $scope.index = index;
+
+            $('#delete_module').modal('show');
+            $('#module_id').val($id);
+        }
+        $scope.deleteModuleConfirm = function() {
+            id = $('#module_id').val();
+            $http.get(
+                laravel_routes['deleteModule'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', 'Module Deleted Successfully');
+                    $('#delete_module').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
+        $scope.showTaskForm = function(task, action, $event) {
+            $event.stopPropagation();
+            $('#task-form-modal').modal('show');
+            $('#task-form-modal').on('shown.bs.modal', function(e) {
+                $scope.$broadcast('focus-task-platform');
+            })
+            $scope.focus_task_subject = true;
+            self.task = task;
+            self.task.action = action;
+
+            if (self.task.module) {
+                self.project_version = self.task.module.project_version;
+                self.task.module_id = self.task.module.id;
+                $scope.onSelectedProject(self.project_version.project.id);
+                $scope.onSelectedProjectVersion(self.project_version.id);
+
+                if (self.project_version) {
+                    self.task.project_version = self.project_version;
+                    self.task.project_version_id = self.project_version.id;
+                    self.task.project_id = self.project_version.project.id;
+                    // self.show_project_version = false;
+                    // self.show_project = false;
+                } else {
+                    // self.show_project_version = true;
+                    // self.show_project = true;
+                }
+            } else {
+                self.project_version_list = [];
+            }
+
+            if (self.task.id) {
+                return;
+            }
+            self.task.date = HelperService.getCurrentDate();
+
+            if (self.assigned_to) {
+                self.task.assigned_to = self.assigned_to;
+                // self.show_assigned_to = false;
+            }
+
+            if (self.module) {
+                self.task.module = self.module;
+                self.task.module.project_version = self.project_version;
+                self.task.module_id = self.module.id;
+                $scope.onSelectedProject(self.project_version.project.id);
+                $scope.onSelectedProjectVersion(self.project_version.id);
+
+                if (self.project_version) {
+                    self.task.project_version = self.project_version;
+                    self.task.project_version_id = self.project_version.id;
+                    self.task.project_id = self.project_version.project.id;
+                    // self.show_project_version = false;
+                    // self.show_project = false;
+                } else {
+                    // self.show_project_version = true;
+                    // self.show_project = true;
+                }
+                // self.show_module = false;
+            } else {
+                // self.show_module = true;
+            }
+
+        }
+
+        $scope.onSelectedProject = function(id) {
+            $http.post(
+                laravel_routes['getProjectVersionList'], {
+                    project_id: id,
+                }
+            ).then(function(res) {
+                if (!res.data.success) {
+                    showErrorNoty(res.data);
+                    self.project_version_list = [];
+                }
+                self.project_version_list = res.data.project_version_list;
+            });
+        }
+
+        $scope.onSelectedProjectVersion = function(id) {
+            $http.post(
+                laravel_routes['getProjectModuleList'], {
+                    version_id: id,
+                }
+            ).then(function(response) {
+                // console.log(response);
+                if (!response.data.success) {
+                    showErrorNoty(response.data);
+                    self.module_list = [];
+                }
+                self.module_list = response.data.module_list;
+                self.project_version = response.data.project_version;
+                self.task.project_version = self.project_version;
+            });
+        }
+
+        $scope.dropModuleCallback = function(event, module, index) {
+            setTimeout(function() {
+                var drop_module_index = index;
+                var modules_length = self.modules.length;
+                var drop_module_index_plus = drop_module_index + 1;
+                // console.log(module, drop_module_index, drop_module_index_plus);
+
+                //UPDATE DOWN MODULES
+                for (var i = drop_module_index_plus; i < modules_length; i++) {
+                    var module_id = $(".module_parent").find(".module_child").eq(i).attr('data-module_id');
+                    $scope.updateModulePriority(module_id, i + 1);
+                }
+                //UPDATE UP MODULES
+                for (var i = 0; i < drop_module_index; i++) {
+                    var module_id = $(".module_parent").find(".module_child").eq(i).attr('data-module_id');
+                    $scope.updateModulePriority(module_id, i + 1);
+                }
+                //UPDATE CURRENT MODULE
+                $scope.updateModulePriority(module.id, drop_module_index + 1);
+            }, 1000);
+
+            return module;
+        }
+
+        $scope.updateModulePriority = function(id, index) {
+            $http.post(
+                laravel_routes['updateModulePriority'], {
+                    id: id,
+                    priority: index,
+                }
+            ).then(function(response) {});
+        }
+
+        $scope.dragTaskstartCallback = function(event) {
+            return true;
+        }
+
+        $scope.dropTaskCallback = function(event, key, item, status_id, date, assigned_to_id, module_id) {
+            console.log(item, status_id, date, assigned_to_id, module_id);
+            $scope.updateTask(item, status_id, date, assigned_to_id, module_id);
+            return item;
+        }
+
+        $scope.updateTask = function(item, status_id, date, assigned_to_id, module_id) {
+            $http.post(
+                laravel_routes['updateTask'], {
+                    id: item.id,
+                    status_id: status_id,
+                    date: date,
+                    assigned_to_id: assigned_to_id,
+                    module_id: module_id,
+                    type: 'module',
+                }
+            ).then(function(res) {
+                console.log(res);
+                if (!res.data.success) {
+                    showErrorNoty(res);
+                    return;
+                }
+                custom_noty('success', res.data.message);
+                $route.reload();
+            });
+        }
+
+        $scope.checkboxChecked = function(type) {
+            if ($('.parent_' + type).is(":checked")) {
+                $("." + type).prop("checked", true);
+            } else if ($('.parent_' + type).is(":not(:checked)")) {
+                $("." + type).prop("checked", false);
+            }
+        }
+
+        $scope.toggleEmptyPanels = function() {
+
+            console.log($scope.hide_empty_panels);
+            if ($scope.hide_empty_panels) {
+                angular.forEach(self.modules, function(module, key1) {
+                    if (module.unassigned_tasks.length == 0) {
+                        module.show_unassigned = false;
+                    } else {
+                        module.show_unassigned = true;
+                    }
+                    angular.forEach(module.developers, function(developer, key2) {
+                        if (developer.tasks.length == 0) {
+                            developer.show = false;
+                        } else {
+                            developer.show = true;
+                        }
+                    });
+                });
+            } else {
+                angular.forEach(self.modules, function(module, key1) {
+                    module.show_unassigned = true;
+                    angular.forEach(module.developers, function(developer, key2) {
+                        developer.show = true;
+                    });
+                });
+            }
+        }
+
+        //FOR MULTIPLE VALIDATION
+        $.validator.addMethod("employees", function(value, element) {
+            return this.optional(element) || value != '[]';
+        }, " This field is required.");
+
+        $scope.export_filter = function() {
+            var task_export_filter_data = '#task_filter_form';
+            var v = jQuery(task_export_filter_data).validate({
+                ignore: '',
+                rules: {
+                    'task_status_id': {
+                        required: true,
+                    },
+                    'employe_ids': {
+                        employees: true,
+                    },
+                    'daterange': {
+                        required: true,
+                    },
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(task_export_filter_data)[0]);
+                    $('.export_filter').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['export'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.export_filter').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#filter-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.export_filter').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+        }
+
+        $("input:text:visible:first").focus();
+
+        $scope.saveFilter = function() {
+            $('#filter_value').val(angular.toJson(self.filter));
+            ProjectPkgHelper.saveFilter();
+        }
+
+        $rootScope.loading = false;
+    }
+});
+//------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------
+
 app.component('userDateWiseTasks', {
     templateUrl: user_date_wise_tasks_template_url,
     controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $location, $mdSelect, $element, $route, $mdConstant, ProjectPkgHelper) {

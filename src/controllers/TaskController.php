@@ -144,6 +144,55 @@ class TaskController extends Controller {
 			'extras' => $extras,
 		]);
 	}
+//-----------------------------------------------------------------------------------------------------
+	public function getStatusDeveloperWiseTasks(Request $request) {
+		$filter_params = Filter::getFilterParams($request, 222);
+		$statuses = Status::with([
+			'tasks' => function ($q) use ($request) {
+				if ($request->module_id) {
+					$q->where('module_id', $request->module_id);
+				}
+			},
+		])
+			->where([
+				'type_id' => 162, //TASK
+			])
+			->where(function ($query) use ($request) {
+				if (!empty($request->search_key)) {
+					$query->where('statuses.name', 'Like', '%' . $request->search_key . '%');
+				}
+			})
+			->company()
+			->orderBy('display_order')
+			->get();
+
+		// if ($request->date) {
+		// 	$date = date('Y-m-d', strtotime($request->date));
+		// 	$date_label = date('d D', strtotime($date));
+		// } else {
+		// 	$date = date('Y-m-d');
+		// 	$date_label = date('d D');
+		// }
+
+		$date = $request->date ? date('Y-m-d', strtotime($request->date)) : $date = date('Y-m-d');
+		$date_ranges = $this->getDateRange($date);
+
+		// foreach ($statuses as $status) {
+
+		// 	$status->tasks
+		// }
+		$extras = [
+			'filter_list' => Filter::getList(224, false),
+			// 'project_version_list' => $project_version_list,
+			'filter_id' => $filter_params['filter_id'],
+		];
+		return response()->json([
+			'success' => true,
+			'statuses' => $statuses,
+			'extras' => $extras,
+		]);
+
+	}
 
 	//todo : need to move this function to date helper
 	private function getDateRange($date) {
@@ -185,11 +234,6 @@ class TaskController extends Controller {
 			'type',
 			'platform',
 			'assignedTo',
-			// 'assignedTo' => function ($query) use ($request) {
-			// 	if (!empty($request->search_key)) {
-			// 		$query->where('users.first_name', 'Like', '%' . $request->search_key . '%');
-			// 	}
-			// },
 			'assignedTo.profileImage',
 		])
 			->select('tasks.*')

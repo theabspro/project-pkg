@@ -38,7 +38,9 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::get('/project-requirement/docs/delete', 'ProjectVersionController@deleteProjectDocs')->name('deleteProjectDocs');
 	//Project-Version//
 
+	//Tasks
 	Route::get('/task/module-developer-wise', 'TaskController@getModuleDeveloperWiseTasks')->name('getModuleDeveloperWiseTasks');
+	Route::get('/task/status-developer-wise', 'TaskController@getStatusDeveloperWiseTasks')->name('getStatusDeveloperWiseTasks');
 	Route::get('/task/user-date-wise', 'TaskController@getUserDateWiseTasks')->name('getUserDateWiseTasks');
 	Route::get('/task/status-date-wise', 'TaskController@getStatusDateWiseTasks')->name('getStatusDateWiseTasks');
 
