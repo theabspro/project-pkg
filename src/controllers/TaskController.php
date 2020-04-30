@@ -185,8 +185,14 @@ class TaskController extends Controller {
 			'type',
 			'platform',
 			'assignedTo',
+			// 'assignedTo' => function ($query) use ($request) {
+			// 	if (!empty($request->search_key)) {
+			// 		$query->where('users.first_name', 'Like', '%' . $request->search_key . '%');
+			// 	}
+			// },
 			'assignedTo.profileImage',
 		])
+			->select('tasks.*')
 			->join('users', 'users.id', 'tasks.assigned_to_id')
 			->where(function ($query) use ($request) {
 				if (!empty($request->search_key)) {
@@ -429,7 +435,6 @@ class TaskController extends Controller {
 			$task = Task::company()->withTrashed()->find($r->id);
 			//issue : saravanan : company not filtered
 			// $task = Task::withTrashed()->find($r->id);
-
 			$action = 'Edit';
 		}
 		//ISSUE : SARAVANAN : unwanted variable : not reusable and maintainable
