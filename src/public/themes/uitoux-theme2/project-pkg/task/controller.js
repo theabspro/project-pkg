@@ -84,16 +84,6 @@ app.component('moduleDeveloperWiseTasks', {
         $scope.hide_empty_panels = true;
         $scope.fetchData();
 
-        // $scope.clear_search = function() {
-        //     $('#search_project_version').val('');
-        //     // $('#tasks_list').DataTable().search('').draw();
-        // }
-
-
-        // $("#search_project_version").keyup(function() {
-        //     dataTables.fnFilter(this.value);
-        // });
-
         $scope.showModuleForm = function(module) {
             $('#module-form-modal').modal('show');
 
@@ -312,7 +302,7 @@ app.component('moduleDeveloperWiseTasks', {
             });
         }
 
-        $scope.showTaskForm = function(task, task_type, $event) {
+        $scope.showTaskForm = function(task, action, $event) {
             $event.stopPropagation();
             $('#task-form-modal').modal('show');
             $('#task-form-modal').on('shown.bs.modal', function(e) {
@@ -320,12 +310,7 @@ app.component('moduleDeveloperWiseTasks', {
             })
             $scope.focus_task_subject = true;
             self.task = task;
-
-            if (!task_type || typeof task_type === 'undefined') {
-                self.task.task_type = 0;
-            } else {
-                self.task.task_type = task_type;
-            }
+            self.task.action = action;
 
             if (self.task.module) {
                 self.project_version = self.task.module.project_version;
@@ -666,18 +651,13 @@ app.component('userDateWiseTasks', {
             // console.log(self.project_version_list);
         });
 
-        $scope.showTaskForm = function(task, task_type, $event) {
+        $scope.showTaskForm = function(task, action, $event) {
             $event.stopPropagation();
             $('#task-form-modal').modal('show');
             $('#task-subject').focus();
             self.task = task;
+            self.task.action = action;
 
-            if (!task_type || typeof task_type === 'undefined') {
-                self.task.task_type = 0;
-            } else {
-                self.task.task_type = task_type;
-            }
-            console.log(self.task);
             if (self.task.module && self.task.module.project_version) {
                 self.project_version = self.task.module.project_version;
                 $scope.onSelectedProject(self.project_version.project.id);

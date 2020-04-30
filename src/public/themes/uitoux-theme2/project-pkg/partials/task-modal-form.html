@@ -5,18 +5,18 @@
                 <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
                     <i class="glyphicon glyphicon-remove"></i>
                 </button>
-                <h5 class="modal-title" id="myModalLabel" ng-if="!$ctrl.task.task_type">
+                <h5 class="modal-title" id="myModalLabel" ng-if="$ctrl.task.action != 'Clone'">
                     {{$ctrl.task.id ? 'Edit' : 'Add'}} Task
                     {{$ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+' / '+$ctrl.task.module.name+')' : ''}}
                 </h5>
-                <h5 class="modal-title" id="myModalLabel" ng-if="$ctrl.task.task_type">
+                <h5 class="modal-title" id="myModalLabel" ng-if="$ctrl.task.action == 'Clone'">
                     Clone Task
                     {{$ctrl.project_version ? '('+$ctrl.project_version.project.short_name+'-'+$ctrl.project_version.number+' / '+$ctrl.task.module.name+')' : ''}}
                 </h5>
             </div><!-- Modal Header -->
             <form id="task_form">
                 <input type="hidden" name="id" value="{{$ctrl.task.id}}">
-                <input type="hidden" name="task_type" value="{{$ctrl.task.task_type}}">
+                <input type="hidden" name="action" value="{{$ctrl.task.action}}">
                 <div class="modal-body">
                     <div class="modal-form">
                         <div class="row">
