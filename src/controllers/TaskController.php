@@ -179,15 +179,15 @@ class TaskController extends Controller {
 			],
 			[
 				'date' => date('Y-m-d', strtotime($date . ' -1 days')),
-				'date_label' => date('d D', strtotime($date . ' -1 days')),
+				'date_label' => 'Yesterday',
 			],
 			[
 				'date' => date('Y-m-d', strtotime($date)),
-				'date_label' => date('d D', strtotime($date)),
+				'date_label' => 'Today',
 			],
 			[
 				'date' => date('Y-m-d', strtotime($date . ' +1 days')),
-				'date_label' => date('d D', strtotime($date . ' +1 days')),
+				'date_label' => 'Tomorrow',
 			],
 			[
 				'date' => date('Y-m-d', strtotime($date . ' +2 days')),
@@ -209,12 +209,12 @@ class TaskController extends Controller {
 			'assignedTo',
 			'assignedTo.profileImage',
 		])
-			->join('users','users.id','tasks.assigned_to_id')
+			->join('users', 'users.id', 'tasks.assigned_to_id')
 			->where(function ($query) use ($request) {
-			if (!empty($request->search_key)) {
-				$query->where('users.first_name', 'Like', '%' . $request->search_key . '%');
-			}
-		})
+				if (!empty($request->search_key)) {
+					$query->where('users.first_name', 'Like', '%' . $request->search_key . '%');
+				}
+			})
 			->orderBy('date')
 			->orderBy('type_id')
 			->orderBy('status_id')
@@ -295,7 +295,7 @@ class TaskController extends Controller {
 		$statuses = Status::with([
 		])
 			->where([
-				'type_id' => 162,//TASK
+				'type_id' => 162, //TASK
 			])
 			->where(function ($query) use ($request) {
 				if (!empty($request->search_key)) {
