@@ -666,18 +666,15 @@ app.component('userDateWiseTasks', {
             // console.log(self.project_version_list);
         });
 
-        $scope.showTaskForm = function(task, task_type, $event) {
+        $scope.showTaskForm = function(task, action, $event) {
             $event.stopPropagation();
             $('#task-form-modal').modal('show');
             $('#task-subject').focus();
             self.task = task;
 
-            if (!task_type || typeof task_type === 'undefined') {
-                self.task.task_type = 0;
-            } else {
-                self.task.task_type = task_type;
-            }
-            console.log(self.task);
+            console.log(action);
+            self.task.action = action;
+
             if (self.task.module && self.task.module.project_version) {
                 self.project_version = self.task.module.project_version;
                 $scope.onSelectedProject(self.project_version.project.id);

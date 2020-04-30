@@ -558,7 +558,7 @@ class TaskController extends Controller {
 
 			DB::beginTransaction();
 			//ADD & EDIT TYPE
-			if (!$request->task_type) {
+			if ($request->action != 'Clone') {
 				if (!$request->id) {
 					$task = new Task;
 					$task->created_by_id = Auth::user()->id;
