@@ -231,7 +231,7 @@
                                         </span>
                                     </h3>
                                 </div>
-                                <ng-include src="task_card_list_template_url" ng-init="tasks = developer.tasks;date = '';status_id = '';assigned_to_id=developer.id;module_id=module.id"></ng-include>
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = developer.tasks;date = '';status_id = '';assigned_to_id=developer.id;module_id=module.id; show_user = false; show_date = true; show_module = false"></ng-include>
                                 <div class="panel-footer">
                                     <span class="label label-success">
                                         <md-tooltip md-direction="top">

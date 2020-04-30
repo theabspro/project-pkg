@@ -66,7 +66,7 @@
                                             <span class="badge"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>2</span>
                                         </h3>
                                     </div>
-                                    <task-card-list tasks="$ctrl.unassigned_tasks" type="2"></task-card-list>
+                                    <task-card-list tasks="$ctrl.unassigned_tasks" type="2" ng-init="show_user = false; show_date = false; show_module = true"></task-card-list>
                                     <!-- <ng-include src="task_card_list_template_url" ng-init="tasks =$ctrl.unassigned_tasks;date = '';assigned_to_id = '';status_id=''"></ng-include> -->
                                     <div class="panel-footer">
                                         Tasks : {{$ctrl.unassigned_tasks.length}} /

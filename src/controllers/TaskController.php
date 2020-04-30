@@ -156,44 +156,22 @@ class TaskController extends Controller {
 
 		$dates = [];
 		for ($i = 1; $i <= 5; $i++) {
-			// $day = date('D', strtotime($date));
-			// if ($day == 'Sun') {
-			// 	$dates[] = [
-			// 		'date' => date('Y-m-d', strtotime($date . ' +1 days')),
-			// 		'date_label' => date('d D', strtotime($date . ' +1 days')),
-			// 	];
-			// 	$date = date('Y-m-d', strtotime($date . ' +2 days'));
-			// } else {
+			if ($date == date('Y-m-d', strtotime('-1 days'))) {
+				$date_label = 'Yesterday';
+			} elseif ($date == date('Y-m-d')) {
+				$date_label = 'Today';
+			} elseif ($date == date('Y-m-d', strtotime('+1 days'))) {
+				$date_label = 'Tomorrow';
+			} else {
+				$date_label = date('d D', strtotime($date));
+			}
 			$dates[] = [
 				'date' => date('Y-m-d', strtotime($date)),
-				'date_label' => date('d D', strtotime($date)),
+				'date_label' => $date_label,
 			];
 			$date = date('Y-m-d', strtotime($date . ' +1 days'));
-			// }
 		}
 		return $dates;
-		return $dates = [
-			[
-				'date' => date('Y-m-d', strtotime($date . ' -2 days')),
-				'date_label' => date('d D', strtotime($date . ' -2 days')),
-			],
-			[
-				'date' => date('Y-m-d', strtotime($date . ' -1 days')),
-				'date_label' => 'Yesterday',
-			],
-			[
-				'date' => date('Y-m-d', strtotime($date)),
-				'date_label' => 'Today',
-			],
-			[
-				'date' => date('Y-m-d', strtotime($date . ' +1 days')),
-				'date_label' => 'Tomorrow',
-			],
-			[
-				'date' => date('Y-m-d', strtotime($date . ' +2 days')),
-				'date_label' => date('d D', strtotime($date . ' +2 days')),
-			],
-		];
 
 	}
 
@@ -306,13 +284,13 @@ class TaskController extends Controller {
 			->orderBy('display_order')
 			->get();
 
-		if ($request->date) {
-			$date = date('Y-m-d', strtotime($request->date));
-			$date_label = date('d D', strtotime($date));
-		} else {
-			$date = date('Y-m-d');
-			$date_label = date('d D');
-		}
+		// if ($request->date) {
+		// 	$date = date('Y-m-d', strtotime($request->date));
+		// 	$date_label = date('d D', strtotime($date));
+		// } else {
+		// 	$date = date('Y-m-d');
+		// 	$date_label = date('d D');
+		// }
 
 		$date = $request->date ? date('Y-m-d', strtotime($request->date)) : $date = date('Y-m-d');
 		$date_ranges = $this->getDateRange($date);

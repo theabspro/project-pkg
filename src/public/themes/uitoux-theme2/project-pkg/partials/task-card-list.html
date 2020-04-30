@@ -12,21 +12,21 @@
             <% task.module.project_version.number %>
         </span>
         &nbsp;
-        <span class="label label-info">
+        <span class="label label-info" ng-if1="show_module">
             <md-tooltip md-direction="top">
                 Module Name
             </md-tooltip>
             <% task.module.name %>
         </span>
         &nbsp;
-        <span class="label label-danger">
+        <span class="label label-danger" ng-if="task.platform">
             <md-tooltip md-direction="top">
                 Platform
             </md-tooltip>
             <% task.platform.name %>
         </span>
         &nbsp;
-        <span class="label label-default">
+        <span class="label label-default" ng-if1="show_date">
             <md-tooltip md-direction="top">
                 Task Date
             </md-tooltip>
