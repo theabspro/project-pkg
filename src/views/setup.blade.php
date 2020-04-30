@@ -8,6 +8,76 @@
 
 	app.config(['$routeProvider', function($routeProvider) {
 	    $routeProvider.
+	    //Database
+	    when('/project-pkg/database/list', {
+	        template: '<database-list></database-list>',
+	        title: 'Databases',
+	    }).
+	    when('/project-pkg/database/add', {
+	        template: '<database-form></database-form>',
+	        title: 'Add Database',
+	    }).
+	    when('/project-pkg/database/edit/:id', {
+	        template: '<database-form></database-form>',
+	        title: 'Edit Database',
+	    }).
+	    when('/project-pkg/database/card-list', {
+	        template: '<database-card-list></database-card-list>',
+	        title: 'Database Card List',
+	    });
+
+    var databases_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/database/list.html')}}";
+    var databases_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/database/form.html')}}";
+    var databases_card_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/database/card-list.html')}}";
+    var databases_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/database-modal-form.html')}}";
+
+	    $routeProvider.
+	    //Table
+	    when('/project-pkg/table/list', {
+	        template: '<table-list></table-list>',
+	        title: 'Tables',
+	    }).
+	    when('/project-pkg/table/add', {
+	        template: '<table-form></table-form>',
+	        title: 'Add Table',
+	    }).
+	    when('/project-pkg/table/edit/:id', {
+	        template: '<table-form></table-form>',
+	        title: 'Edit Table',
+	    }).
+	    when('/project-pkg/table/card-list', {
+	        template: '<table-card-list></table-card-list>',
+	        title: 'Table Card List',
+	    });
+    var tables_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/list.html')}}";
+    var tables_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/form.html')}}";
+    var tables_card_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/card-list.html')}}";
+    var tables_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/table-modal-form.html')}}";
+
+	    $routeProvider.
+	    //Column
+	    when('/project-pkg/column/list', {
+	        template: '<column-list></column-list>',
+	        title: 'Columns',
+	    }).
+	    when('/project-pkg/column/add', {
+	        template: '<column-form></column-form>',
+	        title: 'Add Column',
+	    }).
+	    when('/project-pkg/column/edit/:id', {
+	        template: '<column-form></column-form>',
+	        title: 'Edit Column',
+	    }).
+	    when('/project-pkg/column/card-list', {
+	        template: '<column-card-list></column-card-list>',
+	        title: 'Column Card List',
+	    });
+    var columns_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/column/list.html')}}";
+    var columns_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/column/form.html')}}";
+    var columns_card_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/column/card-list.html')}}";
+    var columns_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/column-modal-form.html')}}";
+
+	    $routeProvider.
 	    //PROJECTS
 	    when('/project-pkg/project/list', {
 	        template: '<project-list></project-list>',
@@ -197,3 +267,5 @@
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/task-type/controller.js?v=2')}}"></script>
 <script type="text/javascript" src="{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/controller.js?v=2')}}"></script>
+<script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/database/controller.js')}}"></script>
+<script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/controller.js')}}"></script>

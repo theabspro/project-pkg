@@ -53,8 +53,9 @@
                         </div>
                         <!-- UNASSIGNED TASKS OF MODULES -->
                         <div class="panel-body">
-                            <ng-include src="task_card_list_template_url" ng-init="tasks = date_val.tasks;status_id = status.id;date = date_val.date;assigned_to_id='';module_id=''"></ng-include>
-                            <!-- <task-card-list tasks="date.tasks"></task-card-list> -->
+                            <div style="height: 380px; overflow: hidden; overflow-y: scroll;">
+                                <ng-include src="task_card_list_template_url" ng-init="tasks = status.tasks;status_id = status.id;date = date_val.date;assigned_to_id='';module_id=''"></ng-include>
+                            </div>
                             <div class="panel-footer">
                                 Tasks : {{date_val.tasks.length}} /
                                 EH : {{date_val.total_estimated_hour}} /

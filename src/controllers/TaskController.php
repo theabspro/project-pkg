@@ -153,6 +153,11 @@ class TaskController extends Controller {
 					$q->where('module_id', $request->module_id);
 				}
 			},
+			'tasks.module',
+			'tasks.module.projectVersion',
+			'tasks.module.projectVersion.project',
+			'tasks.assignedTo',
+			'tasks.assignedTo.profileImage',
 		])
 			->where([
 				'type_id' => 162, //TASK

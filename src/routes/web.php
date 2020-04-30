@@ -1,6 +1,28 @@
 <?php
 
 Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 'prefix' => 'project-pkg'], function () {
+
+	//Database
+	Route::get('/database/get-list', 'DatabaseController@getDatabaseList')->name('getDatabaseList');
+	Route::get('/database/get-form-data', 'DatabaseController@getDatabaseFormData')->name('getDatabaseFormData');
+	Route::post('/database/save', 'DatabaseController@saveDatabase')->name('saveDatabase');
+	Route::get('/database/delete', 'DatabaseController@deleteDatabase')->name('deleteDatabase');
+	Route::get('/database/get-filter-data', 'DatabaseController@getDatabaseFilterData')->name('getDatabaseFilterData');
+
+	//Table
+	Route::get('/table/get-list', 'TableController@getTableList')->name('getTableList');
+	Route::get('/table/get-form-data', 'TableController@getTableFormData')->name('getTableFormData');
+	Route::post('/table/save', 'TableController@saveTable')->name('saveTable');
+	Route::get('/table/delete', 'TableController@deleteTable')->name('deleteTable');
+	Route::get('/table/get-filter-data', 'TableController@getTableFilterData')->name('getTableFilterData');
+
+	//Column
+	Route::get('/column/get-list', 'ColumnController@getColumnList')->name('getColumnList');
+	Route::get('/column/get-form-data', 'ColumnController@getColumnFormData')->name('getColumnFormData');
+	Route::post('/column/save', 'ColumnController@saveColumn')->name('saveColumn');
+	Route::get('/column/delete', 'ColumnController@deleteColumn')->name('deleteColumn');
+	Route::get('/column/get-filter-data', 'ColumnController@getColumnFilterData')->name('getColumnFilterData');
+
 	Route::get('/project/get-list', 'ProjectController@getProjectList')->name('getProjectList');
 	Route::get('/project/get-form-data', 'ProjectController@getProjectFormData')->name('getProjectFormData');
 	Route::post('/project/save', 'ProjectController@saveProject')->name('saveProject');
