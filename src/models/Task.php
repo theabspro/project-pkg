@@ -4,13 +4,20 @@ namespace Abs\ProjectPkg;
 
 use Abs\HelperPkg\Traits\SeederTrait;
 use Abs\ModulePkg\Module;
+use Abs\ModulePkg\Platform;
 use Abs\ProjectPkg\ProjectVersion;
+use Abs\StatusPkg\Status;
 use App\Company;
 use App\Config;
 use App\ImportCronJob;
 use App\Project;
+use App\User;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\Rule;
+use PHPExcel_Shared_Date;
+use Validator;
 
 class Task extends Model {
 	use SeederTrait;
@@ -190,6 +197,10 @@ class Task extends Model {
 						'required',
 						'string',
 						'max:191',
+						Rule::exists('modules', 'name')
+							->where(function ($query) {
+								$query->whereNull('deleted_at');
+							}),
 					],
 					'platform' => [
 						'required',
@@ -214,6 +225,11 @@ class Task extends Model {
 						'string',
 						'max:191',
 					],
+					'task_number' => [
+						'nullable',
+						'string',
+						'max:191',
+					],
 					'description' => [
 						'nullable',
 						'string',
@@ -221,11 +237,11 @@ class Task extends Model {
 					],
 					'estimated_hours' => [
 						'required',
-						'integer',
+						'between:0,99.99',
 					],
 					'actual_hours' => [
 						'nullable',
-						'integer',
+						'between:0,99.99',
 					],
 					'assigned_to' => [
 						'nullable',
@@ -246,6 +262,10 @@ class Task extends Model {
 							}),
 					],
 					'task_date' => [
+						'nullable',
+						'string',
+					],
+					'remarks' => [
 						'nullable',
 						'string',
 					],
@@ -296,6 +316,14 @@ class Task extends Model {
 					$status['errors'][] = 'Invalid Type';
 				}
 
+				$status_detail = Status::where([
+					'company_id' => $job->company_id,
+					'name' => $record['status'],
+				])->first();
+				if (!$status_detail) {
+					$status['errors'][] = 'Invalid Status';
+				}
+
 				if (!empty($record['assigned_to'])) {
 					$assigned_to = User::where([
 						'company_id' => $job->company_id,
@@ -319,7 +347,6 @@ class Task extends Model {
 					$status['errors'][] = 'Invalid Date Format';
 				}
 
-				dd($record);
 				if (count($status['errors']) > 0) {
 					// dump($status['errors']);
 					$original_record['Record No'] = $k + 1;
@@ -330,85 +357,34 @@ class Task extends Model {
 				}
 
 				DB::beginTransaction();
-
 				// dd(Auth::user()->company_id);
-				$service_invoice = ServiceInvoice::firstOrNew([
+
+				$task = Task::firstOrNew([
 					'company_id' => $job->company_id,
-					'number' => $generateNumber['number'],
+					'number' => $record['task_number'],
 				]);
-				if ($type->id == 1061) {
-					$service_invoice->is_cn_created = 0;
-				} elseif ($type->id == 1060) {
-					$service_invoice->is_cn_created = 1;
-				}
 
-				$service_invoice->company_id = $job->company_id;
-				$service_invoice->type_id = $type->id;
-				$service_invoice->branch_id = $branch->id;
-				$service_invoice->sbu_id = $sbu->id;
-				$service_invoice->sub_category_id = $sub_category->id;
-				$service_invoice->invoice_date = date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($record['Doc Date']));
-				$service_invoice->document_date = date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($record['Doc Date']));
-				$service_invoice->customer_id = $customer->id;
-				$message = 'Service invoice added successfully';
-				$service_invoice->items_count = 1;
-				$service_invoice->status_id = $status_id;
-				$service_invoice->created_by_id = $job->created_by_id;
-				$service_invoice->updated_at = NULL;
-				$service_invoice->save();
+				$task->company_id = $job->company_id;
+				$task->assigned_to_id = !empty($assigned_to) ? $assigned_to->id : NULL;
+				$task->date = !empty($task_date) ? $task_date : NULL;
+				$task->module_id = !empty($module) ? $module->id : NULL;
+				$task->project_id = !empty($project) ? $project->id : NULL;
+				$task->subject = $record['subject'];
+				$task->description = $record['description'];
+				$task->platform_id = !empty($platform) ? $platform->id : NULL;
+				$task->type_id = !empty($type) ? $type->id : NULL;
+				$task->estimated_hours = !empty($record['estimated_hours']) ? $record['estimated_hours'] : NULL;
+				$task->actual_hours = !empty($record['actual_hours']) ? $record['actual_hours'] : NULL;
+				$task->status_id = !empty($status_detail) ? $status_detail->id : NULL;
+				$task->remarks = $record['remarks'];
+				//IF New TASK
+				// if (!$task->exists) {
+				$task->number = rand(1, 100000);
+				$task->save();
+				$task->number = 'TSK-' . $task->id;
+				// }
 
-				$service_invoice_item = ServiceInvoiceItem::firstOrNew([
-					'service_invoice_id' => $service_invoice->id,
-					'service_item_id' => $item_code->id,
-				]);
-				$service_invoice_item->description = $record['Reference'];
-				$service_invoice_item->qty = 1;
-				$service_invoice_item->rate = $record['Amount'];
-				$service_invoice_item->sub_total = 1 * $record['Amount'];
-				$service_invoice_item->save();
-
-				//SAVE SERVICE INVOICE ITEM TAX
-				$total_tax_amount = 0;
-
-				if ($item_code->sac_code_id) {
-
-					if ($service_invoice->customer->primaryAddress->state_id == $service_invoice->outlet->state_id) {
-						$taxes = $service_invoice_item->serviceItem->taxCode->taxes()->where('type_id', 1160)->get();
-					} else {
-						$taxes = $service_invoice_item->serviceItem->taxCode->taxes()->where('type_id', 1161)->get();
-					}
-					$item_taxes = [];
-					foreach ($taxes as $tax) {
-						$tax_amount = round($service_invoice_item->sub_total * $tax->pivot->percentage / 100, 2);
-						$total_tax_amount += $tax_amount;
-						$item_taxes[$tax->id] = [
-							'percentage' => $tax->pivot->percentage,
-							'amount' => $tax_amount,
-						];
-					}
-					$service_invoice_item->taxes()->sync($item_taxes);
-
-					// $tax_code = TaxCode::find($item_code->sac_code_id)->first();
-					// $tax_percentages = DB::table('tax_code_tax')
-					// 	->join('taxes', 'taxes.id', 'tax_code_tax.tax_id')
-					// 	->where('tax_code_id', $tax_code->id)
-					// 	->whereIn('tax_id', $taxes['tax_ids'])
-					// 	->get()
-					// 	->toArray()
-					// ;
-					// // dd($tax_percentages);
-					// $service_invoice_item->taxes()->sync([]);
-					// foreach ($tax_percentages as $tax) {
-					// 	$service_invoice_item->taxes()->attach($tax->tax_id, ['percentage' => $tax->percentage, 'amount' => self::percentage(1 * $record['Amount'], $tax->percentage)]);
-					// 	// $tax_amount[$tax->name] = self::percentage(1 * $record['Amount'], $tax->percentage);
-					// 	$total_tax_amount += self::percentage(1 * $record['Amount'], $tax->percentage);
-					// }
-				}
-				$service_invoice->amount_total = $record['Amount'];
-				$service_invoice->tax_total = $item_code->sac_code_id ? $total_tax_amount : 0;
-				$service_invoice->sub_total = 1 * $record['Amount'];
-				$service_invoice->total = $record['Amount'] + $total_tax_amount;
-				$service_invoice->save();
+				$task->save();
 
 				$job->incrementNew();
 
