@@ -15,8 +15,12 @@ class TablesC extends Migration {
 			Schema::create('tables', function (Blueprint $table) {
 				$table->increments('id');
 				$table->unsignedInteger('database_id');
+				$table->boolean('action');
 				$table->string('name', 32);
 				$table->unsignedMediumInteger('display_order')->nullable();
+				$table->boolean('has_author_ids');
+				$table->boolean('has_timestamps');
+				$table->boolean('has_soft_delete');
 				$table->unsignedInteger('created_by_id')->nullable();
 				$table->unsignedInteger('updated_by_id')->nullable();
 				$table->unsignedInteger('deleted_by_id')->nullable();

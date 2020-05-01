@@ -1,68 +1,17 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\ProjectPkg;
 use App\Http\Controllers\Controller;
 use App\Table;
-use Auth;
 use DB;
-use Entrust;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Validator;
-use Yajra\Datatables\Datatables;
 
 class TableController extends Controller {
 
 	public function __construct() {
 		$this->data['theme'] = config('custom.theme');
-	}
-
-	public function getTableList(Request $request) {
-		$tables = Table::withTrashed()
-
-			->select([
-				'tables.id',
-				'tables.name',
-				'tables.short_name',
-
-				DB::raw('IF(tables.deleted_at IS NULL, "Active","Inactive") as status'),
-			])
-			->where('tables.company_id', Auth::user()->company_id)
-
-			->where(function ($query) use ($request) {
-				if (!empty($request->name)) {
-					$query->where('tables.name', 'LIKE', '%' . $request->name . '%');
-				}
-			})
-			->where(function ($query) use ($request) {
-				if ($request->status == '1') {
-					$query->whereNull('tables.deleted_at');
-				} else if ($request->status == '0') {
-					$query->whereNotNull('tables.deleted_at');
-				}
-			})
-		;
-
-		return Datatables::of($tables)
-			->rawColumns(['name', 'action'])
-			->addColumn('name', function ($table) {
-				$status = $table->status == 'Active' ? 'green' : 'red';
-				return '<span class="status-indicator ' . $status . '"></span>' . $table->name;
-			})
-			->addColumn('action', function ($table) {
-				$img1 = asset('public/themes/' . $this->data['theme'] . '/img/content/table/edit-yellow.svg');
-				$img1_active = asset('public/themes/' . $this->data['theme'] . '/img/content/table/edit-yellow-active.svg');
-				$img_delete = asset('public/themes/' . $this->data['theme'] . '/img/content/table/delete-default.svg');
-				$img_delete_active = asset('public/themes/' . $this->data['theme'] . '/img/content/table/delete-active.svg');
-				$output = '';
-				if (Entrust::can('edit-table')) {
-					$output .= '<a href="#!/basic-pkg/table/edit/' . $table->id . '" id = "" title="Edit"><img src="' . $img1 . '" alt="Edit" class="img-responsive" onmouseover=this.src="' . $img1 . '" onmouseout=this.src="' . $img1 . '"></a>';
-				}
-				if (Entrust::can('delete-table')) {
-					$output .= '<a href="javascript:;" data-toggle="modal" data-target="#table-delete-modal" onclick="angular.element(this).scope().deleteTable(' . $table->id . ')" title="Delete"><img src="' . $img_delete . '" alt="Delete" class="img-responsive delete" onmouseover=this.src="' . $img_delete . '" onmouseout=this.src="' . $img_delete . '"></a>';
-				}
-				return $output;
-			})
-			->make(true);
 	}
 
 	public function getTableFormData(Request $request) {
@@ -81,30 +30,19 @@ class TableController extends Controller {
 	}
 
 	public function saveTable(Request $request) {
-		// dd($request->all());
 		try {
 			$error_messages = [
-				'short_name.required' => 'Short Name is Required',
-				'short_name.unique' => 'Short Name is already taken',
-				'short_name.min' => 'Short Name is Minimum 3 Charachers',
-				'short_name.max' => 'Short Name is Maximum 32 Charachers',
 				'name.required' => 'Name is Required',
 				'name.unique' => 'Name is already taken',
 				'name.min' => 'Name is Minimum 3 Charachers',
 				'name.max' => 'Name is Maximum 191 Charachers',
 			];
 			$validator = Validator::make($request->all(), [
-				'short_name' => [
-					'required:true',
-					'min:3',
-					'max:32',
-					'unique:tables,short_name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
-				],
 				'name' => [
 					'required:true',
 					'min:3',
 					'max:191',
-					'unique:tables,name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
+					'unique:tables,name,' . $request->id . ',id',
 				],
 			], $error_messages);
 			if ($validator->fails()) {
@@ -114,16 +52,12 @@ class TableController extends Controller {
 			DB::beginTransaction();
 			if (!$request->id) {
 				$table = new Table;
-				$table->company_id = Auth::user()->company_id;
 			} else {
 				$table = Table::withTrashed()->find($request->id);
 			}
 			$table->fill($request->all());
-			if ($request->status == 'Inactive') {
-				$table->deleted_at = Carbon::now();
-			} else {
-				$table->deleted_at = NULL;
-			}
+			$table->deleted_at = NULL;
+			$table->action = $request->action ? $request->action : 0;
 			$table->save();
 
 			DB::commit();
@@ -162,24 +96,71 @@ class TableController extends Controller {
 		}
 	}
 
-	public function getTables(Request $request) {
-		$tables = Table::withTrashed()
-			->with([
-				'tables',
-				'tables.user',
-			])
-			->select([
-				'tables.id',
-				'tables.name',
-				'tables.short_name',
-				DB::raw('IF(tables.deleted_at IS NULL, "Active","Inactive") as status'),
-			])
-			->where('tables.company_id', Auth::user()->company_id)
-			->get();
+	public function generateMigration(Request $r) {
+		$table = Table::with([
+			'columns',
+			'columns.dataType',
+			'columns.fk',
+			'columns.fkType',
+		])->find($r->id);
+
+		if (!$table) {
+			return response()->json([
+				'success' => false,
+				'error' => 'Table not found',
+			]);
+		}
+
+		$file_name = $table->name . '_c';
+		$class_name = str_replace(' ', '', ucwords(str_replace('_', ' ', $file_name)));
+		$file_name = date('Y_m_d_His_') . $file_name . '.php';
+		$contents = Storage::get('migration_templates/create_template.php');
+		// $contents = Storage::get('migration_templates/update_template.php');
+
+		$contents = str_replace('AAA', $class_name, $contents);
+		$contents = str_replace('BBB', $table->name, $contents);
+
+		$up_remove = '';
+		$up_create = '';
+		$up_fks = '';
+		$up_uks = '';
+		foreach ($table->columns as $column) {
+			$size = '';
+			if ($column->size) {
+				$size = ',' . $column->size;
+			}
+			$up_create .= '$table->' . $column->dataType->name . "('" . $column->name . "'" . $size . ")";
+			if ($column->is_nullable) {
+				$up_create .= '->nullable()';
+			}
+			$up_create .= ";\n";
+
+			if ($column->fk) {
+				$up_fks .= '$table->foreign("' . $column->name . '")->references("id")->on("' . $column->fk->name . '")->onDelete("' . $column->fkType->name . '")->onUpdate("' . $column->fkType->name . '");' . "\n";
+			}
+		}
+
+		$up_create .= '$table->unsignedInteger("created_by_id")->nullable();' . "" . '
+				$table->unsignedInteger("updated_by_id")->nullable();' . "" . '
+				$table->unsignedInteger("deleted_by_id")->nullable();' . "\n";
+
+		$up_create .= '$table->timestamps();' . "\n" . '$table->softDeletes();' . "\n";
+
+		$up_fks .= '$table->foreign("created_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
+				$table->foreign("updated_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
+				$table->foreign("deleted_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "\n";
+
+		$contents = str_replace('CCC', $up_remove, $contents);
+		$contents = str_replace('DDD', $up_create, $contents);
+		$contents = str_replace('EEE', $up_fks, $contents);
+		$contents = str_replace('FFF', $up_uks, $contents);
+
+		Storage::put('migrations/' . $file_name, $contents, 'public');
 
 		return response()->json([
 			'success' => true,
-			'tables' => $tables,
+			'message' => 'Migration file generated successfully!!',
+			'migration' => $contents,
 		]);
 	}
 }

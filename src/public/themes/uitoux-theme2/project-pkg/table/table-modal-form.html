@@ -1,0 +1,105 @@
+<div class="modal fade filter" id="table-form-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <h5 class="modal-title">
+                    {{$ctrl.table.id ? 'Edit' : 'Add'}} Table
+                    {{$ctrl.table.database ? ' to '+$ctrl.table.database.name +' Databse' : ''}}
+                </h5>
+            </div><!-- Modal Header -->
+            <form id="table_form">
+                <input type="hidden" name="id" value="{{$ctrl.table.id}}">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Table Name
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control" name="name" autocomplete="off" ng-model="$ctrl.table.name" id="table_name">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Is Create?
+                                    </label>
+                                    <md-switch ng-model="$ctrl.table.action" class="md-warn" ng-true-value="1" ng-false-value="0">
+                                    </md-switch>
+                                    <input type="hidden" name="action" value="{{$ctrl.table.action}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Has Author IDs?
+                                    </label>
+                                    <md-switch ng-model="$ctrl.table.has_author_ids" class="md-warn" ng-true-value="1" ng-false-value="0">
+                                    </md-switch>
+                                    <input type="hidden" name="has_author_ids" value="{{$ctrl.table.has_author_ids}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Has Time Stamps?
+                                    </label>
+                                    <md-switch ng-model="$ctrl.table.has_timestamps" class="md-warn" ng-true-value="1" ng-false-value="0">
+                                    </md-switch>
+                                    <input type="hidden" name="has_timestamps" value="{{$ctrl.table.has_timestamps}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Has Soft Delete?
+                                    </label>
+                                    <md-switch ng-model="$ctrl.table.has_soft_delete" class="md-warn" ng-true-value="1" ng-false-value="0">
+                                    </md-switch>
+                                    <input type="hidden" name="has_soft_delete" value="{{$ctrl.table.has_soft_delete}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Display Order
+                                    </label>
+                                    <input type="text" class="form-control" name="display_order" autocomplete="off" ng-model="$ctrl.table.display_order">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-rose submit" ng-click="saveTable()">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div><!-- Row -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Database
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select ng-model="$ctrl.table.database" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.database_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="database_id" value="{{$ctrl.table.database.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->

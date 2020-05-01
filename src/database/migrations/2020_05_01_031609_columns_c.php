@@ -16,6 +16,7 @@ class ColumnsC extends Migration {
 				$table->increments('id');
 				$table->unsignedInteger('table_id');
 				$table->string('name', 32);
+				$table->unsignedInteger('action_id')->nullable();
 				$table->string('new_name', 32)->nullable();
 				$table->unsignedInteger('data_type_id');
 				$table->string('size', 12)->nullable();
@@ -24,12 +25,15 @@ class ColumnsC extends Migration {
 				$table->string('uk')->nullable();
 				$table->boolean('is_nullable');
 				$table->string('default')->nullable();
+				$table->unsignedMediumInteger('display_order')->nullable();
 				$table->unsignedInteger('created_by_id')->nullable();
 				$table->unsignedInteger('updated_by_id')->nullable();
 				$table->unsignedInteger('deleted_by_id')->nullable();
 				$table->timestamps();
 				$table->softDeletes();
 
+				$table->foreign('table_id')->references('id')->on('tables')->onDelete('CASCADE')->onUpdate('cascade');
+				$table->foreign('action_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
 				$table->foreign('data_type_id')->references('id')->on('configs')->onDelete('CASCADE')->onUpdate('cascade');
 
 				$table->foreign('fk_id')->references('id')->on('tables')->onDelete('SET NULL')->onUpdate('cascade');

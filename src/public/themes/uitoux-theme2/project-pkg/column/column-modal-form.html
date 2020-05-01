@@ -1,0 +1,158 @@
+<div class="modal fade filter" id="column-form-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <h5 class="modal-title">
+                    {{$ctrl.column.id ? 'Edit' : 'Add'}} Column
+                    {{$ctrl.column.table ? ' to '+$ctrl.column.table.name + ' Table' : ''}}
+                </h5>
+            </div><!-- Modal Header -->
+            <form id="column_form">
+                <input type="hidden" name="id" value="{{$ctrl.column.id}}">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Column Name
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <input type="text" class="form-control" name="name" ng-model="$ctrl.column.name" id="column_name">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Operation
+                                    </label>
+                                    <ui-select ng-model="$ctrl.column.action" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.column_operation_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="action_id" value="{{$ctrl.column.action.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" ng-if="$ctrl.column.action.id == 304">
+                                <div class="form-group">
+                                    <label>
+                                        New Name
+                                    </label>
+                                    <input type="text" class="form-control" name="new_name" autocomplete="off" ng-model="$ctrl.column.new_name">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Data Type
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select ng-model="$ctrl.column.data_type" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.data_type_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="data_type_id" value="{{$ctrl.column.data_type.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6" ng-if="$ctrl.column.data_type.id != 274 && ($ctrl.column.data_type.id == 261 || $ctrl.column.data_type.id == 269 || $ctrl.column.data_type.id == 267)">
+                                <div class="form-group">
+                                    <label>
+                                        Size
+                                    </label>
+                                    <input type="text" class="form-control" name="size" ng-model="$ctrl.column.size">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6" ng-if="$ctrl.column.data_type.id == 260 ">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Foreign Key
+                                    </label>
+                                    <ui-select ng-model="$ctrl.column.fk" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.table_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="fk_id" value="{{$ctrl.column.fk.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6" ng-if="$ctrl.column.fk && $ctrl.column.data_type.id != 274">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Foreign Type
+                                    </label>
+                                    <ui-select ng-model="$ctrl.column.fk_type" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.fk_type_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="fk_type_id" value="{{$ctrl.column.fk_type.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6" ng-if="$ctrl.column.data_type.id != 274">
+                                <div class="form-group">
+                                    <label>
+                                        Is Nullable?
+                                    </label>
+                                    <md-switch ng-model="$ctrl.column.is_nullable" class="md-warn" ng-true-value="1" ng-false-value="0">
+                                    </md-switch>
+                                    <input type="hidden" name="is_nullable" value="{{$ctrl.column.is_nullable}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6" ng-if="$ctrl.column.data_type.id != 274">
+                                <div class="form-group">
+                                    <label>
+                                        Default
+                                    </label>
+                                    <input type="text" class="form-control" name="default" ng-model="$ctrl.column.default">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6 hide">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Table
+                                    </label>
+                                    <ui-select ng-model="$ctrl.column.table" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.table_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="table_id" value="{{$ctrl.column.table.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                        </div>
+                        <!--row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-rose submit" ng-click="saveColumn()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div><!-- Row -->
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->

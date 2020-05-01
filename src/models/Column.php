@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\ProjectPkg;
 
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
@@ -14,18 +14,37 @@ class Column extends Model {
 	protected $table = 'columns';
 	public $timestamps = true;
 	protected $fillable = [
-		'code',
-		'designation_id',
-		'github_username',
-		'date_of_join',
+		'name',
+		'new_name',
+		'table_id',
+		'action_id',
+		'data_type_id',
+		'size',
+		'fk_id',
+		'fk_type_id',
+		'uk',
+		'is_nullable',
+		'default',
 	];
 
-	public function getDateOfJoinAttribute($value) {
-		return empty($value) ? '' : date('d-m-Y', strtotime($value));
+	public function table() {
+		return $this->belongsTo('App\Table');
 	}
 
-	public function setDateOfJoinAttribute($date) {
-		return $this->attributes['date_of_join'] = empty($date) ? NULL : date('Y-m-d', strtotime($date));
+	public function fk() {
+		return $this->belongsTo('App\Table', 'fk_id');
+	}
+
+	public function action() {
+		return $this->belongsTo('App\Config', 'action_id');
+	}
+
+	public function fkType() {
+		return $this->belongsTo('App\Config', 'fk_type_id');
+	}
+
+	public function dataType() {
+		return $this->belongsTo('App\Config', 'data_type_id');
 	}
 
 	public static function createFromObject($record_data) {

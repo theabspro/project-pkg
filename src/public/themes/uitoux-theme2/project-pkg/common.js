@@ -143,6 +143,153 @@ app.factory("ProjectPkgHelper", function($http, $q) {
 
         },
 
+        saveDatabase: function() {
+            var defer = $q.defer();
+
+            var form = '#database_form';
+            var v = jQuery(form).validate({
+                ignore: '',
+                rules: {
+                    'name': {
+                        required: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(form)[0]);
+                    $('.submit').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['saveDatabase'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#database-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+            return defer.promise;
+        },
+
+        saveTable: function() {
+            var defer = $q.defer();
+
+            var form = '#table_form';
+            var v = jQuery(form).validate({
+                ignore: '',
+                rules: {
+                    'name': {
+                        required: true,
+                    },
+                    'display_order': {
+                        // digit: true,
+                    },
+                    'database_id': {
+                        required: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(form)[0]);
+                    $('.submit').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['saveTable'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#table-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+            return defer.promise;
+        },
+
+        saveColumn: function() {
+            var defer = $q.defer();
+
+            var form = '#column_form';
+            var v = jQuery(form).validate({
+                ignore: '',
+                rules: {
+                    'name': {
+                        required: true,
+                    },
+                    'data_type_id': {
+                        required: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(form)[0]);
+                    $('.submit').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['saveColumn'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#column-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+            return defer.promise;
+        },
+
         deleteTask: function(id) {
             return $http.get(
                 laravel_routes['deleteTask'], {

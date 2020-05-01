@@ -1,6 +1,6 @@
 <?php
 
-namespace Abs\BasicPkg;
+namespace Abs\ProjectPkg;
 
 use Abs\HelperPkg\Traits\SeederTrait;
 use App\Company;
@@ -14,18 +14,21 @@ class Table extends Model {
 	protected $table = 'tables';
 	public $timestamps = true;
 	protected $fillable = [
-		'code',
-		'designation_id',
-		'github_username',
-		'date_of_join',
+		'name',
+		'database_id',
+		'display_order',
+		'has_author_ids',
+		'has_timestamps',
+		'has_soft_delete',
+		'action',
 	];
 
-	public function getDateOfJoinAttribute($value) {
-		return empty($value) ? '' : date('d-m-Y', strtotime($value));
+	public function database() {
+		return $this->belongsTo('App\Database');
 	}
 
-	public function setDateOfJoinAttribute($date) {
-		return $this->attributes['date_of_join'] = empty($date) ? NULL : date('Y-m-d', strtotime($date));
+	public function columns() {
+		return $this->hasMany('App\Column');
 	}
 
 	public static function createFromObject($record_data) {
@@ -61,6 +64,19 @@ class Table extends Model {
 		$record->created_by_id = $admin->id;
 		$record->save();
 		return $record;
+	}
+
+	public static function getList($add_default = true, $default_text = 'Select Table') {
+		$list = Collect(Self::select([
+			'id',
+			'name',
+		])
+				->orderBy('name')
+				->get());
+		if ($add_default) {
+			$list->prepend(['id' => '', 'name' => $default_text]);
+		}
+		return $list;
 	}
 
 }

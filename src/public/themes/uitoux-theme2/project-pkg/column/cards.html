@@ -1,0 +1,66 @@
+<ul class="list-group" dnd-list="columns" dnd-allowed-types="['column']" dnd-external-sources="true" dnd-drop="dropColumnCallback(event,index, item)" dnd-dragover="true" dnd-droppable="true" style=" margin-bottom: 0;">
+    <li ng-repeat="column in columns" class="list-group-item list-group-item-warning" ng-click="showColumnForm(column, '', $event)" dnd-dragstart="dragColumnstartCallback(event)" dnd-draggable="column" dnd-effect-allowed="move" dnd-type="'column'" dnd-moved="columns.splice($index, 1)" id="column_<%column.id%>">
+        <span class="label label-primary">
+            <% column.name %>
+        </span>
+        <span class="label label-warning" ng-if="column.new_name">
+            <md-tooltip md-direction="top">
+                New Name
+            </md-tooltip>
+            {{column.new_name}}
+        </span>
+        <span class="label label-info">
+            <md-tooltip md-direction="top">
+                Data Type
+            </md-tooltip>
+            <% column.data_type.name %>
+        </span>
+        <span class="label label-danger" ng-if="column.size">
+            <md-tooltip md-direction="top">
+                Size
+            </md-tooltip>
+            <% column.size %>
+        </span>
+        <span class="label label-default" ng-if="column.fk">
+            <md-tooltip md-direction="top">
+                Foreign Key
+            </md-tooltip>
+            <% column.fk.name %>
+        </span>
+        <span class="label label-warning" ng-if="column.fk_type">
+            <md-tooltip md-direction="top">
+                Foreign Key Type
+            </md-tooltip>
+            <% column.fk_type.name %>
+        </span>
+        <span class="label label-primary" ng-if="column.uk">
+            <md-tooltip md-direction="top">
+                Unique Key
+            </md-tooltip>
+            <% column.uk %>
+        </span>
+        <span class="label label-success">
+            <% column.is_nullable ? 'NULL' : 'NOT NULL' %>
+        </span>
+        <span class="label label-danger" ng-if="column.default">
+            <md-tooltip md-direction="top">
+                Default Value
+            </md-tooltip>
+            <% column.default %>
+        </span>
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-default" ng-click="deleteColumn(column.id,$event,columns,$index)" ng-if="hasPermission('delete-column')">
+                <md-tooltip md-direction="top">
+                    Delete Column
+                </md-tooltip>
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+        </div>
+    </li>
+    <li ng-if="columns.length == 0" class="alert alert-warning" style="padding: 0 15px;margin-bottom: 0;">
+        No Columns
+    </li>
+    <li class="dndPlaceholder">
+        Drop any <strong>Column</strong> here
+    </li>
+</ul>

@@ -1,14 +1,14 @@
 <?php
 
-namespace Abs\BasicPkg;
-use App\Http\Controllers\Controller;
+namespace Abs\ProjectPkg;
+use App\Config;
 use App\Database;
+use App\Http\Controllers\Controller;
+use App\Table;
 use Auth;
 use DB;
-use Entrust;
 use Illuminate\Http\Request;
 use Validator;
-use Yajra\Datatables\Datatables;
 
 class DatabaseController extends Controller {
 
@@ -16,53 +16,36 @@ class DatabaseController extends Controller {
 		$this->data['theme'] = config('custom.theme');
 	}
 
-	public function getDatabaseList(Request $request) {
+	public function getDatabaseCardList(Request $request) {
 		$databases = Database::withTrashed()
-
+			->with([
+				'tables',
+				'tables.columns',
+				'tables.columns.dataType',
+				'tables.columns.fk',
+				'tables.columns.fkType',
+				'tables.columns.table',
+				'tables.columns.action',
+			])
 			->select([
 				'databases.id',
 				'databases.name',
-				'databases.short_name',
-
 				DB::raw('IF(databases.deleted_at IS NULL, "Active","Inactive") as status'),
 			])
 			->where('databases.company_id', Auth::user()->company_id)
+			->get();
 
-			->where(function ($query) use ($request) {
-				if (!empty($request->name)) {
-					$query->where('databases.name', 'LIKE', '%' . $request->name . '%');
-				}
-			})
-			->where(function ($query) use ($request) {
-				if ($request->status == '1') {
-					$query->whereNull('databases.deleted_at');
-				} else if ($request->status == '0') {
-					$query->whereNotNull('databases.deleted_at');
-				}
-			})
-		;
-
-		return Datatables::of($databases)
-			->rawColumns(['name', 'action'])
-			->addColumn('name', function ($database) {
-				$status = $database->status == 'Active' ? 'green' : 'red';
-				return '<span class="status-indicator ' . $status . '"></span>' . $database->name;
-			})
-			->addColumn('action', function ($database) {
-				$img1 = asset('public/themes/' . $this->data['theme'] . '/img/content/table/edit-yellow.svg');
-				$img1_active = asset('public/themes/' . $this->data['theme'] . '/img/content/table/edit-yellow-active.svg');
-				$img_delete = asset('public/themes/' . $this->data['theme'] . '/img/content/table/delete-default.svg');
-				$img_delete_active = asset('public/themes/' . $this->data['theme'] . '/img/content/table/delete-active.svg');
-				$output = '';
-				if (Entrust::can('edit-database')) {
-					$output .= '<a href="#!/basic-pkg/database/edit/' . $database->id . '" id = "" title="Edit"><img src="' . $img1 . '" alt="Edit" class="img-responsive" onmouseover=this.src="' . $img1 . '" onmouseout=this.src="' . $img1 . '"></a>';
-				}
-				if (Entrust::can('delete-database')) {
-					$output .= '<a href="javascript:;" data-toggle="modal" data-target="#database-delete-modal" onclick="angular.element(this).scope().deleteDatabase(' . $database->id . ')" title="Delete"><img src="' . $img_delete . '" alt="Delete" class="img-responsive delete" onmouseover=this.src="' . $img_delete . '" onmouseout=this.src="' . $img_delete . '"></a>';
-				}
-				return $output;
-			})
-			->make(true);
+		return response()->json([
+			'success' => true,
+			'databases' => $databases,
+			'extras' => [
+				'database_list' => Database::getList(),
+				'table_list' => Table::getList(),
+				'data_type_list' => Config::getList(51),
+				'fk_type_list' => Config::getList(52),
+				'column_operation_list' => Config::getList(53),
+			],
+		]);
 	}
 
 	public function getDatabaseFormData(Request $request) {
@@ -84,22 +67,12 @@ class DatabaseController extends Controller {
 		// dd($request->all());
 		try {
 			$error_messages = [
-				'short_name.required' => 'Short Name is Required',
-				'short_name.unique' => 'Short Name is already taken',
-				'short_name.min' => 'Short Name is Minimum 3 Charachers',
-				'short_name.max' => 'Short Name is Maximum 32 Charachers',
 				'name.required' => 'Name is Required',
 				'name.unique' => 'Name is already taken',
 				'name.min' => 'Name is Minimum 3 Charachers',
 				'name.max' => 'Name is Maximum 191 Charachers',
 			];
 			$validator = Validator::make($request->all(), [
-				'short_name' => [
-					'required:true',
-					'min:3',
-					'max:32',
-					'unique:databases,short_name,' . $request->id . ',id,company_id,' . Auth::user()->company_id,
-				],
 				'name' => [
 					'required:true',
 					'min:3',
@@ -119,11 +92,7 @@ class DatabaseController extends Controller {
 				$database = Database::withTrashed()->find($request->id);
 			}
 			$database->fill($request->all());
-			if ($request->status == 'Inactive') {
-				$database->deleted_at = Carbon::now();
-			} else {
-				$database->deleted_at = NULL;
-			}
+			$database->deleted_at = NULL;
 			$database->save();
 
 			DB::commit();
@@ -160,26 +129,5 @@ class DatabaseController extends Controller {
 			DB::rollBack();
 			return response()->json(['success' => false, 'errors' => ['Exception Error' => $e->getMessage()]]);
 		}
-	}
-
-	public function getDatabases(Request $request) {
-		$databases = Database::withTrashed()
-			->with([
-				'databases',
-				'databases.user',
-			])
-			->select([
-				'databases.id',
-				'databases.name',
-				'databases.short_name',
-				DB::raw('IF(databases.deleted_at IS NULL, "Active","Inactive") as status'),
-			])
-			->where('databases.company_id', Auth::user()->company_id)
-			->get();
-
-		return response()->json([
-			'success' => true,
-			'databases' => $databases,
-		]);
 	}
 }

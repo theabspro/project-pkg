@@ -10,7 +10,7 @@ app.component('moduleDeveloperWiseTasks', {
             return false;
         }
         self.theme = theme;
-        $scope.user_id = user_id;
+        // $scope.user_id = user_id;
 
 
         self.filter = {};

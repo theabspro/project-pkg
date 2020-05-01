@@ -12,6 +12,84 @@ class ProjectPkgPermissionSeeder extends Seeder {
 	 */
 	public function run() {
 		$permissions = [
+			//Database
+			[
+				'display_order' => 99,
+				'parent' => null,
+				'name' => 'databases',
+				'display_name' => 'Databases',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'databases',
+				'name' => 'add-database',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'databases',
+				'name' => 'edit-database',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'databases',
+				'name' => 'delete-database',
+				'display_name' => 'Delete',
+			],
+
+			//Tables
+			[
+				'display_order' => 99,
+				'parent' => null,
+				'name' => 'tables',
+				'display_name' => 'Tables',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'tables',
+				'name' => 'add-table',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'tables',
+				'name' => 'edit-table',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'tables',
+				'name' => 'delete-table',
+				'display_name' => 'Delete',
+			],
+
+			//Columns
+			[
+				'display_order' => 99,
+				'parent' => null,
+				'name' => 'columns',
+				'display_name' => 'Columns',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'columns',
+				'name' => 'add-column',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'columns',
+				'name' => 'edit-column',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'columns',
+				'name' => 'delete-column',
+				'display_name' => 'Delete',
+			],
+
 			//PROJECTS
 			[
 				'display_order' => 10,

@@ -1,8 +1,9 @@
 <?php
 
-Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 'prefix' => 'project-pkg'], function () {
+Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['web', 'auth']], function () {
 
 	//Database
+	Route::get('/database/get-card-list', 'DatabaseController@getDatabaseCardList')->name('getDatabaseCardList');
 	Route::get('/database/get-list', 'DatabaseController@getDatabaseList')->name('getDatabaseList');
 	Route::get('/database/get-form-data', 'DatabaseController@getDatabaseFormData')->name('getDatabaseFormData');
 	Route::post('/database/save', 'DatabaseController@saveDatabase')->name('saveDatabase');
@@ -15,6 +16,7 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/table/save', 'TableController@saveTable')->name('saveTable');
 	Route::get('/table/delete', 'TableController@deleteTable')->name('deleteTable');
 	Route::get('/table/get-filter-data', 'TableController@getTableFilterData')->name('getTableFilterData');
+	Route::get('/table/generate-migration', 'TableController@generateMigration')->name('generateMigration');
 
 	//Column
 	Route::get('/column/get-list', 'ColumnController@getColumnList')->name('getColumnList');
@@ -22,6 +24,9 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/column/save', 'ColumnController@saveColumn')->name('saveColumn');
 	Route::get('/column/delete', 'ColumnController@deleteColumn')->name('deleteColumn');
 	Route::get('/column/get-filter-data', 'ColumnController@getColumnFilterData')->name('getColumnFilterData');
+});
+
+Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 'prefix' => 'project-pkg'], function () {
 
 	Route::get('/project/get-list', 'ProjectController@getProjectList')->name('getProjectList');
 	Route::get('/project/get-form-data', 'ProjectController@getProjectFormData')->name('getProjectFormData');
