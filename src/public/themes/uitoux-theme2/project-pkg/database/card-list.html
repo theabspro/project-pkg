@@ -103,9 +103,10 @@
                             <div style="height: 400px; overflow: hidden; overflow-y: scroll;">
                                 <div class="panel panel-info" ng-repeat="(key, table) in database.tables">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">
-                                            {{table.name}}
-                                            <div class="btn-group pull-right">
+                                        <div class="panel-title">
+                                            {{table.name}} ({{table.action == 0 ? 'C' : 'U'}})
+                                            <br />
+                                            <div class="btn-group ">
                                                 <button type="button" class="btn btn-sm btn-default" ng-click="table.database = database; showTableForm(table,$event)">
                                                     <md-tooltip md-direction="top">
                                                         Edit Table
@@ -124,6 +125,12 @@
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                                 </button>
+                                                <button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.table = table; showUKForm({})" ng-if="hasPermission('delete-table')">
+                                                    <md-tooltip md-direction="top">
+                                                        Unique Keys
+                                                    </md-tooltip>
+                                                    <span class="glyphicon glyphicon-magnet" aria-hidden="true"></span>
+                                                </button>
                                                 <button type="button" class="btn btn-sm btn-default" ng-click="generateMigration(table)">
                                                     <md-tooltip md-direction="top">
                                                         Generate Migration
@@ -131,7 +138,7 @@
                                                     <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span>
                                                 </button>
                                             </div>
-                                        </h3>
+                                        </div>
                                     </div>
                                     <column-cards ng-init="columns = table.columns"></column-cards>
                                 </div>
@@ -146,9 +153,10 @@
         </div><!-- Container -->
     </div><!-- Page Main Content -->
 </div><!-- Content Wrap -->
-<database-modal-form database="$ctrl.database"></database-modal-form>
-<table-modal-form column="$ctrl.table"></table-modal-form>
-<column-modal-form column="$ctrl.column"></column-modal-form>
+<database-modal-form></database-modal-form>
+<table-modal-form></table-modal-form>
+<table-uk-modal-form></table-uk-modal-form>
+<column-modal-form></column-modal-form>
 <!-- Filter Modal -->
 <div class="modal fade filter" id="filter-modal">
     <div class="modal-dialog" role="document">

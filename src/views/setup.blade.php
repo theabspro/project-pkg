@@ -208,6 +208,7 @@
     var table_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/form.html')}}";
     var table_card_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/card-list.html')}}";
     var table_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/table-modal-form.html')}}";
+    var table_uk_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/table-uk-modal-form.html')}}";
 
     var project_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/list.html')}}";
     var project_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/form.html')}}";

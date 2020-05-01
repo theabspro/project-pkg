@@ -82,8 +82,20 @@ app.component('databaseCardList', {
 
             if (!self.table.id) {
                 self.table.database = self.database;
+                self.table.action = 0;
             }
         }
+
+        $scope.showUKForm = function(uk) {
+            // $event.stopPropagation();
+            $('#table-uk-modal-form').modal('show');
+            $('#table-uk-modal-form').on('shown.bs.modal', function(e) {
+                // $('#table_name').focus();
+            })
+            self.uk = uk;
+            self.uk.table = self.table;
+        }
+
 
 
         $scope.showColumnForm = function(column) {

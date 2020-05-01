@@ -82,4 +82,17 @@ class Column extends Model {
 		return $record;
 	}
 
+	public static function getList($params = [], $add_default = true, $default_text = 'Select Column') {
+		$list = Collect(Self::select([
+			'id',
+			'name',
+		])
+				->orderBy('name')
+				->get());
+		if ($add_default) {
+			$list->prepend(['id' => '', 'name' => $default_text]);
+		}
+		return $list;
+	}
+
 }

@@ -1,0 +1,56 @@
+<div class="modal fade filter" id="table-uk-modal-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close ripple" data-dismiss="modal" aria-label="Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <h5 class="modal-title">
+                    {{$ctrl.uk.id ? 'Edit' : 'Add'}} Unique Key {{$ctrl.uk.table.name}} Table
+                </h5>
+            </div><!-- Modal Header -->
+            <form id="uk_form">
+                <input type="hidden" name="id" value="{{$ctrl.uk.id}}">
+                <input type="hidden" name="table_id" value="{{$ctrl.uk.table.id}}">
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Columns
+                                        <sup class="mandatory">*</sup>
+                                    </label>
+                                    <ui-select multiple ng-model="$ctrl.uk.columns" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.database_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="database_id" value="{{$ctrl.uk.database.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Unique Key Name
+                                    </label>
+                                    <input type="text" class="form-control" name="name" autocomplete="off" ng-model="$ctrl.uk.name">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-rose submit" ng-click="saveTable()">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div><!-- Row -->
+                        </div>
+                    </div><!-- Modal Form -->
+                </div><!-- Modal Body -->
+            </form>
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Modal -->

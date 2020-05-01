@@ -57,7 +57,9 @@ class TableController extends Controller {
 			}
 			$table->fill($request->all());
 			$table->deleted_at = NULL;
-			$table->action = $request->action ? $request->action : 0;
+			$table->has_author_ids = $request->has_author_ids ? $request->has_author_ids : 0;
+			$table->has_timestamps = $request->has_timestamps ? $request->has_timestamps : 0;
+			$table->has_soft_delete = $request->has_soft_delete ? $request->has_soft_delete : 0;
 			$table->save();
 
 			DB::commit();
@@ -81,6 +83,13 @@ class TableController extends Controller {
 		}
 	}
 
+	public function getTableColumns(Request $r) {
+		return response()->json([
+			'success' => true,
+			'column_list' => Column::getList(),
+		]);
+	}
+
 	public function deleteTable(Request $request) {
 		DB::beginTransaction();
 		// dd($request->id);
@@ -102,6 +111,7 @@ class TableController extends Controller {
 			'columns.dataType',
 			'columns.fk',
 			'columns.fkType',
+			'columns.action',
 		])->find($r->id);
 
 		if (!$table) {
@@ -111,11 +121,15 @@ class TableController extends Controller {
 			]);
 		}
 
-		$file_name = $table->name . '_c';
+		if ($table->action == 0) {
+			$file_name = $table->name . '_c';
+			$contents = Storage::get('migration_templates/create_template.php');
+		} else {
+			$file_name = $table->name . '_u' . rand(1, 1000);
+			$contents = Storage::get('migration_templates/update_template.php');
+		}
 		$class_name = str_replace(' ', '', ucwords(str_replace('_', ' ', $file_name)));
 		$file_name = date('Y_m_d_His_') . $file_name . '.php';
-		$contents = Storage::get('migration_templates/create_template.php');
-		// $contents = Storage::get('migration_templates/update_template.php');
 
 		$contents = str_replace('AAA', $class_name, $contents);
 		$contents = str_replace('BBB', $table->name, $contents);
@@ -126,12 +140,25 @@ class TableController extends Controller {
 		$up_uks = '';
 		foreach ($table->columns as $column) {
 			$size = '';
-			if ($column->size) {
-				$size = ',' . $column->size;
-			}
-			$up_create .= '$table->' . $column->dataType->name . "('" . $column->name . "'" . $size . ")";
-			if ($column->is_nullable) {
-				$up_create .= '->nullable()';
+			if ($column->action->id == 300) {
+				//Create
+				if ($column->size) {
+					$size = ',' . $column->size;
+				}
+				$up_create .= '$table->' . $column->dataType->name . "('" . $column->name . "'" . $size . ")";
+				if ($column->is_nullable) {
+					$up_create .= '->nullable()';
+				}
+				if ($column->action->id == 302) {
+					//Alter
+					$up_create .= '->change()';
+				}
+			} elseif ($column->action->id == 300) {
+				//Remove
+				$up_remove .= '$table->dropColumn("' . $column->name . '");' . "\n";
+			} elseif ($column->action->id == 300) {
+				//Rename
+				$up_create .= '$table->rename("' . $column->name . '","' . $column->new_name . '");' . "\n";
 			}
 			$up_create .= ";\n";
 
@@ -140,15 +167,23 @@ class TableController extends Controller {
 			}
 		}
 
-		$up_create .= '$table->unsignedInteger("created_by_id")->nullable();' . "" . '
+		if ($table->has_author_ids == 1) {
+			$up_create .= '$table->unsignedInteger("created_by_id")->nullable();' . "" . '
 				$table->unsignedInteger("updated_by_id")->nullable();' . "" . '
 				$table->unsignedInteger("deleted_by_id")->nullable();' . "\n";
 
-		$up_create .= '$table->timestamps();' . "\n" . '$table->softDeletes();' . "\n";
-
-		$up_fks .= '$table->foreign("created_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
+			$up_fks .= '$table->foreign("created_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
 				$table->foreign("updated_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
 				$table->foreign("deleted_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "\n";
+
+		}
+
+		if ($table->has_timestamps == 1) {
+			$up_create .= '$table->timestamps();' . "\n";
+		}
+		if ($table->has_soft_delete == 1) {
+			$up_create .= '$table->softDeletes();' . "\n";
+		}
 
 		$contents = str_replace('CCC', $up_remove, $contents);
 		$contents = str_replace('DDD', $up_create, $contents);
