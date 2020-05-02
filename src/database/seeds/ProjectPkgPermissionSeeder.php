@@ -12,6 +12,40 @@ class ProjectPkgPermissionSeeder extends Seeder {
 	 */
 	public function run() {
 		$permissions = [
+			//PKG Helper
+			[
+				'display_order' => 99,
+				'parent' => null,
+				'name' => 'pkg-helper',
+				'display_name' => 'PKG Helper',
+			],
+
+			//Unique Keys
+			[
+				'display_order' => 99,
+				'parent' => null,
+				'name' => 'unique-keys',
+				'display_name' => 'Unique Keys',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'unique-keys',
+				'name' => 'add-unique-key',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'unique-keys',
+				'name' => 'edit-unique-key',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'unique-keys',
+				'name' => 'delete-unique-key',
+				'display_name' => 'Delete',
+			],
+
 			//Database
 			[
 				'display_order' => 99,
