@@ -290,6 +290,52 @@ app.factory("ProjectPkgHelper", function($http, $q) {
             return defer.promise;
         },
 
+        saveUniqueKey: function() {
+            var defer = $q.defer();
+
+            var form = '#unique_key_form';
+            var v = jQuery(form).validate({
+                ignore: '',
+                rules: {
+                    'columns': {
+                        required: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(form)[0]);
+                    $('.submit').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['saveUniqueKey'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#unique-key-modal-form').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+            return defer.promise;
+        },
+
         deleteTask: function(id) {
             return $http.get(
                 laravel_routes['deleteTask'], {

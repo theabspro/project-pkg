@@ -31,6 +31,10 @@ class Table extends Model {
 		return $this->hasMany('App\Column');
 	}
 
+	public function uniqueKeys() {
+		return $this->hasMany('App\UniqueKey');
+	}
+
 	public static function createFromObject($record_data) {
 
 		$errors = [];

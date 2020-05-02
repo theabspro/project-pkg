@@ -86,18 +86,6 @@ app.component('databaseCardList', {
             }
         }
 
-        $scope.showUKForm = function(uk) {
-            // $event.stopPropagation();
-            $('#table-uk-modal-form').modal('show');
-            $('#table-uk-modal-form').on('shown.bs.modal', function(e) {
-                // $('#table_name').focus();
-            })
-            self.uk = uk;
-            self.uk.table = self.table;
-        }
-
-
-
         $scope.showColumnForm = function(column) {
             $('#column-form-modal').modal('show');
             $('#column-form-modal').on('shown.bs.modal', function(e) {
@@ -110,6 +98,24 @@ app.component('databaseCardList', {
             }
         }
 
+        $scope.showUniqueKeyForm = function(uk) {
+            // $event.stopPropagation();
+            $('#unique-key-modal-form').modal('show');
+            $('#unique-key-modal-form').on('shown.bs.modal', function(e) {
+                // $('#table_name').focus();
+            })
+            self.uk = uk;
+            self.uk.table = self.table;
+            $http.post(
+                laravel_routes['getUniqueKeyFormData'], {
+                    table_id: uk.table.id,
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    $scope.extras.column_list = response.data.column_list;
+                }
+            });
+        }
 
         //SAVE DATABASE
         $scope.saveDatabase = function() {
@@ -128,6 +134,13 @@ app.component('databaseCardList', {
         //SAVE COLUMN
         $scope.saveColumn = function() {
             ProjectPkgHelper.saveColumn().then(function(res) {
+                $scope.fetchData();
+            });
+        }
+
+        //SAVE UNIQUE KEY
+        $scope.saveUniqueKey = function() {
+            ProjectPkgHelper.saveUniqueKey().then(function(res) {
                 $scope.fetchData();
             });
         }

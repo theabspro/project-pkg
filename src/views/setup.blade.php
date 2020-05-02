@@ -207,8 +207,10 @@
     var table_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/list.html')}}";
     var table_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/form.html')}}";
     var table_card_list_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/card-list.html')}}";
-    var table_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/table-modal-form.html')}}";
-    var table_uk_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/table-uk-modal-form.html')}}";
+    var table_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/modal-form.html')}}";
+
+    var unique_key_modal_form_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/unique-key/modal-form.html')}}";
+    var unique_key_cards_template_url = "{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/unique-key/cards.html')}}";
 
     var project_list_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/list.html')}}";
     var project_form_template_url = "{{URL::asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/project/form.html')}}";
@@ -276,3 +278,4 @@
 <script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/database/controller.js')}}"></script>
 <script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/controller.js')}}"></script>
 <script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/column/controller.js')}}"></script>
+<script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/unique-key/controller.js')}}"></script>

@@ -1,0 +1,29 @@
+<ul class="list-group" dnd-list="unique_keys" dnd-allowed-types="['unique_key']" dnd-external-sources="true" dnd-drop="dropUniqueKeyCallback(event,index, item)" dnd-dragover="true" dnd-droppable="true" style=" margin-bottom: 0;">
+    <li ng-repeat="unique_key in unique_keys" class="list-group-item list-group-item-defaulr" ng-click="showUniqueKeyForm(unique_key)" dnd-dragstart="dragUniqueKeystartCallback(event)" dnd-draggable="unique_key" dnd-effect-allowed="move" dnd-type="'unique_key'" dnd-moved="unique_keys.splice($index, 1)" id="unique_key_<%unique_key.id%>">
+        <span class="label label-primary">
+            (
+            <% unique_key.action.name %>)
+            <% unique_key.columns %>
+        </span>
+        <span class="label label-warning" ng-if="unique_key.new_name">
+            <md-tooltip md-direction="top">
+                Name
+            </md-tooltip>
+            <% unique_key.name %>
+        </span>
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-default" ng-click="deleteUniqueKey(unique_key.id,$event,unique_keys,$index)" ng-if1="hasPermission('delete-unique-key')">
+                <md-tooltip md-direction="top">
+                    Delete Unique Key
+                </md-tooltip>
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+        </div>
+    </li>
+    <li ng-if="unique_keys.length == 0" class="alert alert-warning" style="padding: 0 15px;margin-bottom: 0;">
+        No Unique Keys
+    </li>
+    <li class="dndPlaceholder">
+        Drop any <strong>Unique Key</strong> here
+    </li>
+</ul>

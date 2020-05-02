@@ -8,43 +8,24 @@ use App\Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Column extends Model {
+class UniqueKey extends Model {
 	use SeederTrait;
 	use SoftDeletes;
-	protected $table = 'columns';
+	protected $table = 'unique_keys';
 	public $timestamps = true;
 	protected $fillable = [
-		'name',
-		'new_name',
 		'table_id',
+		'columns',
+		'name',
 		'action_id',
-		'data_type_id',
-		'size',
-		'fk_id',
-		'fk_type_id',
-		'uk',
-		'is_nullable',
-		'default',
 	];
 
 	public function table() {
 		return $this->belongsTo('App\Table');
 	}
 
-	public function fk() {
-		return $this->belongsTo('App\Table', 'fk_id');
-	}
-
 	public function action() {
 		return $this->belongsTo('App\Config', 'action_id');
-	}
-
-	public function fkType() {
-		return $this->belongsTo('App\Config', 'fk_type_id');
-	}
-
-	public function dataType() {
-		return $this->belongsTo('App\Config', 'data_type_id');
 	}
 
 	public static function createFromObject($record_data) {
@@ -82,16 +63,11 @@ class Column extends Model {
 		return $record;
 	}
 
-	public static function getList($params = [], $add_default = true, $default_text = 'Select Column') {
+	public static function getList($add_default = true, $default_text = 'Select TableUk') {
 		$list = Collect(Self::select([
 			'id',
 			'name',
 		])
-				->where(function ($q) use ($params) {
-					if (isset($params['table_id'])) {
-						$q->where('table_id', $params['table_id']);
-					}
-				})
 				->orderBy('name')
 				->get());
 		if ($add_default) {

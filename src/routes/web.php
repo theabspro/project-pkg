@@ -18,6 +18,10 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['web', 'au
 	Route::get('/table/get-filter-data', 'TableController@getTableFilterData')->name('getTableFilterData');
 	Route::get('/table/generate-migration', 'TableController@generateMigration')->name('generateMigration');
 
+	//Unique Key
+	Route::post('/unique-key/get-form-data', 'UniqueKeyController@getUniqueKeyFormData')->name('getUniqueKeyFormData');
+	Route::post('/unique-key/save', 'UniqueKeyController@saveUniqueKey')->name('saveUniqueKey');
+
 	//Column
 	Route::get('/column/get-list', 'ColumnController@getColumnList')->name('getColumnList');
 	Route::get('/column/get-form-data', 'ColumnController@getColumnFormData')->name('getColumnFormData');

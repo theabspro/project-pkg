@@ -5,46 +5,46 @@
             <% column.action.name %>)
             <% column.name %>
         </span>
-        <span class="label label-warning" ng-if="column.new_name">
+        <span class="label1 label-warning1" ng-if="column.new_name">
             <md-tooltip md-direction="top">
                 New Name
             </md-tooltip>
             {{column.new_name}}
         </span>
-        <span class="label label-info">
+        <span class="label1 label-info1">
             <md-tooltip md-direction="top">
                 Data Type
             </md-tooltip>
             <% column.data_type.name %>
         </span>
-        <span class="label label-danger" ng-if="column.size">
+        <span class="label1 label-danger1" ng-if="column.size">
             <md-tooltip md-direction="top">
                 Size
             </md-tooltip>
             <% column.size %>
         </span>
-        <span class="label label-default" ng-if="column.fk">
+        <span class="label1 label-default1" ng-if="column.fk">
             <md-tooltip md-direction="top">
                 Foreign Key
             </md-tooltip>
             <% column.fk.name %>
         </span>
-        <span class="label label-warning" ng-if="column.fk_type">
+        <span class="label1 label-warning1" ng-if="column.fk_type">
             <md-tooltip md-direction="top">
                 Foreign Key Type
             </md-tooltip>
             <% column.fk_type.name %>
         </span>
-        <span class="label label-primary" ng-if="column.uk">
+        <span class="label1 label-primary1" ng-if="column.uk">
             <md-tooltip md-direction="top">
                 Unique Key
             </md-tooltip>
             <% column.uk %>
         </span>
-        <span class="label label-success">
+        <span class="label1 label-success1">
             <% column.is_nullable ? 'NULL' : 'NOT NULL' %>
         </span>
-        <span class="label label-danger" ng-if="column.default">
+        <span class="label1 label-danger1" ng-if="column.default">
             <md-tooltip md-direction="top">
                 Default Value
             </md-tooltip>

@@ -1,4 +1,4 @@
-<div class="modal fade filter" id="table-uk-modal-form">
+<div class="modal fade filter" id="unique-key-modal-form">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,10 +6,10 @@
                     <i class="glyphicon glyphicon-remove"></i>
                 </button>
                 <h5 class="modal-title">
-                    {{$ctrl.uk.id ? 'Edit' : 'Add'}} Unique Key {{$ctrl.uk.table.name}} Table
+                    {{$ctrl.uk.id ? 'Edit' : 'Add'}} Unique Key For {{$ctrl.uk.table.name}} Table
                 </h5>
             </div><!-- Modal Header -->
-            <form id="uk_form">
+            <form id="unique_key_form">
                 <input type="hidden" name="id" value="{{$ctrl.uk.id}}">
                 <input type="hidden" name="table_id" value="{{$ctrl.uk.table.id}}">
                 <div class="modal-body">
@@ -23,13 +23,13 @@
                                     </label>
                                     <ui-select multiple ng-model="$ctrl.uk.columns" theme="select2">
                                         <ui-select-match>
-                                            {{$select.selected.name || $select.selected}}
+                                            {{$item.name}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="i in extras.database_list | propsFilter: {name: $select.search}">
+                                        <ui-select-choices repeat="i.name as i in extras.column_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="i.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="database_id" value="{{$ctrl.uk.database.id}}">
+                                    <input type="text" name="columns" value="{{$ctrl.uk.columns}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-md-6">
@@ -40,9 +40,25 @@
                                     <input type="text" class="form-control" name="name" autocomplete="off" ng-model="$ctrl.uk.name">
                                 </div><!-- Field -->
                             </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Operation
+                                    </label>
+                                    <ui-select ng-model="$ctrl.uk.action" theme="select2">
+                                        <ui-select-match>
+                                            {{$select.selected.name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="i in extras.unique_key_operation_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="action_id" value="{{$ctrl.uk.action.id}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button type="submit" class="btn btn-rose submit" ng-click="saveTable()">
+                                    <button type="submit" class="btn btn-rose submit" ng-click="saveUniqueKey()">
                                         Submit
                                     </button>
                                 </div>

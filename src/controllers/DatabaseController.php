@@ -26,6 +26,8 @@ class DatabaseController extends Controller {
 				'tables.columns.fkType',
 				'tables.columns.table',
 				'tables.columns.action',
+				'tables.uniqueKeys',
+				'tables.uniqueKeys.action',
 			])
 			->select([
 				'databases.id',
@@ -44,6 +46,7 @@ class DatabaseController extends Controller {
 				'data_type_list' => Config::getList(51),
 				'fk_type_list' => Config::getList(52),
 				'column_operation_list' => Config::getList(53),
+				'unique_key_operation_list' => Config::getList(54),
 			],
 		]);
 	}
@@ -64,7 +67,6 @@ class DatabaseController extends Controller {
 	}
 
 	public function saveDatabase(Request $request) {
-		// dd($request->all());
 		try {
 			$error_messages = [
 				'name.required' => 'Name is Required',

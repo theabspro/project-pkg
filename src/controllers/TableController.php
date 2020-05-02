@@ -83,16 +83,8 @@ class TableController extends Controller {
 		}
 	}
 
-	public function getTableColumns(Request $r) {
-		return response()->json([
-			'success' => true,
-			'column_list' => Column::getList(),
-		]);
-	}
-
 	public function deleteTable(Request $request) {
 		DB::beginTransaction();
-		// dd($request->id);
 		try {
 			$table = Table::withTrashed()->where('id', $request->id)->forceDelete();
 			if ($table) {
@@ -112,6 +104,8 @@ class TableController extends Controller {
 			'columns.fk',
 			'columns.fkType',
 			'columns.action',
+			'uniqueKeys',
+			'uniqueKeys.action',
 		])->find($r->id);
 
 		if (!$table) {
@@ -140,12 +134,12 @@ class TableController extends Controller {
 		$up_uks = '';
 		foreach ($table->columns as $column) {
 			$size = '';
-			if ($column->action->id == 300) {
-				//Create
+			if ($column->action->id == 300 || $column->action->id == 301 || $column->action->id == 302) {
+				//Create || Add || Alter
 				if ($column->size) {
 					$size = ',' . $column->size;
 				}
-				$up_create .= '$table->' . $column->dataType->name . "('" . $column->name . "'" . $size . ")";
+				$up_create .= "\t\t\t\t" . '$table->' . $column->dataType->name . "('" . $column->name . "'" . $size . ")";
 				if ($column->is_nullable) {
 					$up_create .= '->nullable()';
 				}
@@ -153,36 +147,53 @@ class TableController extends Controller {
 					//Alter
 					$up_create .= '->change()';
 				}
-			} elseif ($column->action->id == 300) {
+				if ($column->action->id == 302) {
+					//Alter
+					$up_create .= '->after("sdsd")';
+				}
+				$up_create .= ";\n";
+
+			} elseif ($column->action->id == 303) {
 				//Remove
-				$up_remove .= '$table->dropColumn("' . $column->name . '");' . "\n";
-			} elseif ($column->action->id == 300) {
+				$up_remove .= "\t\t\t\t" . '$table->dropColumn("' . $column->name . '");' . "\n";
+			} elseif ($column->action->id == 304) {
 				//Rename
-				$up_create .= '$table->rename("' . $column->name . '","' . $column->new_name . '");' . "\n";
+				$up_create .= "\t\t\t\t" . '$table->rename("' . $column->name . '","' . $column->new_name . '");' . "\n";
 			}
-			$up_create .= ";\n";
 
 			if ($column->fk) {
-				$up_fks .= '$table->foreign("' . $column->name . '")->references("id")->on("' . $column->fk->name . '")->onDelete("' . $column->fkType->name . '")->onUpdate("' . $column->fkType->name . '");' . "\n";
+				$up_fks .= "\t\t\t\t" . '$table->foreign("' . $column->name . '")->references("id")->on("' . $column->fk->name . '")->onDelete("' . $column->fkType->name . '")->onUpdate("' . $column->fkType->name . '");' . "\n";
+			}
+		}
+
+		foreach ($table->uniqueKeys as $unique_key) {
+			if ($unique_key->action->id == 300) {
+				//Create
+				$up_uks .= "\t\t\t\t" . '$table->unique(' . $unique_key->columns . ');';
+			} elseif ($unique_key->action->id == 300) {
+				//Remove
+				$columns = json_decode($unique_key->columns);
+				$columns = implode($columns, '_');
+				$up_uks .= "\t\t\t\t" . '$table->dropUnique("' . $table->name . '_' . $columns . '_unique");';
 			}
 		}
 
 		if ($table->has_author_ids == 1) {
-			$up_create .= '$table->unsignedInteger("created_by_id")->nullable();' . "" . '
+			$up_create .= "\t\t\t\t" . '$table->unsignedInteger("created_by_id")->nullable();' . "" . '
 				$table->unsignedInteger("updated_by_id")->nullable();' . "" . '
 				$table->unsignedInteger("deleted_by_id")->nullable();' . "\n";
 
-			$up_fks .= '$table->foreign("created_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
+			$up_fks .= "\t\t\t\t" . '$table->foreign("created_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
 				$table->foreign("updated_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "" . '
 				$table->foreign("deleted_by_id")->references("id")->on("users")->onDelete("SET NULL")->onUpdate("cascade");' . "\n";
 
 		}
 
 		if ($table->has_timestamps == 1) {
-			$up_create .= '$table->timestamps();' . "\n";
+			$up_create .= "\t\t\t\t" . '$table->timestamps();' . "\n";
 		}
 		if ($table->has_soft_delete == 1) {
-			$up_create .= '$table->softDeletes();' . "\n";
+			$up_create .= "\t\t\t\t" . '$table->softDeletes();' . "\n";
 		}
 
 		$contents = str_replace('CCC', $up_remove, $contents);
@@ -191,6 +202,8 @@ class TableController extends Controller {
 		$contents = str_replace('FFF', $up_uks, $contents);
 
 		Storage::put('migrations/' . $file_name, $contents, 'public');
+
+		return Storage::download('migrations/' . $file_name);
 
 		return response()->json([
 			'success' => true,

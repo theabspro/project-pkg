@@ -125,22 +125,24 @@
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.table = table; showUKForm({})" ng-if="hasPermission('delete-table')">
+                                                <button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.table = table; showUniqueKeyForm({})" ng-if="hasPermission('delete-table')">
                                                     <md-tooltip md-direction="top">
                                                         Unique Keys
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-magnet" aria-hidden="true"></span>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-default" ng-click="generateMigration(table)">
+                                                <a href="./table/generate-migration?id={{table.id}}" class="btn btn-sm btn-default">
                                                     <md-tooltip md-direction="top">
                                                         Generate Migration
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span>
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
                                     <column-cards ng-init="columns = table.columns"></column-cards>
+                                    <unique-key-cards ng-init="unique_keys = table.unique_keys">
+                                    </unique-key-cards>
                                 </div>
                             </div>
                         </div>
@@ -155,8 +157,8 @@
 </div><!-- Content Wrap -->
 <database-modal-form></database-modal-form>
 <table-modal-form></table-modal-form>
-<table-uk-modal-form></table-uk-modal-form>
 <column-modal-form></column-modal-form>
+<unique-key-modal-form></unique-key-modal-form>
 <!-- Filter Modal -->
 <div class="modal fade filter" id="filter-modal">
     <div class="modal-dialog" role="document">
