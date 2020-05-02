@@ -141,6 +141,42 @@
                                         </div>
                                     </div>
                                     <column-cards ng-init="columns = table.columns"></column-cards>
+                                    <ul class="list-group" style="margin-bottom: 0;" ng-if="table.has_auth_ids">
+                                        <li class="list-group-item list-group-item-warning">
+                                            <span class="label label-primary">
+                                                created_by_id
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item list-group-item-warning">
+                                            <span class="label label-primary">
+                                                updated_by_id
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item list-group-item-warning">
+                                            <span class="label label-primary">
+                                                deleted_by_id
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <ul class="list-group" style="margin-bottom: 0;" ng-if="table.has_timestamps">
+                                        <li class="list-group-item list-group-item-warning">
+                                            <span class="label label-primary">
+                                                created_at
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item list-group-item-warning">
+                                            <span class="label label-primary">
+                                                updated_at
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <ul class="list-group" style="margin-bottom: 0;" ng-if="table.has_soft_delete">
+                                        <li class="list-group-item list-group-item-warning">
+                                            <span class="label label-primary">
+                                                deleted_at
+                                            </span>
+                                        </li>
+                                    </ul>
                                     <unique-key-cards ng-init="unique_keys = table.unique_keys">
                                     </unique-key-cards>
                                 </div>
