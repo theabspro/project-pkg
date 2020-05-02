@@ -38,18 +38,18 @@ class ProjectVersionController extends Controller {
 			->where(function ($q) use ($r) {
 				if (!empty($r->search_key)) {
 					$q->where('project_versions.number', 'Like', '%' . $r->search_key . '%')
-					->orWhere('p.short_name','Like','%'.$r->search_key .'%');
+						->orWhere('p.short_name', 'Like', '%' . $r->search_key . '%');
 				}
 			})
 			->where(function ($q) {
 				if (!Entrust::can('view-all-project-version')) {
 					$q
-					->where('project_version_member.member_id', Auth::id())
+						->where('project_version_member.member_id', Auth::id())
 					;
 				}
 			})
 			->where(function ($q) use ($filter_params) {
-				if (isset($filter_params['filter']->requirement_ids && count($filter_params['filter']->requirement_ids) > 0)) {
+				if (isset($filter_params['filter']->requirement_ids) && count($filter_params['filter']->requirement_ids) > 0) {
 					$q
 						->whereIn('project_versions.id', $filter_params['filter']->requirement_ids)
 					;
