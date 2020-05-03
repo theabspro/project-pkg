@@ -216,12 +216,12 @@ class TableController extends Controller {
 		foreach ($table->uniqueKeys as $unique_key) {
 			if ($unique_key->action->id == 300) {
 				//Create
-				$up_uks .= "\t\t\t\t" . '$table->unique(' . $unique_key->columns . ');';
+				$up_uks .= "\t\t\t\t" . '$table->unique(' . $unique_key->columns . ');' . "\n";
 			} elseif ($unique_key->action->id == 300) {
 				//Remove
 				$columns = json_decode($unique_key->columns);
 				$columns = implode($columns, '_');
-				$up_uks .= "\t\t\t\t" . '$table->dropUnique("' . $table->name . '_' . $columns . '_unique");';
+				$up_uks .= "\t\t\t\t" . '$table->dropUnique("' . $table->name . '_' . $columns . '_unique");' . "\n";
 			}
 		}
 
