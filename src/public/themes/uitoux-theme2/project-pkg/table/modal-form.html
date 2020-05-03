@@ -24,10 +24,20 @@
                                     <input type="text" class="form-control" name="name" autocomplete="off" ng-model="$ctrl.table.name" id="table_name">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                            <div class="col-md-6">
+                            <div class="col-md-6" ng-show="!$ctrl.task.id">
                                 <div class="form-group">
                                     <label>
-                                        Is Create?
+                                        Create as simple Master Table? {{$ctrl.task.id | json}}
+                                    </label>
+                                    <md-switch ng-model="$ctrl.table.is_master" class="md-warn" ng-true-value="1" ng-false-value="0">
+                                    </md-switch>
+                                    <input type="hidden" name="is_master" value="{{$ctrl.table.is_master}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-md-6" ng-if="!$ctrl.table.is_master">
+                                <div class="form-group">
+                                    <label>
+                                        Is Update?
                                     </label>
                                     <md-switch ng-model="$ctrl.table.action" class="md-warn" ng-true-value="1" ng-false-value="0">
                                     </md-switch>
@@ -35,7 +45,7 @@
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="form-group" ng-if="!$ctrl.table.is_master">
                                     <label>
                                         Has Author IDs?
                                     </label>
@@ -44,7 +54,7 @@
                                     <input type="hidden" name="has_author_ids" value="{{$ctrl.table.has_author_ids}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                            <div class="col-md-6">
+                            <div class="col-md-6" ng-if="!$ctrl.table.is_master">
                                 <div class="form-group">
                                     <label>
                                         Has Time Stamps?
@@ -54,7 +64,7 @@
                                     <input type="hidden" name="has_timestamps" value="{{$ctrl.table.has_timestamps}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
-                            <div class="col-md-6">
+                            <div class="col-md-6" ng-if="!$ctrl.table.is_master">
                                 <div class="form-group">
                                     <label>
                                         Has Soft Delete?

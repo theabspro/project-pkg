@@ -56,11 +56,57 @@ class TableController extends Controller {
 				$table = Table::withTrashed()->find($request->id);
 			}
 			$table->fill($request->all());
-			$table->deleted_at = NULL;
+			if ($request->is_master) {
+				$table->has_author_ids = 1;
+				$table->has_timestamps = 1;
+				$table->has_soft_delete = 1;
+			}
 			$table->has_author_ids = $request->has_author_ids ? $request->has_author_ids : 0;
 			$table->has_timestamps = $request->has_timestamps ? $request->has_timestamps : 0;
 			$table->has_soft_delete = $request->has_soft_delete ? $request->has_soft_delete : 0;
 			$table->save();
+
+			if ($request->is_master) {
+				$table->columns()->createMany([
+					[
+						'name' => 'id',
+						'action_id' => 300,
+						'data_type_id' => 274,
+					],
+					[
+						'name' => 'company_id',
+						'action_id' => 300,
+						'data_type_id' => 260,
+						'fk_id' => 1,
+						'fk_type_id' => 280,
+					],
+					[
+						'name' => 'code',
+						'action_id' => 300,
+						'data_type_id' => 261,
+						'size' => 32,
+					],
+					[
+						'name' => 'name',
+						'action_id' => 300,
+						'data_type_id' => 261,
+						'size' => 191,
+						'is_nullable' => 1,
+					],
+				]);
+
+				$table->uniqueKeys()->createMany([
+					[
+						'columns' => '["company_id","code"]',
+						'action_id' => 300,
+					],
+					[
+						'columns' => '["company_id","name"]',
+						'action_id' => 300,
+					],
+				]);
+
+			}
 
 			DB::commit();
 			if (!($request->id)) {
