@@ -28,11 +28,11 @@ class Table extends Model {
 	}
 
 	public function columns() {
-		return $this->hasMany('App\Column');
+		return $this->hasMany('App\Column')->orderBy('id');
 	}
 
 	public function uniqueKeys() {
-		return $this->hasMany('App\UniqueKey');
+		return $this->hasMany('App\UniqueKey')->orderBy('id');
 	}
 
 	public static function createFromObject($record_data) {
