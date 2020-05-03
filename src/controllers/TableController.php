@@ -60,10 +60,11 @@ class TableController extends Controller {
 				$table->has_author_ids = 1;
 				$table->has_timestamps = 1;
 				$table->has_soft_delete = 1;
+			} else {
+				$table->has_author_ids = $request->has_author_ids ? $request->has_author_ids : 0;
+				$table->has_timestamps = $request->has_timestamps ? $request->has_timestamps : 0;
+				$table->has_soft_delete = $request->has_soft_delete ? $request->has_soft_delete : 0;
 			}
-			$table->has_author_ids = $request->has_author_ids ? $request->has_author_ids : 0;
-			$table->has_timestamps = $request->has_timestamps ? $request->has_timestamps : 0;
-			$table->has_soft_delete = $request->has_soft_delete ? $request->has_soft_delete : 0;
 			$table->save();
 
 			if ($request->is_master) {
