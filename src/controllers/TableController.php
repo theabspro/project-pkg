@@ -56,6 +56,7 @@ class TableController extends Controller {
 				$table = Table::withTrashed()->find($request->id);
 			}
 			$table->fill($request->all());
+
 			if ($request->is_master) {
 				$table->has_author_ids = 1;
 				$table->has_timestamps = 1;
