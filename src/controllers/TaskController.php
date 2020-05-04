@@ -553,18 +553,18 @@ class TaskController extends Controller {
 		// dd($request->all());
 		try {
 			$error_messages = [
-				'assigned_to_id.required' => 'Assigned To is Required',
+				// 'assigned_to_id.required' => 'Assigned To is Required',
 				'project_id.required' => 'Project is Required',
 				'name.required' => 'Task Name is Required',
 				'subject.required' => 'Subject is Required',
 				'subject.max' => 'Subject Maximum 191 Characters',
 			];
 			$validator = Validator::make($request->all(), [
-				'assigned_to_id' => [
-					'nullable',
-					'numeric:true',
-					'exists:users,id',
-				],
+				// 'assigned_to_ids' => [
+				// 	'nullable',
+				// 'numeric:true',
+				// 	'exists:users,id',
+				// ],
 				'project_id' => [
 					'required:true',
 					'numeric:true',
@@ -611,49 +611,98 @@ class TaskController extends Controller {
 			}
 
 			DB::beginTransaction();
-			//ADD & EDIT TYPE
-			if ($request->action != 'Clone') {
-				if (!$request->id) {
+			if (!empty($request->assigned_to_ids)) {
+				$assigned_to_ids = json_decode($request->assigned_to_ids);
+				foreach ($assigned_to_ids as $assigned_to_id) {
+					//ADD & EDIT TYPE
+					if ($request->action != 'Clone') {
+						if (!$request->id) {
+							$task = new Task;
+							$task->created_by_id = Auth::user()->id;
+							$task->created_at = Carbon::now();
+							$task->updated_at = NULL;
+							$task_assign_type = 1;
+							$send_noty = true;
+						} else {
+							$task = Task::withTrashed()->find($request->id);
+							$task->updated_by_id = Auth::user()->id;
+							$task->updated_at = Carbon::now();
+							if ($task->assigned_to_id == $assigned_to_id) {
+								$task_assign_type = 1;
+								$send_noty = true;
+							} else {
+								$task_assign_type = 2;
+								$send_noty = true;
+							}
+						}
+					} else {
+						//CLONE TYPE
+						$task = new Task;
+						$task->created_by_id = Auth::user()->id;
+						$task->created_at = Carbon::now();
+						$task->updated_at = NULL;
+						$task_assign_type = 1;
+						$send_noty = true;
+					}
+					$task->number = rand(1, 100000);
+					$task->fill($request->all());
+					$task->company_id = Auth::user()->company_id;
+					if ($request->status == 'Inactive') {
+						$task->deleted_at = Carbon::now();
+						$task->deleted_by_id = Auth::user()->id;
+					} else {
+						$task->deleted_by_id = NULL;
+						$task->deleted_at = NULL;
+					}
+					$task->save();
+					$task->number = 'TSK-' . $task->id;
+					$task->assigned_to_id = !empty($assigned_to_id) ? $assigned_to_id : NULL;
+					$task->save();
+				}
+			} else {
+				if ($request->action != 'Clone') {
+					if (!$request->id) {
+						$task = new Task;
+						$task->created_by_id = Auth::user()->id;
+						$task->created_at = Carbon::now();
+						$task->updated_at = NULL;
+						$task_assign_type = 1;
+						$send_noty = true;
+					} else {
+						$task = Task::withTrashed()->find($request->id);
+						$task->updated_by_id = Auth::user()->id;
+						$task->updated_at = Carbon::now();
+						if ($task->assigned_to_id == $request->assigned_to_id) {
+							$task_assign_type = 1;
+							$send_noty = true;
+						} else {
+							$task_assign_type = 2;
+							$send_noty = true;
+						}
+					}
+				} else {
+					//CLONE TYPE
 					$task = new Task;
 					$task->created_by_id = Auth::user()->id;
 					$task->created_at = Carbon::now();
 					$task->updated_at = NULL;
 					$task_assign_type = 1;
 					$send_noty = true;
-				} else {
-					$task = Task::withTrashed()->find($request->id);
-					$task->updated_by_id = Auth::user()->id;
-					$task->updated_at = Carbon::now();
-					if ($task->assigned_to_id == $request->assigned_to_id) {
-						$task_assign_type = 1;
-						$send_noty = true;
-					} else {
-						$task_assign_type = 2;
-						$send_noty = true;
-					}
 				}
-			} else {
-				//CLONE TYPE
-				$task = new Task;
-				$task->created_by_id = Auth::user()->id;
-				$task->created_at = Carbon::now();
-				$task->updated_at = NULL;
-				$task_assign_type = 1;
-				$send_noty = true;
+				$task->number = rand(1, 100000);
+				$task->fill($request->all());
+				$task->company_id = Auth::user()->company_id;
+				if ($request->status == 'Inactive') {
+					$task->deleted_at = Carbon::now();
+					$task->deleted_by_id = Auth::user()->id;
+				} else {
+					$task->deleted_by_id = NULL;
+					$task->deleted_at = NULL;
+				}
+				$task->save();
+				$task->number = 'TSK-' . $task->id;
+				$task->save();
 			}
-			$task->number = rand(1, 100000);
-			$task->fill($request->all());
-			$task->company_id = Auth::user()->company_id;
-			if ($request->status == 'Inactive') {
-				$task->deleted_at = Carbon::now();
-				$task->deleted_by_id = Auth::user()->id;
-			} else {
-				$task->deleted_by_id = NULL;
-				$task->deleted_at = NULL;
-			}
-			$task->save();
-			$task->number = 'TSK-' . $task->id;
-			$task->save();
 			DB::commit();
 
 			//NOTY
