@@ -100,11 +100,11 @@ class TableController extends Controller {
 				$table->uniqueKeys()->createMany([
 					[
 						'columns' => '["company_id","code"]',
-						'action_id' => 300,
+						'action_id' => 320,
 					],
 					[
 						'columns' => '["company_id","name"]',
-						'action_id' => 300,
+						'action_id' => 320,
 					],
 				]);
 
