@@ -180,6 +180,7 @@ class TableController extends Controller {
 		$up_create = '';
 		$up_fks = '';
 		$up_uks = '';
+
 		foreach ($table->columns as $column) {
 			$size = '';
 			if ($column->action->id == 300 || $column->action->id == 301 || $column->action->id == 302) {
@@ -215,10 +216,10 @@ class TableController extends Controller {
 		}
 
 		foreach ($table->uniqueKeys as $unique_key) {
-			if ($unique_key->action->id == 300) {
+			if ($unique_key->action->id == 320) {
 				//Create
 				$up_uks .= "\t\t\t\t" . '$table->unique(' . $unique_key->columns . ');' . "\n";
-			} elseif ($unique_key->action->id == 300) {
+			} elseif ($unique_key->action->id == 321) {
 				//Remove
 				$columns = json_decode($unique_key->columns);
 				$columns = implode($columns, '_');
