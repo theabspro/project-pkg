@@ -12,7 +12,7 @@
             <% unique_key.name %>
         </span>
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-default" ng-click="deleteUniqueKey(unique_key.id,$event,unique_keys,$index)" ng-if1="hasPermission('delete-unique-key')">
+            <button type="button" class="btn btn-sm btn-default" ng-click="confirmUniqueKeyDeletion(unique_key.id,$event,unique_keys,$index)" ng-if1="hasPermission('delete-unique-key')">
                 <md-tooltip md-direction="top">
                     Delete Unique Key
                 </md-tooltip>

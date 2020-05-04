@@ -177,16 +177,16 @@ app.component('databaseCardList', {
         }
 
         //DELETE
-        $scope.deleteDatabase = function($id, $event, databases, index) {
+        $scope.confirmDatabaseDeletion = function($id, $event, databases, index) {
             $event.stopPropagation();
             $scope.databases = databases;
             $scope.index = index;
 
-            $('#delete_database').modal('show');
+            $('#delete_database_modal').modal('show');
             $('#database_id').val($id);
         }
 
-        $scope.databaseDeletionConfirmed = function() {
+        $scope.deleteDatabase = function() {
             id = $('#database_id').val();
             $http.get(
                 laravel_routes['deleteDatabase'], {
@@ -196,8 +196,92 @@ app.component('databaseCardList', {
                 }
             ).then(function(response) {
                 if (response.data.success) {
-                    custom_noty('success', 'Database Deleted Successfully');
-                    $('#delete_database').modal('hide');
+                    custom_noty('success', response.data.message);
+                    $('#delete_database_modal').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
+        $scope.confirmTableDeletion = function($id, $event, tables, index) {
+            $event.stopPropagation();
+            $scope.tables = tables;
+            $scope.index = index;
+
+            $('#delete_table_modal').modal('show');
+            $('#table_id').val($id);
+        }
+
+        $scope.deleteDatabase = function() {
+            id = $('#table_id').val();
+            $http.get(
+                laravel_routes['deleteTable'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', response.data.message);
+                    $('#delete_table_modal').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
+        $scope.confirmColumnDeletion = function($id, $event, columns, index) {
+            $event.stopPropagation();
+            $scope.columns = columns;
+            $scope.index = index;
+
+            $('#delete_column_modal').modal('show');
+            $('#column_id').val($id);
+        }
+
+        $scope.deleteColumn = function() {
+            id = $('#column_id').val();
+            $http.get(
+                laravel_routes['deleteColumn'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', response.data.message);
+                    $('#delete_column_modal').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $route.reload();
+                }
+            });
+        }
+
+        $scope.confirmUniqueKeyDeletion = function($id, $event, unique_keys, index) {
+            $event.stopPropagation();
+            $scope.unique_keys = unique_keys;
+            $scope.index = index;
+
+            $('#delete_unique_key_modal').modal('show');
+            $('#unique_key_id').val($id);
+        }
+
+        $scope.deleteUniqueKey = function() {
+            id = $('#unique_key_id').val();
+            $http.get(
+                laravel_routes['deleteUniqueKey'], {
+                    params: {
+                        id: id,
+                    }
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', response.data.message);
+                    $('#delete_unique_key_modal').modal('hide');
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
                     $route.reload();

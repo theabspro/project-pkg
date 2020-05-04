@@ -51,7 +51,7 @@
             <% column.default %>
         </span>
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-default" ng-click="deleteColumn(column.id,$event,columns,$index)" ng-if="hasPermission('delete-column')">
+            <button type="button" class="btn btn-sm btn-default" ng-click="confirmColumnDeletion(column.id,$event,columns,$index)" ng-if="hasPermission('delete-column')">
                 <md-tooltip md-direction="top">
                     Delete Column
                 </md-tooltip>

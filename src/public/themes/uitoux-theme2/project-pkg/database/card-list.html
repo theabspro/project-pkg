@@ -86,7 +86,7 @@
                                         </md-tooltip>
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-default" ng-click="deleteDatabase(database.id,$event)" ng-if="$ctrl.delete_database_permission">
+                                    <button type="button" class="btn btn-sm btn-default" ng-click="confirmDatabaseDeletion(database.id,$event)" ng-if="$ctrl.delete_database_permission">
                                         <md-tooltip md-direction="top">
                                             Delete Database
                                         </md-tooltip>
@@ -119,7 +119,7 @@
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-default" ng-click="deleteTable(table.id,$event)" ng-if="hasPermission('delete-table')">
+                                                <button type="button" class="btn btn-sm btn-default" ng-click="confirmTableDeletion(table.id,$event)" ng-if="hasPermission('delete-table')">
                                                     <md-tooltip md-direction="top">
                                                         Delete Table
                                                     </md-tooltip>
@@ -251,29 +251,7 @@
     </div><!-- Modal Dialog -->
 </div><!-- Modal -->
 <!-- Modal -->
-<div class="modal fade alert-modal failure" id="delete-confimation-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">ARE YOU SURE?</h4>
-            </div>
-            <div class="modal-body">
-                <h5>Delete</h5>
-                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
-                <input type="hidden" name="column_id" id="column_id" value="">
-                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">
-                    Cancel
-                </button>
-                <button class="btn btn-rose" ng-click="deleteTableConfirm()" type="button" data-dismiss="modal" aria-label="Close">
-                    Yes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<!-- Modal -->
-<div class="modal fade alert-modal failure" id="delete_database" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade alert-modal failure" id="delete_database_modal" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -284,7 +262,59 @@
                 <p>You can’t retrive the data again, Are you sure you want to delete? </p>
                 <input type="hidden" name="database_id" id="database_id" value="">
                 <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
-                <button class="btn btn-rose" ng-click="deleteDatabaseConfirm()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+                <button class="btn btn-rose" ng-click="deleteDatabase()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_table_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="table_id" id="table_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteTable()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_column_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="column_id" id="column_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteColumn()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<!-- Modal -->
+<div class="modal fade alert-modal failure" id="delete_unique_key_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Delete</h5>
+                <p>You can’t retrive the data again, Are you sure you want to delete? </p>
+                <input type="hidden" name="unique_key_id" id="unique_key_id" value="">
+                <button class="btn btn-grey" data-dismiss="modal" aria-label="Close">Cancel</button>
+                <button class="btn btn-rose" ng-click="deleteUniqueKey()" type="button" data-dismiss="modal" aria-label="Close">Yes</button>
             </div>
         </div>
     </div>
