@@ -92,18 +92,32 @@
                             </div><!-- Column -->
                         </div>
                         <div class="row">
-                            <div class="col-sm-6" ng-show="$ctrl.show_assigned_to">
+                            <div class="col-sm-6" ng-show="$ctrl.show_assigned_to" ng-if="$ctrl.task.id == NULL || $ctrl.task.action == 'Clone'">
                                 <div class="separate-form-group">
                                     <label>Assigned To </label>
-                                    <ui-select ng-model="$ctrl.task.assigned_to" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                     <ui-select multiple ng-model="$ctrl.task.assigned_to" theme="select2" ng-model-options="{trackBy: '$value.id' }">
                                         <ui-select-match placeholder="Select Assigned To">
-                                            {{$select.selected.first_name || $select.selected}}
+                                            {{$item.name}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="assigned_to in $ctrl.users_list | propsFilter: {first_name: $select.search}">
-                                            <div ng-bind-html="assigned_to.first_name | highlight: $select.search"></div>
+                                        <ui-select-choices repeat="assigned_to.id as assigned_to in $ctrl.users_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="assigned_to.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="assigned_to_id" id="assigned_to_id" value="{{$ctrl.task.assigned_to.id}}">
+                                    <input type="hidden" name="assigned_to_ids" id="assigned_to_id" value="{{$ctrl.task.assigned_to}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6" ng-show="$ctrl.show_assigned_to" ng-if="$ctrl.task.id !=NULL && $ctrl.task.action != 'Clone'" >
+                                <div class="separate-form-group">
+                                    <label>Assigned To </label>
+                                     <ui-select ng-model="$ctrl.task.assigned_to_id" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                        <ui-select-match placeholder="Select Assigned To">
+                                             {{$select.selected.first_name || $select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="assigned_to.id as assigned_to in $ctrl.users_list | propsFilter: {name: $select.search}">
+                                            <div ng-bind-html="assigned_to.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="assigned_to_id" id="assigned_to_id" value="{{$ctrl.task.assigned_to_id}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-sm-6">
