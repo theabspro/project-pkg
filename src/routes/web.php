@@ -21,7 +21,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['web', 'au
 	//Unique Key
 	Route::post('/unique-key/get-form-data', 'UniqueKeyController@getUniqueKeyFormData')->name('getUniqueKeyFormData');
 	Route::post('/unique-key/save', 'UniqueKeyController@saveUniqueKey')->name('saveUniqueKey');
-	Route::get('/database/delete', 'UniqueKeyController@deleteUniqueKey')->name('deleteUniqueKey');
+	Route::get('/unique-key/delete', 'UniqueKeyController@deleteUniqueKey')->name('deleteUniqueKey');
 
 	//Column
 	Route::get('/column/get-list', 'ColumnController@getColumnList')->name('getColumnList');

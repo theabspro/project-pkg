@@ -2,7 +2,6 @@
 
 namespace Abs\ProjectPkg;
 use App\Http\Controllers\Controller;
-use App\Table;
 use App\UniqueKey;
 use DB;
 use Illuminate\Http\Request;
@@ -80,10 +79,10 @@ class UniqueKeyController extends Controller {
 	public function deleteUniqueKey(Request $request) {
 		DB::beginTransaction();
 		try {
-			$table = Table::withTrashed()->where('id', $request->id)->forceDelete();
-			if ($table) {
+			$uk = UniqueKey::withTrashed()->where('id', $request->id)->forceDelete();
+			if ($uk) {
 				DB::commit();
-				return response()->json(['success' => true, 'message' => 'Table Deleted Successfully']);
+				return response()->json(['success' => true, 'message' => 'Unique Key Deleted Successfully']);
 			}
 		} catch (Exception $e) {
 			DB::rollBack();
