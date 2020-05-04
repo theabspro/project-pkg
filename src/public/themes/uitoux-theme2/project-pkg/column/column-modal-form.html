@@ -84,7 +84,7 @@
                                         <ui-select-match>
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in extras.table_list | propsFilter: {name: $select.search}">
+                                        <ui-select-choices repeat="i in extras.table_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="i.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
