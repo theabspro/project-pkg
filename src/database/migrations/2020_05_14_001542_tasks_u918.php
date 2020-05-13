@@ -17,6 +17,7 @@ class TasksU918 extends Migration {
 			$table->text('steps_to_reproduce')->nullable()->after("description");
 			$table->text('expected_result')->nullable()->after("steps_to_reproduce");
 			$table->unsignedInteger('severity_id')->nullable()->after("expected_result");
+			$table->unsignedMediumInteger('display_order')->nullable()->after("severity_id")->default(999);
 
 			$table->foreign("severity_id")->references("id")->on("severities")->onDelete("SET NULL")->onUpdate("SET NULL");
 
@@ -37,6 +38,7 @@ class TasksU918 extends Migration {
 			$table->dropColumn("steps_to_reproduce");
 			$table->dropColumn("expected_result");
 			$table->dropColumn("severity_id");
+			$table->dropColumn("display_order");
 
 		});
 	}

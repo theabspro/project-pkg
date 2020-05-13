@@ -143,6 +143,79 @@ app.factory("ProjectPkgHelper", function($http, $q) {
 
         },
 
+        saveDefect: function() {
+            var defer = $q.defer();
+
+            var form_id = '#bug_form';
+            var v = jQuery(form_id).validate({
+                ignore: '',
+                rules: {
+                    'date': {
+                        // required: true,
+                    },
+                    'assigned_to_id': {
+                        required: true,
+                    },
+                    'project_id': {
+                        required: true,
+                    },
+                    'project_version_id': {
+                        required: true,
+                    },
+                    'type_id': {
+                        required: true,
+                    },
+                    'subject': {
+                        required: true,
+                    },
+                    'status_id': {
+                        required: true,
+                        number: true,
+                    },
+                    'estimated_hours': {
+                        required: true,
+                        number: true,
+                    },
+                    'actual_hours': {
+                        // required: true,
+                        number: true,
+                    },
+                },
+                invalidHandler: function(event, validator) {
+                    console.log(validator.errorList);
+                },
+                submitHandler: function(form) {
+                    let formData = new FormData($(form_id)[0]);
+                    $('.submit').button('loading');
+
+                    $.ajax({
+                            url: laravel_routes['saveTask'],
+                            method: "POST",
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .done(function(res) {
+                            $('.submit').button('reset');
+                            if (!res.success) {
+                                showErrorNoty(res);
+                                return;
+                            }
+                            custom_noty('success', res.message);
+                            $('#bug-form-modal').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            defer.resolve(res);
+                        })
+                        .fail(function(xhr) {
+                            $('.submit').button('reset');
+                            custom_noty('error', 'Something went wrong at server');
+                        });
+                }
+            });
+            return defer.promise;
+        },
+
         saveDatabase: function() {
             var defer = $q.defer();
 

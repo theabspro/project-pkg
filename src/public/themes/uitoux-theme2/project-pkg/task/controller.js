@@ -240,6 +240,14 @@ app.component('moduleDeveloperWiseTasks', {
             // });
         }
 
+        //SAVE DEFECT
+        $scope.saveDefect = function() {
+            ProjectPkgHelper.saveDefect().then(function(res) {
+                console.log(res);
+                $scope.fetchData();
+            });
+        }
+
         //DELETE
         $scope.deleteTask = function($id, $event, tasks, index) {
             $event.stopPropagation();
