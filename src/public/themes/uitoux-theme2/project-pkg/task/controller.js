@@ -366,6 +366,70 @@ app.component('moduleDeveloperWiseTasks', {
 
         }
 
+
+        $scope.showBugForm = function(task, action, $event) {
+            $event.stopPropagation();
+            $('#bug-form-modal').modal('show');
+            $('#bug-form-modal').on('shown.bs.modal', function(e) {
+                $scope.$broadcast('focus-bug-type');
+            })
+            self.task = task;
+            self.task.action = action;
+
+            if (self.task.module) {
+                self.project_version = self.task.module.project_version;
+                self.task.module_id = self.task.module.id;
+                $scope.onSelectedProject(self.project_version.project.id);
+                $scope.onSelectedProjectVersion(self.project_version.id);
+
+                if (self.project_version) {
+                    self.task.project_version = self.project_version;
+                    self.task.project_version_id = self.project_version.id;
+                    self.task.project_id = self.project_version.project.id;
+                    // self.show_project_version = false;
+                    // self.show_project = false;
+                } else {
+                    // self.show_project_version = true;
+                    // self.show_project = true;
+                }
+            } else {
+                self.project_version_list = [];
+            }
+
+            if (self.task.id) {
+                return;
+            }
+            self.task.date = HelperService.getCurrentDate();
+
+            if (self.assigned_to) {
+                self.task.assigned_to = self.assigned_to;
+                // self.show_assigned_to = false;
+            }
+
+            if (self.module) {
+                self.task.module = self.module;
+                self.task.module.project_version = self.project_version;
+                self.task.module_id = self.module.id;
+                $scope.onSelectedProject(self.project_version.project.id);
+                $scope.onSelectedProjectVersion(self.project_version.id);
+
+                if (self.project_version) {
+                    self.task.project_version = self.project_version;
+                    self.task.project_version_id = self.project_version.id;
+                    self.task.project_id = self.project_version.project.id;
+                    // self.show_project_version = false;
+                    // self.show_project = false;
+                } else {
+                    // self.show_project_version = true;
+                    // self.show_project = true;
+                }
+                // self.show_module = false;
+            } else {
+                // self.show_module = true;
+            }
+
+        }
+
         $scope.onSelectedProject = function(id) {
             $http.post(
                 laravel_routes['getProjectVersionList'], {
@@ -1764,5 +1828,27 @@ app.component('taskForm', {
                     });
             }
         });
+    }
+});
+
+
+app.directive('taskModalForm', function() {
+    return {
+        templateUrl: task_modal_form_template_url,
+        controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
+            var self = this;
+            self.theme = theme;
+        }
+    }
+});
+
+
+app.directive('bugModalForm', function() {
+    return {
+        templateUrl: bug_modal_form_template_url,
+        controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
+            var self = this;
+            self.theme = theme;
+        }
     }
 });

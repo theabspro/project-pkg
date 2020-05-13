@@ -79,16 +79,6 @@ app.directive('moduleModalForm', function() {
     }
 });
 
-app.directive('taskModalForm', function() {
-    return {
-        templateUrl: task_modal_form_template_url,
-        controller: function($http, $location, HelperService, $scope, $routeParams, $rootScope, $route) {
-            var self = this;
-            self.theme = theme;
-        }
-    }
-});
-
 app.directive('taskCardList', function() {
     return {
         scope: {

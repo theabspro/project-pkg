@@ -230,6 +230,9 @@
                                             <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showTaskForm({}, 0, $event)" class="pull-right">
                                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                             </a>
+                                            <a href="javascript:;" ng-click="$ctrl.assigned_to = developer;$ctrl.module = module;showBugForm({}, 0, $event)" class="pull-right">
+                                                <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+                                            </a>
                                             <br />
                                             <span class="label label-warning">
                                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -282,6 +285,7 @@
 </div><!-- Content Wrap -->
 <module-modal-form module="$ctrl.module"></module-modal-form>
 <task-modal-form task="$ctrl.task"></task-modal-form>
+<bug-modal-form task="$ctrl.task"></bug-modal-form>
 <!-- Filter Modal -->
 <div class="modal fade filter" id="filter-modal">
     <div class="modal-dialog" role="document">
@@ -299,33 +303,65 @@
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
-                                        Task Status
+                                        Modules
                                     </label>
-                                    <ui-select ng-model="$ctrl.filter.task_status_id" theme="select2">
-                                        <ui-select-match placeholder="Select Task Status">
-                                            {{$select.selected.name || $select.selected}}
+                                    <ui-select multiple ng-model="$ctrl.filter.module_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                        <ui-select-match placeholder="Select">
+                                            {{$item.name}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in $ctrl.task_status_list | propsFilter: {name: $select.search}">
-                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        <ui-select-choices repeat="module.id as module in $ctrl.extras.module_list | propsFilter: {name: $select.search}">
+                                            <span ng-bind-html="module.name | highlight: $select.search"></span>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="task_status_id" class="required" value="{{$ctrl.filter.task_status_id}}">
+                                    <input type="hidden" name="module_ids" value="{{$ctrl.filter.module_ids}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
-                                        Employee
+                                        Module Statuses
                                     </label>
-                                    <ui-select multiple ng-model="$ctrl.filter.employee" theme="select2">
-                                        <ui-select-match placeholder="Select Employee">
+                                    <ui-select multiple ng-model="$ctrl.filter.module_status_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                        <ui-select-match placeholder="Select">
                                             {{$item.name}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in $ctrl.employee_list | propsFilter: {name: $select.search}">
-                                            <div ng-bind-html="i.name | highlight: $select.search"></div>
+                                        <ui-select-choices repeat="module_status.id as module_status in $ctrl.extras.module_status_list | propsFilter: {name: $select.search}">
+                                            <span ng-bind-html="module_status.name | highlight: $select.search"></span>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="employe_ids" class="required" value="{{$ctrl.filter.employee}}">
+                                    <input type="hidden" name="module_status_ids" value="{{$ctrl.filter.module_status_ids}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Task Statuses
+                                    </label>
+                                    <ui-select multiple ng-model="$ctrl.filter.task_status_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                        <ui-select-match placeholder="Select">
+                                            {{$item.name}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="task_status.id as task_status in $ctrl.extras.task_status_list | propsFilter: {name: $select.search}">
+                                            <span ng-bind-html="task_status.name | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="task_status_ids" value="{{$ctrl.filter.task_status_ids}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Employees
+                                    </label>
+                                    <ui-select multiple ng-model="$ctrl.filter.emplyee_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                        <ui-select-match placeholder="Select">
+                                            {{$item.name}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="emplyee.id as emplyee in $ctrl.extras.emplyee_list | propsFilter: {name: $select.search}">
+                                            <span ng-bind-html="emplyee.name | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                    <input type="hidden" name="emplyee_ids" value="{{$ctrl.filter.emplyee_ids}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-md-6">
