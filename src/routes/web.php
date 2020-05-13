@@ -17,6 +17,7 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['web', 'au
 	Route::get('/table/delete', 'TableController@deleteTable')->name('deleteTable');
 	Route::get('/table/get-filter-data', 'TableController@getTableFilterData')->name('getTableFilterData');
 	Route::get('/table/generate-migration', 'TableController@generateMigration')->name('generateMigration');
+	Route::post('/table/clear-operation', 'TableController@clearTableOperation')->name('clearTableOperation');
 
 	//Unique Key
 	Route::post('/unique-key/get-form-data', 'UniqueKeyController@getUniqueKeyFormData')->name('getUniqueKeyFormData');
@@ -95,5 +96,12 @@ Route::group(['namespace' => 'Abs\ProjectPkg', 'middleware' => ['web', 'auth'], 
 	Route::post('/task-type/save', 'TaskTypeController@saveTaskType')->name('saveTaskType');
 	Route::get('/task-type/delete/', 'TaskTypeController@deleteTaskType')->name('deleteTaskType');
 	Route::get('/task-type/card-list', 'TaskTypeController@getTaskTypes')->name('getTaskTypes');
+
+	//Severity
+	Route::get('/severity/get-list', 'SeverityController@getSeverityList')->name('getSeverityList');
+	Route::get('/severity/get-form-data', 'SeverityController@getSeverityFormData')->name('getSeverityFormData');
+	Route::post('/severity/save', 'SeverityController@saveSeverity')->name('saveSeverity');
+	Route::get('/severity/delete', 'SeverityController@deleteSeverity')->name('deleteSeverity');
+	Route::get('/severity/get-filter-data', 'SeverityController@getSeverityFilterData')->name('getSeverityFilterData');
 
 });

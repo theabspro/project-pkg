@@ -35,6 +35,9 @@ class Task extends Model {
 		'project_id',
 		'subject',
 		'description',
+		'steps_to_reproduce',
+		'expected_result',
+		'severity_id',
 		'platform_id',
 		'type_id',
 		'estimated_hours',
@@ -48,19 +51,23 @@ class Task extends Model {
 	}
 
 	public function module() {
-		return $this->belongsTo('Abs\ModulePkg\Module');
+		return $this->belongsTo('App\Module');
+	}
+
+	public function severity() {
+		return $this->belongsTo('App\Severity');
 	}
 
 	public function exportModule() {
-		return $this->belongsTo('Abs\ModulePkg\Module')->withTrashed();
+		return $this->belongsTo('App\Module')->withTrashed();
 	}
 
 	public function status() {
-		return $this->belongsTo('Abs\StatusPkg\Status');
+		return $this->belongsTo('App\Status');
 	}
 
 	public function type() {
-		return $this->belongsTo('Abs\ProjectPkg\TaskType', 'type_id');
+		return $this->belongsTo('App\TaskType', 'type_id');
 	}
 
 	public function assignedTo() {

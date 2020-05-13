@@ -317,4 +317,44 @@ class TableController extends Controller {
 			'migration' => $contents,
 		]);
 	}
+
+	public function clearTableOperation(Request $r) {
+		try {
+			$error_messages = [
+				'table_id.required' => 'Table is Required',
+			];
+			$validator = Validator::make($r->all(), [
+				'table_id' => [
+					'required:true',
+					'exists:tables,id',
+				],
+			], $error_messages);
+			if ($validator->fails()) {
+				return response()->json(['success' => false, 'errors' => $validator->errors()->all()]);
+			}
+
+			DB::beginTransaction();
+			$table = Table::find($r->table_id);
+			foreach ($table->columns as $column) {
+				$column->action_id = null;
+				$column->save();
+			}
+			foreach ($table->uniqueKeys as $unique_key) {
+				$unique_key->action_id = null;
+				$unique_key->save();
+			}
+			DB::commit();
+			return response()->json([
+				'success' => true,
+				'message' => 'Table Operations Successfully',
+			]);
+		} catch (Exceprion $e) {
+			DB::rollBack();
+			return response()->json([
+				'success' => false,
+				'error' => $e->getMessage(),
+			]);
+		}
+
+	}
 }

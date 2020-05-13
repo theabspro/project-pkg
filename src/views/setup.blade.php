@@ -281,3 +281,33 @@
 <script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/table/controller.js')}}"></script>
 <script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/column/controller.js')}}"></script>
 <script type="text/javascript" src="{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/unique-key/controller.js')}}"></script>
+
+<script type='text/javascript'>
+	app.config(['$routeProvider', function($routeProvider) {
+	    $routeProvider.
+	    //Severity
+	    when('/project-pkg/severity/list', {
+	        template: '<severity-list></severity-list>',
+	        title: 'Severities',
+	    }).
+	    when('/project-pkg/severity/add', {
+	        template: '<severity-form></severity-form>',
+	        title: 'Add Severity',
+	    }).
+	    when('/project-pkg/severity/edit/:id', {
+	        template: '<severity-form></severity-form>',
+	        title: 'Edit Severity',
+	    }).
+	    when('/project-pkg/severity/card-list', {
+	        template: '<severity-card-list></severity-card-list>',
+	        title: 'Severity Card List',
+	    });
+	}]);
+
+	//Severities
+    var severity_list_template_url = '{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/severity/list.html')}}';
+    var severity_form_template_url = '{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/severity/form.html')}}';
+    var severity_card_list_template_url = '{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/severity/card-list.html')}}';
+    var severity_modal_form_template_url = '{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/partials/severity-modal-form.html')}}';
+</script>
+<script type='text/javascript' src='{{asset($project_pkg_prefix.'/public/themes/'.$theme.'/project-pkg/severity/controller.js')}}'></script>

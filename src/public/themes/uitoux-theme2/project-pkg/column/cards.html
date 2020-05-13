@@ -1,8 +1,10 @@
 <ul class="list-group" dnd-list="columns" dnd-allowed-types="['column']" dnd-external-sources="true" dnd-drop="dropColumnCallback(event,index, item)" dnd-dragover="true" dnd-droppable="true" style=" margin-bottom: 0;">
     <li ng-repeat="column in columns" class="list-group-item list-group-item-warning" ng-click="showColumnForm(column, '', $event)" dnd-dragstart="dragColumnstartCallback(event)" dnd-draggable="column" dnd-effect-allowed="move" dnd-type="'column'" dnd-moved="columns.splice($index, 1)" id="column_<%column.id%>">
         <span class="label label-primary">
-            (
-            <% column.action.name %>)
+            <span ng-if="column.action">
+                (
+                <% column.action.name %>)
+            </span>
             <% column.name %>
         </span>
         <span class="label1 label-warning1" ng-if="column.new_name">

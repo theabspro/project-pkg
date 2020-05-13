@@ -119,17 +119,23 @@
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-default" ng-click="confirmTableDeletion(table.id,$event)" ng-if="hasPermission('delete-table')">
-                                                    <md-tooltip md-direction="top">
-                                                        Delete Table
-                                                    </md-tooltip>
-                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                                </button>
                                                 <button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.table = table; showUniqueKeyForm({})" ng-if="hasPermission('delete-table')">
                                                     <md-tooltip md-direction="top">
                                                         Unique Keys
                                                     </md-tooltip>
                                                     <span class="glyphicon glyphicon-magnet" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-default" ng-click="clearTableOperation(table,$event)" ng-if1="hasPermission('clear-table-operations')">
+                                                    <md-tooltip md-direction="top">
+                                                        Clear Operation
+                                                    </md-tooltip>
+                                                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-default" ng-click="confirmTableDeletion(table.id,$event)" ng-if="hasPermission('delete-table')">
+                                                    <md-tooltip md-direction="top">
+                                                        Delete Table
+                                                    </md-tooltip>
+                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                                 </button>
                                                 <a href="./table/generate-migration?id={{table.id}}" class="btn btn-sm btn-default">
                                                     <md-tooltip md-direction="top">

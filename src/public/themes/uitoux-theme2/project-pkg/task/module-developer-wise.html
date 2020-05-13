@@ -305,6 +305,27 @@
                                     <label>
                                         Modules
                                     </label>
+                                    <md-chips ng-model="ctrl.selectedVegetables" md-autocomplete-snap md-transform-chip="ctrl.transformChip($chip)" md-require-match="ctrl.autocompleteDemoRequireMatch" input-aria-label="Favorite Vegetables">
+                                        <md-autocomplete md-search-text="$ctrl.searchModuleKey" md-items="item in $ctrl.searchModule($ctrl.searchModuleKey)" md-item-text="item.name" input-aria-describedby="autocompleteTitle" placeholder="Search for a module">
+                                            <span md-highlight-text="ctrl.searchModuleKey">
+                                                {{item.name}} :: {{item.type}}
+                                            </span>
+                                        </md-autocomplete>
+                                        <md-chip-template>
+                                            <span>
+                                                <strong>{{$chip.name}}</strong>
+                                                <em>({{$chip.type}})</em>
+                                            </span>
+                                        </md-chip-template>
+                                    </md-chips>
+                                    <input type="hidden" name="module_ids" value="{{$ctrl.filter.module_ids}}">
+                                </div><!-- Field -->
+                            </div><!-- Column -->
+                            <div class="col-sm-6">
+                                <div class="separate-form-group">
+                                    <label>
+                                        Modules
+                                    </label>
                                     <ui-select multiple ng-model="$ctrl.filter.module_ids" theme="select2" ng-model-options="{trackBy: '$value.id' }">
                                         <ui-select-match placeholder="Select">
                                             {{$item.name}}

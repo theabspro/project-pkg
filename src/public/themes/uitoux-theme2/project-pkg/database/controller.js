@@ -117,6 +117,21 @@ app.component('databaseCardList', {
             });
         }
 
+        $scope.clearTableOperation = function(table, $event) {
+            $http.post(
+                laravel_routes['clearTableOperation'], {
+                    table_id: table.id,
+                }
+            ).then(function(response) {
+                if (response.data.success) {
+                    custom_noty('success', response.data.message);
+                } else {
+                    showErrorNoty(response.data);
+                }
+            });
+
+        }
+
         //SAVE DATABASE
         $scope.saveDatabase = function() {
             ProjectPkgHelper.saveDatabase().then(function(res) {

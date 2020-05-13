@@ -198,6 +198,7 @@ class TaskController extends Controller {
 		]);
 
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	//todo : need to move this function to date helper
 	private function getDateRange($date) {
@@ -228,6 +229,7 @@ class TaskController extends Controller {
 		return $dates;
 
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	public function getUserDateWiseTasks(Request $request) {
 		$filter_params = Filter::getFilterParams($request, 221);
@@ -322,6 +324,7 @@ class TaskController extends Controller {
 			'extras' => $extras,
 		]);
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	public function getStatusDateWiseTasks(Request $request) {
 		$filter_params = Filter::getFilterParams($request, 222);
@@ -374,6 +377,7 @@ class TaskController extends Controller {
 			'extras' => $extras,
 		]);
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	//issue : ram : code optimization & reusability
 	private function getAllStatusTasksByDate($dates) {
@@ -393,6 +397,7 @@ class TaskController extends Controller {
 
 		return $status;
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	//issue : ram : code optimization & reusability
 	private function getTasksByStatusDate($date, $status_id, $is_all_status, $is_unplanned) {
@@ -430,6 +435,7 @@ class TaskController extends Controller {
 		$tasks = $tasks->get();
 		return $tasks;
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	public function getTaskList(Request $request) {
 		$task_list = Task::withTrashed()
@@ -475,6 +481,7 @@ class TaskController extends Controller {
 			})
 			->make(true);
 	}
+//-----------------------------------------------------------------------------------------------------
 
 	public function getTaskFormData(Request $r) {
 		if (!$r->id) {

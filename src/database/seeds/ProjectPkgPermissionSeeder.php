@@ -303,6 +303,32 @@ class ProjectPkgPermissionSeeder extends Seeder {
 				'name' => 'delete-task-type',
 				'display_name' => 'Delete',
 			],
+
+			//Severities
+			[
+				'display_order' => 99,
+				'parent' => null,
+				'name' => 'severities',
+				'display_name' => 'Severities',
+			],
+			[
+				'display_order' => 1,
+				'parent' => 'severities',
+				'name' => 'add-severity',
+				'display_name' => 'Add',
+			],
+			[
+				'display_order' => 2,
+				'parent' => 'severities',
+				'name' => 'edit-severity',
+				'display_name' => 'Edit',
+			],
+			[
+				'display_order' => 3,
+				'parent' => 'severities',
+				'name' => 'delete-severity',
+				'display_name' => 'Delete',
+			],
 		];
 
 		Permission::createFromArrays($permissions);
