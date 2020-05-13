@@ -127,6 +127,7 @@ app.component('moduleDeveloperWiseTasks', {
             self.employee_list = response.data.employee_list;
             self.task_status_list = response.data.task_status_list;
             self.module_status_list = response.data.module_status_list;
+            self.extras = response.data.extras;
         });
 
         $('#daterange').on('apply.daterangepicker', function(ev, picker) {
@@ -242,7 +243,6 @@ app.component('moduleDeveloperWiseTasks', {
 
         //SAVE DEFECT
         $scope.saveDefect = function() {
-            alert(1)
             ProjectPkgHelper.saveDefect().then(function(res) {
                 console.log(res);
                 $scope.fetchData();
@@ -380,7 +380,7 @@ app.component('moduleDeveloperWiseTasks', {
             $event.stopPropagation();
             $('#bug-form-modal').modal('show');
             $('#bug-form-modal').on('shown.bs.modal', function(e) {
-                $scope.$broadcast('focus-bug-type');
+                $scope.$broadcast('focus-defect-type');
             })
             self.task = task;
             self.task.action = action;

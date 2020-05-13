@@ -43,7 +43,7 @@
                                         Defect Type
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <ui-select ng-model="$ctrl.task.type_id" theme="select2">
+                                    <ui-select ng-model="$ctrl.task.type_id" focus-on='focus-defect-type' theme="select2">
                                         <ui-select-match placeholder="Select Task Type">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
@@ -121,7 +121,7 @@
                                     <label>
                                         Estimated Hours
                                     </label>
-                                    <input type="text" class="form-control" name="estimated_hours" autocomplete="off" value="0">
+                                    <input type="text" class="form-control" name="estimated_hours" autocomplete="off" value="1">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-md-6" style="display: none;">

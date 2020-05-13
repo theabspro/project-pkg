@@ -10,6 +10,7 @@ use App\Mail\TaskMail;
 use App\Module;
 use App\Platform;
 use App\Project;
+use App\Severity;
 use App\Status;
 use App\Task;
 use App\TaskType;
@@ -515,6 +516,9 @@ class TaskController extends Controller {
 		$this->data['task'] = $task;
 		$this->data['action'] = $action;
 		$this->data['success'] = true;
+
+		$this->data['extras']['severity_list'] = Severity::getList();
+
 		return response()->json($this->data);
 	}
 
