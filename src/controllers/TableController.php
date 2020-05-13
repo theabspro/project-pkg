@@ -192,7 +192,7 @@ class TableController extends Controller {
 		foreach ($table->columns as $column) {
 			$size = '';
 			if ($table->action == 0) {
-				if ($column->action->id == 300 || $column->action->id == 301 || $column->action->id == 302) {
+				if ($column->action_id == 300 || $column->action_id == 301 || $column->action_id == 302) {
 					//Create || Add || Alter
 					if ($column->size) {
 						$size = ',' . $column->size;
@@ -205,7 +205,7 @@ class TableController extends Controller {
 
 				}
 			} else {
-				if ($column->action_id == 301 || $column->action->id == 302) {
+				if ($column->action_id == 301 || $column->action_id == 302) {
 					//Add || Alter
 					if ($column->size) {
 						$size = ',' . $column->size;
@@ -214,18 +214,18 @@ class TableController extends Controller {
 					if ($column->is_nullable) {
 						$up_create .= '->nullable()';
 					}
-					if ($column->action->id == 301) {
+					if ($column->action_id == 301) {
 						//Add
 						$up_create .= '->after("sdsd")';
 						$down_drop_col .= "\t\t\t\t" . '$table->dropColumn("' . $column->name . '");' . "\n";
 					}
-					if ($column->action->id == 302) {
+					if ($column->action_id == 302) {
 						//Alter
 						$up_create .= '->change()';
 					}
 					$up_create .= ";\n";
 
-				} elseif ($column->action->id == 303) {
+				} elseif ($column->action_id == 303) {
 					//Drop
 					if ($column->fk) {
 						$up_remove .= "\t\t\t\t" . '$table->dropForeign("' . $table->name . '_' . $column->name . '_foreign");' . "\n";
@@ -243,13 +243,13 @@ class TableController extends Controller {
 						$down_add_col .= "\t\t\t\t" . '$table->foreign("' . $column->name . '")->references("id")->on("' . $column->fk->name . '")->onDelete("' . $column->fkType->name . '")->onUpdate("' . $column->fkType->name . '");' . "\n";
 					}
 
-				} elseif ($column->action->id == 304) {
+				} elseif ($column->action_id == 304) {
 					//Rename
 					$up_create .= "\t\t\t\t" . '$table->rename("' . $column->name . '","' . $column->new_name . '");' . "\n";
 				}
 			}
 
-			if ($column->fk && ($column->action->id == 301 || $column->action->id == 302)) {
+			if ($column->fk && ($column->action_id == 301 || $column->action_id == 302)) {
 				$up_fks .= "\t\t\t\t" . '$table->foreign("' . $column->name . '")->references("id")->on("' . $column->fk->name . '")->onDelete("' . $column->fkType->name . '")->onUpdate("' . $column->fkType->name . '");' . "\n";
 				if ($table->action == 1) {
 					//drop fk
@@ -259,7 +259,7 @@ class TableController extends Controller {
 		}
 
 		foreach ($table->uniqueKeys as $unique_key) {
-			if (($unique_key->action->id == 320 && $table->action == 0) || ($unique_key->action->id == 321 && $table->action == 1)) {
+			if (($unique_key->action_id == 320 && $table->action == 0) || ($unique_key->action_id == 321 && $table->action == 1)) {
 				//Create
 				$up_uks .= "\t\t\t\t" . '$table->unique(' . $unique_key->columns . ');' . "\n";
 				if ($table->action == 1) {
@@ -268,7 +268,7 @@ class TableController extends Controller {
 					$columns = implode($columns, '_');
 					$down_drop_uk .= "\t\t\t\t" . '$table->dropUnique("' . $table->name . '_' . $columns . '_unique");' . "\n";
 				}
-			} elseif ($unique_key->action->id == 321) {
+			} elseif ($unique_key->action_id == 321) {
 				//Remove
 				$columns = json_decode($unique_key->columns);
 				$columns = implode($columns, '_');
