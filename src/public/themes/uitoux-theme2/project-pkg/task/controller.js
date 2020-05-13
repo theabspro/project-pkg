@@ -127,7 +127,7 @@ app.component('moduleDeveloperWiseTasks', {
             self.employee_list = response.data.employee_list;
             self.task_status_list = response.data.task_status_list;
             self.module_status_list = response.data.module_status_list;
-            self.extras = response.data.extras;
+            self.severity_list = response.data.extras.severity_list;
         });
 
         $('#daterange').on('apply.daterangepicker', function(ev, picker) {

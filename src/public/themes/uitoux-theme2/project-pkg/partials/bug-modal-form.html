@@ -102,14 +102,14 @@
                             <div class="col-sm-6">
                                 <div class="separate-form-group">
                                     <label>
-                                        Sevirity
+                                        Severity
                                         <sup class="mandatory">*</sup>
                                     </label>
                                     <ui-select ng-model="$ctrl.task.severity_id" theme="select2">
                                         <ui-select-match placeholder="Select Severity">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
-                                        <ui-select-choices repeat="i.id as i in $ctrl.extras.severity_list | propsFilter: {name: $select.search}">
+                                        <ui-select-choices repeat="i.id as i in $ctrl.severity_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="i.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
