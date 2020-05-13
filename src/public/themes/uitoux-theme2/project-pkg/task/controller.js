@@ -242,6 +242,7 @@ app.component('moduleDeveloperWiseTasks', {
 
         //SAVE DEFECT
         $scope.saveDefect = function() {
+            alert(1)
             ProjectPkgHelper.saveDefect().then(function(res) {
                 console.log(res);
                 $scope.fetchData();

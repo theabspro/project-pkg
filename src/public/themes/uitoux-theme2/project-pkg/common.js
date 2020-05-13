@@ -145,6 +145,7 @@ app.factory("ProjectPkgHelper", function($http, $q) {
 
         saveDefect: function() {
             var defer = $q.defer();
+            alert(1)
 
             var form_id = '#bug_form';
             var v = jQuery(form_id).validate({

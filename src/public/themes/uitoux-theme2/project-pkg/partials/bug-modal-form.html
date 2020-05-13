@@ -121,7 +121,7 @@
                                     <label>
                                         Estimated Hours
                                     </label>
-                                    <input type="text" class="form-control" ng-model="$ctrl.task.estimated_hours" name="estimated_hours" autocomplete="off">
+                                    <input type="text" class="form-control" ng-model="$ctrl.task.estimated_hours" name="estimated_hours" autocomplete="off" value="0">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-md-6" style="display: none;">
@@ -207,7 +207,7 @@
                                 </div><!-- Feild -->
                             </div>
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-rose" ng-click="saveTask()">
+                                <button type="submit" class="btn btn-rose" ng-click="saveDefect()">
                                     Submit
                                 </button>
                             </div>
@@ -277,12 +277,6 @@
                                                 </label>
                                             </th>
                                             <th>
-                                                <input type="checkbox" ng-click="checkboxChecked('col_2')" class="parent_col_2 all">
-                                                <label>
-                                                    Slack
-                                                </label>
-                                            </th>
-                                            <th>
                                                 <input type="checkbox" ng-click="checkboxChecked('col_3')" class="parent_col_3 all">
                                                 <label>
                                                     Email
@@ -301,9 +295,6 @@
                                                 <input type="hidden" name="noty[assignee][id]" value="<% $ctrl.task.assigned_to.id  %>">
                                             </td>
                                             <td>
-                                                <input type="checkbox" class="all row_1 col_2" name="noty[assignee][slack]" value="1">
-                                            </td>
-                                            <td>
                                                 <input type="checkbox" class="all row_1 col_3" name="noty[assignee][email]" value="1">
                                             </td>
                                         </tr>
@@ -315,9 +306,6 @@
                                                     <% $ctrl.task.project_version.tl.first_name %>)
                                                 </label>
                                                 <input type="hidden" name="noty[tl][id]" value="<% $ctrl.task.project_version.tl.id  %>">
-                                            </td>
-                                            <td>
-                                                <input type="checkbox" class="all row_2 col_2" name="noty[tl][slack]" value="1">
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="all row_2 col_3" name="noty[tl][email]" value="1">
@@ -333,9 +321,6 @@
                                                 <input type="hidden" name="noty[pm][id]" value="<% $ctrl.task.project_version.pm.id  %>">
                                             </td>
                                             <td>
-                                                <input type="checkbox" class="all row_3 col_2" name="noty[pm][slack]" value="1">
-                                            </td>
-                                            <td>
                                                 <input type="checkbox" class="all row_3 col_3" name="noty[pm][email]" value="1">
                                             </td>
                                         </tr>
@@ -347,9 +332,6 @@
                                                     <% $ctrl.task.project_version.qa.first_name %>)
                                                 </label>
                                                 <input type="hidden" name="noty[qa][id]" value="<% $ctrl.task.project_version.qa.id  %>">
-                                            </td>
-                                            <td>
-                                                <input type="checkbox" class="all row_4 col_2" name="noty[qa][slack]" value="1">
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="all row_4 col_3" name="noty[qa][email]" value="1">
