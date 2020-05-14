@@ -1,5 +1,5 @@
 <ul class="list-group" dnd-list="tasks" dnd-allowed-types="['task']" dnd-external-sources="true" dnd-drop="dropTaskCallback(event,index, item, status_id, date, assigned_to_id, module_id)" dnd-dragover="true" dnd-droppable="true" style=" margin-bottom: 0;">
-    <li ng-repeat="task in tasks" class="list-group-item list-group-item-warning" ng-click="showTaskForm(task, '', $event)" dnd-dragstart="dragTaskstartCallback(event)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="tasks.splice($index, 1)" id="task_<%task.id%>">
+    <li ng-repeat="task in tasks" class="list-group-item list-group-item-warning" ng-click="task.category_id ==251 ? showBugForm(task, '', $event) : showTaskForm(task, '', $event)" dnd-dragstart="dragTaskstartCallback(event)" dnd-draggable="task" dnd-effect-allowed="move" dnd-type="'task'" dnd-moved="tasks.splice($index, 1)" id="task_<%task.id%>">
         <img ng-if="task.assigned_to.profile_image" ng-src="./storage/app/public/user-profile-images/<% task.assigned_to.profile_image.name %>" title="<% task.assigned_to.first_name %>" class="img-circle pull-left" style="width: 50px; height: 50px;" />
         <span ng-if="!task.assigned_to.profile_image" class="glyphicon1 glyphicon-user1" aria-hidden="true" style1="width: 50px; height: 50px">
             <% task.assigned_to.first_name %>

@@ -64,6 +64,7 @@ app.component('moduleDeveloperWiseTasks', {
                     return;
                 }
                 self.modules = response.data.modules;
+                console.log(response.data.modules);
                 self.project_version_list = response.data.extras.project_version_list;
                 self.project_version = response.data.project_version;
                 self.extras = response.data.extras;
@@ -377,6 +378,7 @@ app.component('moduleDeveloperWiseTasks', {
 
 
         $scope.showBugForm = function(task, action, $event) {
+            console.log(task);
             $event.stopPropagation();
             $('#bug-form-modal').modal('show');
             $('#bug-form-modal').on('shown.bs.modal', function(e) {
@@ -395,6 +397,7 @@ app.component('moduleDeveloperWiseTasks', {
                     self.task.project_version = self.project_version;
                     self.task.project_version_id = self.project_version.id;
                     self.task.project_id = self.project_version.project.id;
+
                     // self.show_project_version = false;
                     // self.show_project = false;
                 } else {
@@ -409,9 +412,13 @@ app.component('moduleDeveloperWiseTasks', {
                 return;
             }
             self.task.date = HelperService.getCurrentDate();
+            console.log(self.assigned_to);
 
             if (self.assigned_to) {
-                self.task.assigned_to = self.assigned_to;
+                // var assigned_to = [];
+                // assigned_to.push(self.assigned_to.id);
+                //console.log(assigned_to);
+                self.task.assigned_to = self.assigned_to.id;
                 // self.show_assigned_to = false;
             }
 
