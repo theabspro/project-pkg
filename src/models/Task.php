@@ -38,6 +38,8 @@ class Task extends Model {
 		'steps_to_reproduce',
 		'expected_result',
 		'severity_id',
+		'category_id',
+		'display_order',
 		'platform_id',
 		'type_id',
 		'estimated_hours',

@@ -518,6 +518,7 @@ class TaskController extends Controller {
 		$this->data['success'] = true;
 
 		$this->data['extras']['severity_list'] = Severity::getList();
+		//dd($this->data['extras']['severity_list']);
 
 		return response()->json($this->data);
 	}
@@ -561,7 +562,7 @@ class TaskController extends Controller {
 	}
 
 	public function saveTask(Request $request) {
-		// dd($request->all());
+		//dd($request->all());
 		try {
 			$error_messages = [
 				// 'assigned_to_id.required' => 'Assigned To is Required',
@@ -613,6 +614,20 @@ class TaskController extends Controller {
 					'numeric:true',
 				],
 				'actual_hours' => [
+					'nullable',
+					'numeric:true',
+				],
+				'severity_id' => [
+					'nullable',
+					'integer',
+					'exists:severities,id',
+				],
+				'category_id' => [
+					'nullable',
+					'integer',
+					'exists:configs,id',
+				],
+				'display_order' => [
 					'nullable',
 					'numeric:true',
 				],
@@ -713,6 +728,7 @@ class TaskController extends Controller {
 				$task->save();
 				$task->number = 'TSK-' . $task->id;
 				$task->save();
+				//dd($task);
 			}
 			DB::commit();
 

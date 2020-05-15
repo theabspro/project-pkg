@@ -145,6 +145,7 @@ app.factory("ProjectPkgHelper", function($http, $q) {
 
         saveDefect: function() {
             var defer = $q.defer();
+            console.log(defer);
 
             var form_id = '#bug_form';
             var v = jQuery(form_id).validate({
@@ -180,6 +181,12 @@ app.factory("ProjectPkgHelper", function($http, $q) {
                         // required: true,
                         number: true,
                     },
+                    'severity_id': {
+                        required: true,
+                    },
+                    'display_order': {
+                        number: true,
+                    }
                 },
                 invalidHandler: function(event, validator) {
                     console.log(validator.errorList);

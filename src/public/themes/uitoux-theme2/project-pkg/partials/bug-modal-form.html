@@ -17,6 +17,8 @@
             <form id="bug_form">
                 <input type="hidden" name="id" value="{{$ctrl.task.id}}">
                 <input type="hidden" name="action" value="{{$ctrl.task.action}}">
+                <input type="hidden" name="category_id" value="251">
+                <!-- Category Type Bug-->
                 <div class="modal-body">
                     <div class="modal-form">
                         <div class="row">
@@ -44,7 +46,7 @@
                                         <sup class="mandatory">*</sup>
                                     </label>
                                     <ui-select ng-model="$ctrl.task.type_id" focus-on='focus-defect-type' theme="select2">
-                                        <ui-select-match placeholder="Select Task Type">
+                                        <ui-select-match placeholder="Select Defect Type">
                                             {{$select.selected.name || $select.selected}}
                                         </ui-select-match>
                                         <ui-select-choices repeat="i.id as i in $ctrl.task_type_list | propsFilter: {name: $select.search}">
@@ -138,15 +140,15 @@
                                         Assigned To
                                         <sup class="mandatory">*</sup>
                                     </label>
-                                    <ui-select multiple ng-model="$ctrl.task.assigned_to" theme="select2" ng-model-options="{trackBy: '$value.id' }">
+                                    <ui-select ng-model="$ctrl.task.assigned_to" theme="select2" ng-model-options="{trackBy: '$value.id' }">
                                         <ui-select-match placeholder="Select Assigned To">
-                                            {{$item.name}}
+                                            {{$select.selected.first_name || $select.selected}}
                                         </ui-select-match>
                                         <ui-select-choices repeat="assigned_to.id as assigned_to in $ctrl.users_list | propsFilter: {name: $select.search}">
                                             <div ng-bind-html="assigned_to.name | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
-                                    <input type="hidden" name="assigned_to_ids" id="assigned_to_id" value="{{$ctrl.task.assigned_to}}">
+                                    <input type="hidden" name="assigned_to_id" id="assigned_to_id" value="{{$ctrl.task.assigned_to}}">
                                 </div><!-- Field -->
                             </div><!-- Column -->
                             <div class="col-sm-6" ng-show="$ctrl.show_assigned_to" ng-if="$ctrl.task.id !=NULL && $ctrl.task.action != 'Clone'">
@@ -207,7 +209,7 @@
                                 </div><!-- Feild -->
                             </div>
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-rose" ng-click="saveDefect()">
+                                <button type="submit" class="btn btn-rose submit" ng-click="saveDefect()">
                                     Submit
                                 </button>
                             </div>
