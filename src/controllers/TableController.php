@@ -203,6 +203,9 @@ class TableController extends Controller {
 					}
 					$up_create .= ";\n";
 
+					if ($column->fk) {
+						$up_fks .= "\t\t\t\t" . '$table->foreign("' . $column->name . '")->references("id")->on("' . $column->fk->name . '")->onDelete("' . $column->fkType->name . '")->onUpdate("' . $column->fkType->name . '");' . "\n";
+					}
 				}
 			} else {
 				if ($column->action_id == 301 || $column->action_id == 302) {
